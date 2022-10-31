@@ -1,0 +1,23 @@
+// Externals
+
+// Setup
+@import './setup/variables';
+
+// Basics
+@import 'basics/animations';
+@import 'basics/base';
+@import 'basics/typography';
+
+// Pages
+
+@import './pages/home-page';
+@import './pages/main-page';
+
+// Components
+@import './cmps/header-cmp';
+@import './cmps/board-cmp';
+
+.temp-nav {
+  position: fixed;
+  color: white;
+}

@@ -1,0 +1,24 @@
+.header-cmp {
+  background-color: rgba(255, 255, 255, 0.117);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  padding: 0 1rem;
+  color: $clr2;
+
+  div {
+    display: flex;
+    span {
+    }
+    ul {
+      padding: 0;
+      margin: 0;
+      display: flex;
+      li {
+        list-style: none;
+        padding: 0 0.7rem;
+      }
+    }
+  }
+}

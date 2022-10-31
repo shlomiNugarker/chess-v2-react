@@ -1,0 +1,31 @@
+.board-cmp {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 60px);
+
+  table {
+    border-spacing: 0;
+    tbody {
+      tr {
+        display: flex;
+        td {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 80px;
+          height: 80px;
+
+          font-size: 50px;
+
+          &.white {
+            background-color: #f0d9b5;
+          }
+          &.black {
+            background-color: #b58863;
+          }
+        }
+      }
+    }
+  }
+}
