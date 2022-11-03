@@ -15,14 +15,23 @@
           align-items: center;
           width: 80px;
           height: 80px;
-
-          font-size: 50px;
+          font-size: 60px;
 
           &.white {
             background-color: #f0d9b5;
           }
           &.black {
             background-color: #b58863;
+          }
+          &.selected {
+            background-color: #646f40;
+          }
+          &.mark span {
+            pointer-events: none;
+            background-color: #646f40;
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
           }
         }
       }

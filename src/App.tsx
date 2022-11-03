@@ -10,7 +10,7 @@ const App = () => {
 
   return (
     <>
-      {/* <nav className="temp-nav">
+      <nav className="temp-nav">
         <ul>
           <li>
             <Link to="/">Home</Link>
@@ -22,7 +22,7 @@ const App = () => {
             <Link to="/main">Main</Link>
           </li>
         </ul>
-      </nav> */}
+      </nav>
       <Routes>
         <Route path="/main" element={<Main />} />
         <Route path="/about" element={<About />} />

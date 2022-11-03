@@ -1,7 +1,23 @@
-import { utilsService } from '../services/utilService'
+import { RootState } from '../features'
+import {
+  gPieces,
+  setNewState,
+  setSelectedCellCoord,
+} from '../features/game/gameSlice'
+import { useAppDispatch } from '../hooks/useAppDispatch'
+import { useAppSelector } from '../hooks/useTypedSelector'
+import {
+  cleanBoard,
+  getPossibleCoords,
+  markCells,
+  movePiece,
+} from '../services/game/main'
 
-export const Board = () => {
-  const board = utilsService.buildBoard()
+export const Board: () => JSX.Element = () => {
+  const dispatch = useAppDispatch()
+
+  const { board } = useAppSelector((state: RootState) => state.game)
+  const gameState = useAppSelector((state: RootState) => state.game)
 
   const cellClicked = (
     ev: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
@@ -9,9 +25,26 @@ export const Board = () => {
     j: number
   ) => {
     if (ev.target instanceof Element) {
-      console.log(i, j, ev.target)
+      const toCellCoord = { i, j }
+      const piece = board[i][j]
+      const isEvSelected = ev.target.classList.contains('selected')
+      const isEvMarked = ev.target.classList.contains('mark')
+
+      if (isEvMarked) {
+        const newState = movePiece(gameState, toCellCoord)
+        newState && dispatch(setNewState(newState))
+        cleanBoard()
+        return
+      }
+
+      const possibleCoords = getPossibleCoords(gameState, piece, toCellCoord)
+      markCells(gameState, possibleCoords)
+
+      dispatch(setSelectedCellCoord(toCellCoord))
     }
   }
+
+  if (!board) return <div>Loading...</div>
 
   return (
     <section className="board-cmp">
