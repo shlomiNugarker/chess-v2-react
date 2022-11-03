@@ -94,6 +94,21 @@ export const gameSlice = createSlice({
     setSelectedCellCoord: (state, action) => {
       state.selectedCellCoord = action.payload
     },
+    setSwitchTurn: (state) => {
+      state.isBlackTurn = !state.isBlackTurn
+    },
+    setKingPos: (state, action) => {
+      state.kingPos = action.payload
+    },
+    setIsBlackKingThreatened: (state, action) => {
+      console.log('setIsBlackKingThreatened', action.payload)
+      state.isBlackKingThreatened = action.payload
+    },
+    setIsWhiteKingThreatened: (state, action) => {
+      console.log('setIsWhiteKingThreatened', action.payload)
+
+      state.isWhiteKingThreatened = action.payload
+    },
     setNewState: (state, action) => {
       state.board = action.payload.board
       state.selectedCellCoord = action.payload.selectedCellCoord
@@ -122,5 +137,12 @@ export const gameSlice = createSlice({
     // })
   },
 })
-export const { setSelectedCellCoord, setNewState } = gameSlice.actions
+export const {
+  setSelectedCellCoord,
+  setNewState,
+  setSwitchTurn,
+  setKingPos,
+  setIsBlackKingThreatened,
+  setIsWhiteKingThreatened,
+} = gameSlice.actions
 export default gameSlice.reducer

@@ -6,6 +6,7 @@
 
   table {
     border-spacing: 0;
+    background-color: #646f40;
     tbody {
       tr {
         display: flex;
@@ -32,6 +33,15 @@
             border-radius: 50%;
             width: 15px;
             height: 15px;
+          }
+
+          &.eatable {
+            border-radius: 50%;
+          }
+
+          &.black.red,
+          .white.red {
+            background-color: #9b2d2d;
           }
         }
       }

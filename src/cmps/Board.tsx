@@ -1,14 +1,19 @@
 import { RootState } from '../features'
 import {
-  gPieces,
+  setIsBlackKingThreatened,
+  setIsWhiteKingThreatened,
   setNewState,
   setSelectedCellCoord,
+  setSwitchTurn,
 } from '../features/game/gameSlice'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useTypedSelector'
+import { checkIfKingThreatened } from '../services/game/checkIfKingThreatened'
 import {
   cleanBoard,
   getPossibleCoords,
+  isColorPieceWorthCurrPlayerColor,
+  isNextStepLegal,
   markCells,
   movePiece,
 } from '../services/game/main'
@@ -18,6 +23,7 @@ export const Board: () => JSX.Element = () => {
 
   const { board } = useAppSelector((state: RootState) => state.game)
   const gameState = useAppSelector((state: RootState) => state.game)
+  console.log(gameState)
 
   const cellClicked = (
     ev: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
@@ -29,14 +35,58 @@ export const Board: () => JSX.Element = () => {
       const piece = board[i][j]
       const isEvSelected = ev.target.classList.contains('selected')
       const isEvMarked = ev.target.classList.contains('mark')
+      const isEvEatable = ev.target.classList.contains('eatable')
 
-      if (isEvMarked) {
+      if (isEvEatable && gameState.selectedCellCoord) {
+        let isMoveLegal = isNextStepLegal(gameState, ev.target)
+
+        gameState.isBlackTurn
+          ? dispatch(setIsWhiteKingThreatened(isMoveLegal))
+          : dispatch(setIsBlackKingThreatened(isMoveLegal))
+
+        if (!isMoveLegal) return
+
         const newState = movePiece(gameState, toCellCoord)
         newState && dispatch(setNewState(newState))
+        cleanBoard()
+        switchTurn()
+
+        checkIfKingThreatened(gameState)
+
+        return
+      }
+
+      if (!isColorPieceWorthCurrPlayerColor(gameState, piece) && piece !== '')
+        return
+
+      if (isEvSelected) {
+        ev.target.classList.remove('selected')
+        dispatch(setSelectedCellCoord(null))
         cleanBoard()
         return
       }
 
+      if (isEvMarked && gameState.selectedCellCoord) {
+        const isMoveLegal = isNextStepLegal(gameState, ev.target)
+
+        gameState.isBlackTurn
+          ? dispatch(setIsWhiteKingThreatened(isMoveLegal))
+          : dispatch(setIsBlackKingThreatened(isMoveLegal))
+
+        if (!isMoveLegal) return
+
+        const newState = movePiece(gameState, toCellCoord)
+        newState && dispatch(setNewState(newState))
+        cleanBoard()
+        switchTurn()
+
+        checkIfKingThreatened(gameState)
+
+        return
+      }
+
+      cleanBoard()
+      ev.target.classList.add('selected')
       const possibleCoords = getPossibleCoords(gameState, piece, toCellCoord)
       markCells(gameState, possibleCoords)
 
@@ -44,7 +94,11 @@ export const Board: () => JSX.Element = () => {
     }
   }
 
-  if (!board) return <div>Loading...</div>
+  const switchTurn = () => {
+    dispatch(setSwitchTurn())
+  }
+
+  if (!board) return <div className="board-cmp">Loading...</div>
 
   return (
     <section className="board-cmp">

@@ -1,6 +1,12 @@
 import _ from 'lodash'
 import { GameState } from '../../features/game/gameSlice'
+import { checkIfKingThreatened } from './checkIfKingThreatened'
+import { getAllPossibleCoordsBishop } from './possibleCoordsFuncs/getAllPossibleCoordsBishop'
+import { getAllPossibleCoordsKing } from './possibleCoordsFuncs/getAllPossibleCoordsKing'
+import { getAllPossibleCoordsKnight } from './possibleCoordsFuncs/getAllPossibleCoordsKnight'
 import { getAllPossibleCoordsPawn } from './possibleCoordsFuncs/getAllPossibleCoordsPawn'
+import { getAllPossibleCoordsQueen } from './possibleCoordsFuncs/getAllPossibleCoordsQueen'
+import { getAllPossibleCoordsRook } from './possibleCoordsFuncs/getAllPossibleCoordsRook'
 
 export function buildBoard(pieces: any): string[][] {
   const board: string[][] = []
@@ -60,6 +66,26 @@ export function getPossibleCoords(
         cellCoord,
         piece === state.pieces.PAWN_WHITE
       )
+      break
+    case state.pieces.BISHOP_BLACK:
+    case state.pieces.BISHOP_WHITE:
+      possibleCoords = getAllPossibleCoordsBishop(state, cellCoord)
+      break
+    case state.pieces.KING_BLACK:
+    case state.pieces.KING_WHITE:
+      possibleCoords = getAllPossibleCoordsKing(state, cellCoord)
+      break
+    case state.pieces.KNIGHT_BLACK:
+    case state.pieces.KNIGHT_WHITE:
+      possibleCoords = getAllPossibleCoordsKnight(state, cellCoord)
+      break
+    case state.pieces.QUEEN_BLACK:
+    case state.pieces.QUEEN_WHITE:
+      possibleCoords = getAllPossibleCoordsQueen(state, cellCoord)
+      break
+    case state.pieces.ROOK_BLACK:
+    case state.pieces.ROOK_WHITE:
+      possibleCoords = getAllPossibleCoordsRook(state, cellCoord)
       break
   }
   return possibleCoords
@@ -151,25 +177,92 @@ export function movePiece(
   const fromCoord = state.selectedCellCoord
   const toCoord = toCellCoord
 
+  const isKingMoved =
+    (fromCoord && state.board[fromCoord.i][fromCoord.j] === '♔') ||
+    (fromCoord && state.board[fromCoord.i][fromCoord.j] === '♚')
+
   const isCellWithPiece = state.board[toCoord.i][toCoord.j]
 
   if (!fromCoord) return
 
+  let copiedState = _.cloneDeep(state)
+
   if (isCellWithPiece) {
     // Eat !
-    const eatenPiece = state.board[toCoord.i][toCoord.j]
-    if (isBlackPiece(state, eatenPiece) === true) {
-      state.eatenPieces.white.push(eatenPiece)
-    } else if (isBlackPiece(state, eatenPiece) === false) {
-      state.eatenPieces.black.push(eatenPiece)
+    const eatenPiece = copiedState.board[toCoord.i][toCoord.j]
+    if (isBlackPiece(copiedState, eatenPiece) === true) {
+      copiedState.eatenPieces.white.push(eatenPiece)
+    } else if (isBlackPiece(copiedState, eatenPiece) === false) {
+      copiedState.eatenPieces.black.push(eatenPiece)
     }
   }
 
-  const copiedState = _.cloneDeep(state)
-
-  const piece = state.board[fromCoord.i][fromCoord.j]
+  const piece = copiedState.board[fromCoord.i][fromCoord.j]
   copiedState.board[fromCoord.i][fromCoord.j] = ''
   copiedState.board[toCoord.i][toCoord.j] = piece
 
+  if (isKingMoved) {
+    copiedState = updateKingPos(copiedState, toCoord, piece)
+  }
+
   return copiedState
+}
+
+export function isNextStepLegal(
+  state: GameState,
+  elToCell: HTMLElement | Element
+) {
+  const fromCoord = state.selectedCellCoord
+  const toCoord = getCellCoord(elToCell.id)
+
+  if (!fromCoord) return false
+
+  const copiedState: GameState = _.cloneDeep(state)
+
+  const isKingMoved =
+    copiedState.board[fromCoord.i][fromCoord.j] === '♔' ||
+    copiedState.board[fromCoord.i][fromCoord.j] === '♚'
+
+  const piece = copiedState.board[fromCoord.i][fromCoord.j]
+  copiedState.board[fromCoord.i][fromCoord.j] = ''
+  copiedState.board[toCoord.i][toCoord.j] = piece
+
+  // if (isKingMoved) {
+  //   if (piece === '♔') {
+  //     copiedState.kingPos.white = { i: toCoord.i, j: toCoord.j }
+  //     copiedState.isCastlingLegal.white = false
+  //   }
+  //   if (piece === '♚') {
+  //     copiedState.kingPos.black = { i: toCoord.i, j: toCoord.j }
+  //     copiedState.isCastlingLegal.black = false
+  //   }
+  // }
+  const isKingThreatened = checkIfKingThreatened(copiedState, true)
+  return !isKingThreatened
+}
+
+export function getCellCoord(strCellId: string) {
+  const parts = strCellId.split('-')
+  const coord = { i: +parts[1], j: +parts[2] }
+  return coord
+}
+
+export function paintKingCellToRed(kingPos: { i: number; j: number }) {
+  document
+    .querySelector(`#cell-${kingPos.i}-${kingPos.j}`)
+    ?.classList.add('red')
+}
+
+export function updateKingPos(
+  state: GameState,
+  toCoord: { i: number; j: number },
+  piece: string
+) {
+  if (piece === '♔') {
+    state.kingPos.white = { i: toCoord.i, j: toCoord.j }
+  }
+  if (piece === '♚') {
+    state.kingPos.black = { i: toCoord.i, j: toCoord.j }
+  }
+  return state
 }
