@@ -7,21 +7,23 @@ export function getAllPossibleCoordsPawn(
   isWhite: boolean
 ) {
   const { board } = state
-
   let res: { i: number; j: number }[] = []
 
+  // Regular steps
   let diff = isWhite ? -1 : 1
   let nextCoord = { i: pieceCoord.i + diff, j: pieceCoord.j }
-  if (isEmptyCell(board, nextCoord)) res.push(nextCoord)
+  if (isEmptyCell(board, nextCoord)) {
+    res.push(nextCoord)
 
-  if ((pieceCoord.i === 1 && !isWhite) || (pieceCoord.i === 6 && isWhite)) {
-    diff *= 2
-    nextCoord = { i: pieceCoord.i + diff, j: pieceCoord.j }
-    if (isEmptyCell(board, nextCoord)) res.push(nextCoord)
+    if ((pieceCoord.i === 1 && !isWhite) || (pieceCoord.i === 6 && isWhite)) {
+      diff *= 2
+      nextCoord = { i: pieceCoord.i + diff, j: pieceCoord.j }
+      if (isEmptyCell(board, nextCoord)) res.push(nextCoord)
+    }
   }
 
+  // eatable cells:
   if (isWhite) {
-    // eatable:
     nextCoord = { i: pieceCoord.i - 1, j: pieceCoord.j - 1 }
     if (
       // if is there piece a & the piece is not mine
@@ -37,7 +39,6 @@ export function getAllPossibleCoordsPawn(
     )
       res.push(nextCoord)
   } else if (!isWhite) {
-    // eatable:
     nextCoord = { i: pieceCoord.i + 1, j: pieceCoord.j + 1 }
     if (
       board[nextCoord.i][nextCoord.j] &&

@@ -35,13 +35,20 @@
             height: 15px;
           }
 
+          &.mark {
+            cursor: pointer;
+          }
+
           &.eatable {
             border-radius: 50%;
           }
 
-          &.black.red,
-          .white.red {
-            background-color: #9b2d2d;
+          &.castle {
+            border-radius: 50%;
+          }
+
+          &.red {
+            background-color: #9b2d2d !important;
           }
         }
       }

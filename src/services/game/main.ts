@@ -57,10 +57,13 @@ export function getPossibleCoords(
     j: number
   }
 ) {
+  if (!piece) return
+
   let possibleCoords: { i: number; j: number }[] = []
   switch (piece) {
     case state.pieces.PAWN_BLACK:
     case state.pieces.PAWN_WHITE:
+      console.log('getAllPossibleCoordsPawn')
       possibleCoords = getAllPossibleCoordsPawn(
         state,
         cellCoord,
@@ -69,22 +72,27 @@ export function getPossibleCoords(
       break
     case state.pieces.BISHOP_BLACK:
     case state.pieces.BISHOP_WHITE:
+      console.log('getAllPossibleCoordsBishop')
       possibleCoords = getAllPossibleCoordsBishop(state, cellCoord)
       break
     case state.pieces.KING_BLACK:
     case state.pieces.KING_WHITE:
+      console.log('getAllPossibleCoordsKing')
       possibleCoords = getAllPossibleCoordsKing(state, cellCoord)
       break
     case state.pieces.KNIGHT_BLACK:
     case state.pieces.KNIGHT_WHITE:
+      console.log('getAllPossibleCoordsKnight')
       possibleCoords = getAllPossibleCoordsKnight(state, cellCoord)
       break
     case state.pieces.QUEEN_BLACK:
     case state.pieces.QUEEN_WHITE:
+      console.log('getAllPossibleCoordsQueen')
       possibleCoords = getAllPossibleCoordsQueen(state, cellCoord)
       break
     case state.pieces.ROOK_BLACK:
     case state.pieces.ROOK_WHITE:
+      console.log('getAllPossibleCoordsRook')
       possibleCoords = getAllPossibleCoordsRook(state, cellCoord)
       break
   }
@@ -147,11 +155,16 @@ export function markCells(
     if (!elCell) return
 
     const piece = state.board[coord.i][coord.j]
+
     if (isColorPieceWorthCurrPlayerColor(state, piece)) {
-      elCell.classList.add('castling')
-    } else if (state.board[coord.i][coord.j]) {
+      elCell.classList.add('castle')
+    }
+    //
+    else if (state.board[coord.i][coord.j]) {
       elCell.classList.add('eatable')
-    } else {
+    }
+    //
+    else {
       elCell.innerHTML = '<span class="span"></span>'
       elCell.classList.add('mark')
     }
@@ -159,11 +172,10 @@ export function markCells(
 }
 
 export function cleanBoard() {
-  const elTds = document.querySelectorAll(
-    '.mark, .selected, .eatable, .castling'
-  )
+  const elTds = document.querySelectorAll('.mark, .selected, .eatable, .castle')
+
   for (let i = 0; i < elTds.length; i++) {
-    elTds[i].classList.remove('mark', 'selected', 'eatable', 'castling')
+    elTds[i].classList.remove('mark', 'selected', 'eatable', 'castle')
   }
 }
 
@@ -215,30 +227,30 @@ export function isNextStepLegal(
   const fromCoord = state.selectedCellCoord
   const toCoord = getCellCoord(elToCell.id)
 
-  if (!fromCoord) return false
+  if (!fromCoord) return { isMoveLegal: false, state }
 
   const copiedState: GameState = _.cloneDeep(state)
 
   const isKingMoved =
-    copiedState.board[fromCoord.i][fromCoord.j] === '♔' ||
-    copiedState.board[fromCoord.i][fromCoord.j] === '♚'
+    copiedState.board[fromCoord.i][fromCoord.j] === state.pieces.KING_WHITE ||
+    copiedState.board[fromCoord.i][fromCoord.j] === state.pieces.KING_BLACK
 
   const piece = copiedState.board[fromCoord.i][fromCoord.j]
   copiedState.board[fromCoord.i][fromCoord.j] = ''
   copiedState.board[toCoord.i][toCoord.j] = piece
 
-  // if (isKingMoved) {
-  //   if (piece === '♔') {
-  //     copiedState.kingPos.white = { i: toCoord.i, j: toCoord.j }
-  //     copiedState.isCastlingLegal.white = false
-  //   }
-  //   if (piece === '♚') {
-  //     copiedState.kingPos.black = { i: toCoord.i, j: toCoord.j }
-  //     copiedState.isCastlingLegal.black = false
-  //   }
-  // }
-  const isKingThreatened = checkIfKingThreatened(copiedState, true)
-  return !isKingThreatened
+  if (isKingMoved) {
+    if (piece === state.pieces.KING_WHITE) {
+      copiedState.kingPos.white = { i: toCoord.i, j: toCoord.j }
+      copiedState.isCastlingLegal.white = false
+    }
+    if (piece === state.pieces.KING_BLACK) {
+      copiedState.kingPos.black = { i: toCoord.i, j: toCoord.j }
+      copiedState.isCastlingLegal.black = false
+    }
+  }
+  const { isThreatened } = checkIfKingThreatened(copiedState, true)
+  return { isMoveLegal: !isThreatened, state: copiedState }
 }
 
 export function getCellCoord(strCellId: string) {
@@ -265,4 +277,31 @@ export function updateKingPos(
     state.kingPos.black = { i: toCoord.i, j: toCoord.j }
   }
   return state
+}
+
+export function isOptionToCastling(
+  state: GameState,
+  pieceToCastling: string,
+  selectedPieceCoord: {
+    i: number
+    j: number
+  }
+) {
+  if (!state.selectedCellCoord) return false
+
+  const currPiece = state.board[selectedPieceCoord.i][selectedPieceCoord.j]
+
+  if (
+    (pieceToCastling === state.pieces.KING_WHITE &&
+      currPiece === state.pieces.ROOK_WHITE) ||
+    (pieceToCastling === state.pieces.ROOK_WHITE &&
+      currPiece === state.pieces.KING_WHITE) ||
+    (pieceToCastling === state.pieces.KING_BLACK &&
+      currPiece === state.pieces.ROOK_BLACK) ||
+    (pieceToCastling === state.pieces.ROOK_BLACK &&
+      currPiece === state.pieces.KING_BLACK)
+  ) {
+    return true
+  }
+  return false
 }

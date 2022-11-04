@@ -1,5 +1,9 @@
 import { GameState } from '../../../features/game/gameSlice'
-import { isColorPieceWorthCurrPlayerColor, isEmptyCell } from '../main'
+import {
+  isColorPieceWorthCurrPlayerColor,
+  isEmptyCell,
+  isOptionToCastling,
+} from '../main'
 
 export function getAllPossibleCoordsRook(
   state: GameState,
@@ -19,6 +23,7 @@ export function getAllPossibleCoordsRook(
     for (let i = 1; i <= 8; i++) {
       const diffI = i * possibleDir[k].i
       const diffJ = i * possibleDir[k].j
+
       const nextCoord = {
         i: pieceCoord.i + diffI,
         j: pieceCoord.j + diffJ,
@@ -37,13 +42,15 @@ export function getAllPossibleCoordsRook(
         res.push(nextCoord)
       } else {
         const piece = board[nextCoord.i][nextCoord.j]
+
         if (!isColorPieceWorthCurrPlayerColor(state, piece))
           res.push(nextCoord) //last coord -> eatable
         else if (
-          isColorPieceWorthCurrPlayerColor(state, piece)
-          //    &&
-          //   isOptionToCastling(piece)
+          isColorPieceWorthCurrPlayerColor(state, piece) &&
+          isOptionToCastling(state, piece, pieceCoord)
         ) {
+          // console.log('isOptionToCastling', isOptionToCastling(state, piece))
+
           res.push(nextCoord)
         }
         break

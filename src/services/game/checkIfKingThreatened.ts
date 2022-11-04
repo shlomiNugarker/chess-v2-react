@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { GameState } from '../../features/game/gameSlice'
 import { paintKingCellToRed } from './main'
 import { getAllPossibleCoordsBishop } from './possibleCoordsFuncs/getAllPossibleCoordsBishop'
@@ -17,7 +18,6 @@ export function checkIfKingThreatened(state: GameState, isFakeCheck = false) {
   const pawnOpts = getAllPossibleKingCoordsToGetEatenPawn(state, kingPos)
   const bishopOpts = getAllPossibleCoordsBishop(state, kingPos)
   const rookOpts = getAllPossibleCoordsRook(state, kingPos)
-  console.log()
 
   !isFoundThreatenPiece &&
     queenOpts.forEach((coord) => {
@@ -27,6 +27,9 @@ export function checkIfKingThreatened(state: GameState, isFakeCheck = false) {
         : state.pieces.QUEEN_BLACK
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
+        console.log(pieceToCheck, '===', threatenPiece)
+        console.log({ isFakeCheck })
+
         isFoundThreatenPiece = true
         !isFakeCheck && paintKingCellToRed(kingPos)
       }
@@ -84,21 +87,24 @@ export function checkIfKingThreatened(state: GameState, isFakeCheck = false) {
       }
     })
 
+  const copiedState: GameState = _.cloneDeep(state)
+
   if (!isFoundThreatenPiece) {
     if (!isFakeCheck) {
-      // state.isBlackTurn
-      //   ? (state.isBlackKingThreatened = false)
-      //   : (state.isWhiteKingThreatened = false)
+      copiedState.isBlackTurn
+        ? (copiedState.isBlackKingThreatened = false)
+        : (copiedState.isWhiteKingThreatened = false)
 
       document.querySelector('.red')?.classList.remove('red')
     }
-    return false
-  }
-  if (!isFakeCheck) {
-    // state.isBlackTurn
-    //   ? (state.isBlackKingThreatened = true)
-    //   : (state.isWhiteKingThreatened = true)
+    return { isThreatened: false, state: copiedState }
   }
 
-  return true
+  if (!isFakeCheck) {
+    copiedState.isBlackTurn
+      ? (copiedState.isBlackKingThreatened = true)
+      : (copiedState.isWhiteKingThreatened = true)
+  }
+
+  return { isThreatened: true, state: copiedState }
 }

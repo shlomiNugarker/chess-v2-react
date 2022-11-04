@@ -1,5 +1,9 @@
 import { GameState } from '../../../features/game/gameSlice'
-import { isColorPieceWorthCurrPlayerColor, isEmptyCell } from '../main'
+import {
+  isColorPieceWorthCurrPlayerColor,
+  isEmptyCell,
+  isOptionToCastling,
+} from '../main'
 
 export function getAllPossibleCoordsKing(
   state: GameState,
@@ -36,9 +40,9 @@ export function getAllPossibleCoordsKing(
         if (!isColorPieceWorthCurrPlayerColor(state, piece)) {
           res.push(nextCoord) //push eatable coord
         } else if (
-          isColorPieceWorthCurrPlayerColor(state, piece)
-          //    &&
-          //   isOptionToCastling(piece)
+          isColorPieceWorthCurrPlayerColor(state, piece) &&
+          state.selectedCellCoord &&
+          isOptionToCastling(state, piece, state.selectedCellCoord)
         ) {
           // piece to castle
           res.push(nextCoord)
@@ -46,5 +50,6 @@ export function getAllPossibleCoordsKing(
       }
     }
   }
+
   return res
 }
