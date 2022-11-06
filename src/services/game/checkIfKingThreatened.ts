@@ -7,11 +7,18 @@ import { getAllPossibleCoordsQueen } from './possibleCoordsFuncs/getAllPossibleC
 import { getAllPossibleCoordsRook } from './possibleCoordsFuncs/getAllPossibleCoordsRook'
 import { getAllPossibleKingCoordsToGetEatenPawn } from './possibleCoordsFuncs/getAllPossibleKingCoordsToGetEatenPawn'
 
-export function checkIfKingThreatened(state: GameState, isFakeCheck = false) {
+export function checkIfKingThreatened(
+  state: GameState,
+  isFakeCheck = false,
+  coordToCheck?: { i: number; j: number }
+) {
   const { board } = state
   let isFoundThreatenPiece = false
 
   let kingPos = state.isBlackTurn ? state.kingPos.black : state.kingPos.white
+
+  // this act is for check another piece as a king coords
+  if (coordToCheck) kingPos = coordToCheck
 
   const knightOpts = getAllPossibleCoordsKnight(state, kingPos)
   const queenOpts = getAllPossibleCoordsQueen(state, kingPos, true)

@@ -71,8 +71,13 @@ export const Board = () => {
         const { isMoveLegal } = isNextStepLegal(gameState, ev.target)
         if (!isMoveLegal) return
 
-        const newState = doCastling(gameState, ev.target)
-        newState && dispatch(setNewState(newState))
+        const isCastleLegals = doCastling(gameState, ev.target)
+        isCastleLegals &&
+          isCastleLegals.newState &&
+          isCastleLegals.isCastleLegal &&
+          dispatch(setNewState(isCastleLegals.newState))
+
+        if (isCastleLegals && !isCastleLegals.isCastleLegal) return
 
         switchTurn()
         cleanBoard()
