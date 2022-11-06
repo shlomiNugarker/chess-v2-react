@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
+import { unwrapResult } from '@reduxjs/toolkit'
 import { RootState } from '../features'
 import {
+  GameState,
   setIsBlackKingThreatened,
   setIsWhiteKingThreatened,
   setNewState,
@@ -20,15 +22,24 @@ import {
   movePiece,
 } from '../services/game/main'
 
-export const Board: () => JSX.Element = () => {
+export const Board = () => {
   const dispatch = useAppDispatch()
 
   const { board } = useAppSelector((state: RootState) => state.game)
   const gameState = useAppSelector((state: RootState) => state.game)
 
   useEffect(() => {
-    checkIfKingThreatened(gameState)
-  }, [gameState, gameState.isBlackTurn])
+    const { isThreatened, state } = checkIfKingThreatened(gameState)
+
+    // if (
+    //   gameState.isBlackKingThreatened !== state.isBlackKingThreatened ||
+    //   gameState.isWhiteKingThreatened !== state.isWhiteKingThreatened
+    // )
+    //   dispatch(setNewState(state))
+
+    // console.log(gameState)
+  }, [dispatch, gameState, gameState.isBlackTurn])
+
   const cellClicked = (
     ev: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
     i: number,
@@ -43,7 +54,11 @@ export const Board: () => JSX.Element = () => {
       const isEvCastling = ev.target.classList.contains('castle')
 
       if (isEvEatable && gameState.selectedCellCoord) {
-        let { isMoveLegal } = isNextStepLegal(gameState, ev.target)
+        let { isMoveLegal, state } = isNextStepLegal(gameState, ev.target)
+        console.log(state)
+
+        if (state.isBlackTurn && state.isBlackKingThreatened) return
+        if (!state.isBlackTurn && state.isWhiteKingThreatened) return
         if (!isMoveLegal) return
         const newState = movePiece(gameState, toCellCoord)
         newState && dispatch(setNewState(newState))
@@ -58,8 +73,10 @@ export const Board: () => JSX.Element = () => {
 
         const newState = doCastling(gameState, ev.target)
         newState && dispatch(setNewState(newState))
+
         switchTurn()
         cleanBoard()
+
         return
       }
 

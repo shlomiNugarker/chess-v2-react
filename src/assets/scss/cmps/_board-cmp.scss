@@ -16,7 +16,7 @@
           align-items: center;
           width: 80px;
           height: 80px;
-          font-size: 60px;
+          font-size: 70px;
 
           &.white {
             background-color: #f0d9b5;
@@ -33,6 +33,7 @@
             border-radius: 50%;
             width: 15px;
             height: 15px;
+            padding: 2px;
           }
 
           &.mark {
@@ -41,6 +42,7 @@
 
           &.eatable {
             border-radius: 50%;
+            border: 0.5px solid;
           }
 
           &.castle {

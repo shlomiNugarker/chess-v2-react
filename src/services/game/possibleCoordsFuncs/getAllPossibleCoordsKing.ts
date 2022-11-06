@@ -39,15 +39,66 @@ export function getAllPossibleCoordsKing(
         const piece = board[nextCoord.i][nextCoord.j]
         if (!isColorPieceWorthCurrPlayerColor(state, piece)) {
           res.push(nextCoord) //push eatable coord
-        } else if (
-          isColorPieceWorthCurrPlayerColor(state, piece) &&
-          state.selectedCellCoord &&
-          isOptionToCastling(state, piece, state.selectedCellCoord)
-        ) {
-          // piece to castle
-          res.push(nextCoord)
         }
       }
+    }
+
+    // castling Coord:
+
+    const { isCastlingLegal } = state
+    let isRightCastleLegal: boolean = true
+    let isLeftCastleLegal: boolean = true
+
+    if (!state.isBlackTurn && isCastlingLegal.whiteKing) {
+      // todo : add logic to know which side is the castle
+
+      // right side:
+      if (
+        !isEmptyCell(board, { i: 7, j: 5 }) ||
+        !isEmptyCell(board, { i: 7, j: 6 })
+      ) {
+        isRightCastleLegal = false
+      }
+      // left side:
+      if (
+        !isEmptyCell(board, { i: 7, j: 1 }) ||
+        !isEmptyCell(board, { i: 7, j: 2 }) ||
+        !isEmptyCell(board, { i: 7, j: 3 })
+      ) {
+        isLeftCastleLegal = false
+      }
+
+      // **
+      let coordRightRookForCastle = { i: 7, j: 7 }
+      isRightCastleLegal && res.push(coordRightRookForCastle)
+
+      let coordLeftRookForCastle = { i: 7, j: 0 }
+      isLeftCastleLegal && res.push(coordLeftRookForCastle)
+    }
+    if (state.isBlackTurn && isCastlingLegal.blackKing) {
+      // todo : add logic to know which side is the castle
+      // right side:
+      if (
+        !isEmptyCell(board, { i: 0, j: 5 }) ||
+        !isEmptyCell(board, { i: 0, j: 6 })
+      ) {
+        isRightCastleLegal = false
+      }
+      // left side:
+      if (
+        !isEmptyCell(board, { i: 0, j: 1 }) ||
+        !isEmptyCell(board, { i: 0, j: 2 }) ||
+        !isEmptyCell(board, { i: 0, j: 3 })
+      ) {
+        isLeftCastleLegal = false
+      }
+
+      // **
+      let coordRightRookForCastle = { i: 0, j: 7 }
+      isRightCastleLegal && res.push(coordRightRookForCastle)
+
+      let coordLeftRookForCastle = { i: 0, j: 0 }
+      isLeftCastleLegal && res.push(coordLeftRookForCastle)
     }
   }
 

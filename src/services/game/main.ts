@@ -190,8 +190,16 @@ export function movePiece(
   const toCoord = toCellCoord
 
   const isKingMoved =
-    (fromCoord && state.board[fromCoord.i][fromCoord.j] === '♔') ||
-    (fromCoord && state.board[fromCoord.i][fromCoord.j] === '♚')
+    (fromCoord &&
+      state.board[fromCoord.i][fromCoord.j] === state.pieces.KING_WHITE) ||
+    (fromCoord &&
+      state.board[fromCoord.i][fromCoord.j] === state.pieces.KING_BLACK)
+
+  const isRookMoved =
+    (fromCoord &&
+      state.board[fromCoord.i][fromCoord.j] === state.pieces.ROOK_WHITE) ||
+    (fromCoord &&
+      state.board[fromCoord.i][fromCoord.j] === state.pieces.ROOK_BLACK)
 
   const isCellWithPiece = state.board[toCoord.i][toCoord.j]
 
@@ -215,6 +223,24 @@ export function movePiece(
 
   if (isKingMoved) {
     copiedState = updateKingPos(copiedState, toCoord, piece)
+
+    if (copiedState.isBlackTurn) {
+      copiedState.isCastlingLegal.blackKing = false
+    } else if (!copiedState.isBlackTurn) {
+      copiedState.isCastlingLegal.whiteKing = false
+    }
+  }
+
+  if (isRookMoved) {
+    if (fromCoord.j === 0) {
+      state.isBlackTurn
+        ? (copiedState.isCastlingLegal.blackLeftSide = false)
+        : (copiedState.isCastlingLegal.whiteLeftSide = false)
+    } else if (fromCoord.j === 7) {
+      state.isBlackTurn
+        ? (copiedState.isCastlingLegal.blackRightSide = false)
+        : (copiedState.isCastlingLegal.whiteRightSide = false)
+    }
   }
 
   return copiedState
@@ -242,15 +268,21 @@ export function isNextStepLegal(
   if (isKingMoved) {
     if (piece === state.pieces.KING_WHITE) {
       copiedState.kingPos.white = { i: toCoord.i, j: toCoord.j }
-      copiedState.isCastlingLegal.white = false
+      copiedState.isCastlingLegal.whiteLeftSide = false
+      copiedState.isCastlingLegal.whiteRightSide = false
     }
     if (piece === state.pieces.KING_BLACK) {
       copiedState.kingPos.black = { i: toCoord.i, j: toCoord.j }
-      copiedState.isCastlingLegal.black = false
+      copiedState.isCastlingLegal.blackLeftSide = false
+      copiedState.isCastlingLegal.blackRightSide = false
     }
   }
-  const { isThreatened } = checkIfKingThreatened(copiedState, true)
-  return { isMoveLegal: !isThreatened, state: copiedState }
+  const { isThreatened, state: state2 } = checkIfKingThreatened(
+    copiedState,
+    true
+  )
+  return { isMoveLegal: !isThreatened, state: state2 }
+  // return { isMoveLegal: !isThreatened, state: copiedState }
 }
 
 export function getCellCoord(strCellId: string) {

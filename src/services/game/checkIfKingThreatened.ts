@@ -19,6 +19,8 @@ export function checkIfKingThreatened(state: GameState, isFakeCheck = false) {
   const bishopOpts = getAllPossibleCoordsBishop(state, kingPos)
   const rookOpts = getAllPossibleCoordsRook(state, kingPos)
 
+  // console.log({ knightOpts, queenOpts, pawnOpts, bishopOpts, rookOpts })
+
   !isFoundThreatenPiece &&
     queenOpts.forEach((coord) => {
       const pieceToCheck = board[coord.i][coord.j]
@@ -28,7 +30,6 @@ export function checkIfKingThreatened(state: GameState, isFakeCheck = false) {
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
         console.log(pieceToCheck, '===', threatenPiece)
-        console.log({ isFakeCheck })
 
         isFoundThreatenPiece = true
         !isFakeCheck && paintKingCellToRed(kingPos)
@@ -43,6 +44,8 @@ export function checkIfKingThreatened(state: GameState, isFakeCheck = false) {
         : state.pieces.KNIGHT_BLACK
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
+        console.log(pieceToCheck, '===', threatenPiece)
+
         isFoundThreatenPiece = true
         !isFakeCheck && paintKingCellToRed(kingPos)
       }
@@ -56,6 +59,8 @@ export function checkIfKingThreatened(state: GameState, isFakeCheck = false) {
         : state.pieces.PAWN_BLACK
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
+        console.log(pieceToCheck, '===', threatenPiece)
+
         isFoundThreatenPiece = true
         !isFakeCheck && paintKingCellToRed(kingPos)
       }
@@ -69,6 +74,8 @@ export function checkIfKingThreatened(state: GameState, isFakeCheck = false) {
         : state.pieces.BISHOP_BLACK
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
+        console.log(pieceToCheck, '===', threatenPiece)
+
         isFoundThreatenPiece = true
         !isFakeCheck && paintKingCellToRed(kingPos)
       }
@@ -82,6 +89,8 @@ export function checkIfKingThreatened(state: GameState, isFakeCheck = false) {
         : state.pieces.ROOK_BLACK
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
+        console.log(pieceToCheck, '===', threatenPiece)
+
         isFoundThreatenPiece = true
         !isFakeCheck && paintKingCellToRed(kingPos)
       }
@@ -100,11 +109,11 @@ export function checkIfKingThreatened(state: GameState, isFakeCheck = false) {
     return { isThreatened: false, state: copiedState }
   }
 
-  if (!isFakeCheck) {
-    copiedState.isBlackTurn
-      ? (copiedState.isBlackKingThreatened = true)
-      : (copiedState.isWhiteKingThreatened = true)
-  }
+  // if (!isFakeCheck) {
+  copiedState.isBlackTurn
+    ? (copiedState.isBlackKingThreatened = true)
+    : (copiedState.isWhiteKingThreatened = true)
+  // }
 
   return { isThreatened: true, state: copiedState }
 }

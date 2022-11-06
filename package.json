@@ -1,7 +1,7 @@
 {
   "name": "Chess-V2",
   "version": "0.1.0",
-  "homepage": "",
+  "homepage": "https://shlomiNugarker.github.io/Chess-V2-React",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.6",

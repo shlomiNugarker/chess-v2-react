@@ -46,9 +46,17 @@ export interface GameState {
     white: string[]
   }
   isCastlingLegal: {
-    white: boolean
-    black: boolean
+    whiteLeftSide: boolean
+    whiteRightSide: boolean
+    whiteKing: boolean
+    blackLeftSide: boolean
+    blackRightSide: boolean
+    blackKing: boolean
   }
+  // isCastlingLegal: {
+  //   white: boolean
+  //   black: boolean
+  // }
 }
 
 export const gPieces = {
@@ -82,9 +90,17 @@ const initialState: GameState = {
     white: [],
   },
   isCastlingLegal: {
-    white: true,
-    black: true,
+    whiteLeftSide: true,
+    whiteRightSide: true,
+    whiteKing: true,
+    blackLeftSide: true,
+    blackRightSide: true,
+    blackKing: true,
   },
+  // isCastlingLegal: {
+  //   white: true,
+  //   black: true,
+  // },
 }
 
 export const gameSlice = createSlice({

@@ -49,9 +49,25 @@ export function getAllPossibleCoordsRook(
           isColorPieceWorthCurrPlayerColor(state, piece) &&
           isOptionToCastling(state, piece, pieceCoord)
         ) {
-          // console.log('isOptionToCastling', isOptionToCastling(state, piece))
+          let isCastlingLegal
 
-          res.push(nextCoord)
+          if (pieceCoord.j === 0) {
+            isCastlingLegal = state.isBlackTurn
+              ? state.isCastlingLegal.blackLeftSide
+              : state.isCastlingLegal.whiteLeftSide
+          }
+          if (pieceCoord.j === 7) {
+            isCastlingLegal = state.isBlackTurn
+              ? state.isCastlingLegal.blackRightSide
+              : state.isCastlingLegal.whiteRightSide
+          }
+
+          let isKingMoveLegal
+          state.isBlackTurn
+            ? (isKingMoveLegal = state.isCastlingLegal.blackKing)
+            : (isKingMoveLegal = state.isCastlingLegal.whiteKing)
+
+          isCastlingLegal && isKingMoveLegal && res.push(nextCoord)
         }
         break
       }
