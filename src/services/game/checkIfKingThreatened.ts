@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { GameState } from '../../features/game/gameSlice'
-import { paintKingCellToRed } from './main'
+import { paintKingCellToRed } from './paintKingCellToRed'
 import { getAllPossibleCoordsBishop } from './possibleCoordsFuncs/getAllPossibleCoordsBishop'
 import { getAllPossibleCoordsKnight } from './possibleCoordsFuncs/getAllPossibleCoordsKnight'
 import { getAllPossibleCoordsQueen } from './possibleCoordsFuncs/getAllPossibleCoordsQueen'
@@ -26,7 +26,7 @@ export function checkIfKingThreatened(
   const bishopOpts = getAllPossibleCoordsBishop(state, kingPos)
   const rookOpts = getAllPossibleCoordsRook(state, kingPos)
 
-  console.log({ knightOpts, queenOpts, pawnOpts, bishopOpts, rookOpts })
+  // console.log({ knightOpts, queenOpts, pawnOpts, bishopOpts, rookOpts })
 
   !isFoundThreatenPiece &&
     queenOpts.forEach((coord) => {

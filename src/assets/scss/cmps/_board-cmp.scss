@@ -5,10 +5,10 @@
   min-height: calc(100vh - 60px);
 
   .pieces {
-    width: 640px;
+    width: $td-width * 8;
     text-align: center;
     span {
-      font-size: 70px;
+      font-size: $td-font-size;
     }
   }
 
@@ -22,9 +22,9 @@
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 80px;
-          height: 80px;
-          font-size: 70px;
+          width: $td-width;
+          height: $td-height;
+          font-size: $td-font-size;
 
           &.white {
             background-color: #f0d9b5;

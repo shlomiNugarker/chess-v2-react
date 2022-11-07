@@ -1,10 +1,8 @@
-import { useEffect } from 'react'
-import { unwrapResult } from '@reduxjs/toolkit'
+import { useEffect, useState } from 'react'
 import { RootState } from '../features'
 import {
+  addHistoryState,
   GameState,
-  setIsBlackKingThreatened,
-  setIsWhiteKingThreatened,
   setNewState,
   setSelectedCellCoord,
   setSwitchTurn,
@@ -12,28 +10,20 @@ import {
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useTypedSelector'
 import { checkIfKingThreatened } from '../services/game/checkIfKingThreatened'
+import { cleanBoard } from '../services/game/cleanBoard'
 import { doCastling } from '../services/game/doCastling'
-import {
-  cleanBoard,
-  getPossibleCoords,
-  isColorPieceWorthCurrPlayerColor,
-  isNextStepLegal,
-  markCells,
-  movePiece,
-} from '../services/game/main'
+import { getPossibleCoords } from '../services/game/getPossibleCoords'
+import { isColorPieceWorthCurrPlayerColor } from '../services/game/isColorPieceWorthCurrPlayerColor'
+import { isNextStepLegal } from '../services/game/isNextStepLegal'
+
+import { markCells } from '../services/game/markCells'
+import { movePiece } from '../services/game/movePiece'
 
 export const Board = () => {
   const dispatch = useAppDispatch()
 
   const { board } = useAppSelector((state: RootState) => state.game)
   const gameState = useAppSelector((state: RootState) => state.game)
-  console.table(gameState.board)
-
-  useEffect(() => {
-    const { isThreatened, state } = checkIfKingThreatened(gameState)
-  }, [dispatch, gameState, gameState.isBlackTurn])
-
-  // TODO: add logic to handle isCastleLegal when eat rooks
 
   const cellClicked = (
     ev: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
@@ -50,14 +40,15 @@ export const Board = () => {
 
       if (isEvEatable && gameState.selectedCellCoord) {
         let { isMoveLegal, state } = isNextStepLegal(gameState, ev.target)
-        console.log(state)
 
         if (state.isBlackTurn && state.isBlackKingThreatened) return
         if (!state.isBlackTurn && state.isWhiteKingThreatened) return
         if (!isMoveLegal) return
         const newState = movePiece(gameState, toCellCoord)
         newState && dispatch(setNewState(newState))
-        switchTurn()
+        // newState
+        //  && onAddHistoryState(newState)
+        onSwitchTurn()
         cleanBoard()
         return
       }
@@ -71,12 +62,13 @@ export const Board = () => {
           isCastleLegals.newState &&
           isCastleLegals.isCastleLegal &&
           dispatch(setNewState(isCastleLegals.newState))
+        //  &&
+        // onAddHistoryState(isCastleLegals.newState)
 
         if (isCastleLegals && !isCastleLegals.isCastleLegal) return
 
-        switchTurn()
+        onSwitchTurn()
         cleanBoard()
-
         return
       }
 
@@ -95,7 +87,8 @@ export const Board = () => {
         if (!isMoveLegal) return
         const newState = movePiece(gameState, toCellCoord)
         newState && dispatch(setNewState(newState))
-        switchTurn()
+        // newState && onAddHistoryState(newState)
+        onSwitchTurn()
         cleanBoard()
         return
       }
@@ -108,18 +101,31 @@ export const Board = () => {
     }
   }
 
-  const switchTurn = () => {
+  useEffect(() => {
+    checkIfKingThreatened(gameState)
+  }, [gameState, gameState.isBlackTurn])
+
+  const onSwitchTurn = () => {
     dispatch(setSwitchTurn())
   }
 
-  if (!board) return <div className="board-cmp">Loading...</div>
+  const onAddHistoryState = (state: GameState) => {
+    dispatch(addHistoryState(state))
+  }
+
+  if (!board && !gameState.boardHistory.length)
+    return <div className="board-cmp">Loading...</div>
 
   return (
     <section className="board-cmp">
       <div>
+        {/* <div className="btns">
+          <button>back</button>
+          <button>next</button>
+        </div> */}
         <div className="pieces">
-          {gameState.eatenPieces.white.map((eatenPiece) => (
-            <span>{eatenPiece}</span>
+          {gameState.eatenPieces.black.map((eatenPiece, idx) => (
+            <span key={eatenPiece + idx}>{eatenPiece}</span>
           ))}
         </div>
         <table>
@@ -142,8 +148,8 @@ export const Board = () => {
           </tbody>
         </table>
         <div className="pieces">
-          {gameState.eatenPieces.black.map((eatenPiece) => (
-            <span>{eatenPiece}</span>
+          {gameState.eatenPieces.white.map((eatenPiece, idx) => (
+            <span key={eatenPiece + idx}>{eatenPiece}</span>
           ))}
         </div>
       </div>

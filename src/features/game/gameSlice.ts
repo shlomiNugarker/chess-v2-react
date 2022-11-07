@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import { buildBoard } from '../../services/game/main'
+import { buildBoard } from '../../services/game/buildBoard'
 
 // ACTION
 // export const getJoke = createAsyncThunk(
@@ -18,6 +18,8 @@ import { buildBoard } from '../../services/game/main'
 // )
 
 export interface GameState {
+  stateHistory: GameState[]
+  boardHistory: string[][][]
   board: string[][]
   pieces: {
     KING_WHITE: string
@@ -73,6 +75,8 @@ export const gPieces = {
 }
 
 const initialState: GameState = {
+  stateHistory: [],
+  boardHistory: [],
   board: buildBoard(gPieces),
   pieces: gPieces,
   selectedCellCoord: null,
@@ -118,8 +122,11 @@ export const gameSlice = createSlice({
     },
     setIsWhiteKingThreatened: (state, action) => {
       console.log('setIsWhiteKingThreatened', action.payload)
-
       state.isWhiteKingThreatened = action.payload
+    },
+    addHistoryState: (state, action) => {
+      state.stateHistory.push(action.payload)
+      // state.boardHistory.push(action.payload.board)
     },
     setNewState: (state, action) => {
       state.board = action.payload.board
@@ -156,6 +163,7 @@ export const gameSlice = createSlice({
     // })
   },
 })
+
 export const {
   setSelectedCellCoord,
   setNewState,
@@ -163,5 +171,6 @@ export const {
   setKingPos,
   setIsBlackKingThreatened,
   setIsWhiteKingThreatened,
+  addHistoryState,
 } = gameSlice.actions
 export default gameSlice.reducer

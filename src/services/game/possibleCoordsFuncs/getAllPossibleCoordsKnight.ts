@@ -1,5 +1,6 @@
 import { GameState } from '../../../features/game/gameSlice'
-import { isColorPieceWorthCurrPlayerColor, isEmptyCell } from '../main'
+import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
+import { isEmptyCell } from '../isEmptyCell'
 
 export function getAllPossibleCoordsKnight(
   state: GameState,

@@ -1,9 +1,7 @@
 import { GameState } from '../../../features/game/gameSlice'
-import {
-  isColorPieceWorthCurrPlayerColor,
-  isEmptyCell,
-  isOptionToCastling,
-} from '../main'
+import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
+import { isEmptyCell } from '../isEmptyCell'
+import { isOptionToCastling } from '../isOptionToCastling'
 
 export function getAllPossibleCoordsRook(
   state: GameState,

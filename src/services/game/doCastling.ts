@@ -1,7 +1,8 @@
 import _ from 'lodash'
 import { GameState } from '../../features/game/gameSlice'
 import { checkIfKingThreatened } from './checkIfKingThreatened'
-import { getCellCoord } from './main'
+import { getCellCoord } from './getCellCoord'
+import { isCastleThreatened } from './isCastleThreatened'
 
 export function doCastling(state: GameState, elToCell: Element) {
   const fromCoord = state.selectedCellCoord
@@ -33,24 +34,13 @@ export function doCastling(state: GameState, elToCell: Element) {
       rookCoords = toCoord
     }
 
-    if (rookCoords.j === 0 && !state.isCastlingLegal.whiteLeftSide) {
-      console.log('cant castle this rook:', { rookCoords })
-      return
-    }
-    if (rookCoords.j === 7 && !state.isCastlingLegal.whiteRightSide) {
-      console.log('cant castle this rook:', { rookCoords })
-      return
-    }
+    if (rookCoords.j === 0 && !state.isCastlingLegal.whiteLeftSide) return
 
-    if (!state.isCastlingLegal.whiteKing) {
-      console.log('cant castle, king alredy moved')
-      return
-    }
+    if (rookCoords.j === 7 && !state.isCastlingLegal.whiteRightSide) return
 
-    if (state.isWhiteKingThreatened) {
-      console.log('you cant castle')
-      return
-    }
+    if (!state.isCastlingLegal.whiteKing) return
+
+    if (state.isWhiteKingThreatened) return
 
     copiedState.board[fromCoord.i][fromCoord.j] = ''
     copiedState.board[toCoord.i][toCoord.j] = ''
@@ -183,64 +173,4 @@ export function doCastling(state: GameState, elToCell: Element) {
   }
 
   return { newState: copiedState, isCastleLegal }
-}
-
-export function isCastleThreatened(
-  state: GameState,
-  fromCoord: { i: number; j: number },
-  toCoord: { i: number; j: number }
-) {
-  let isCastleLegal: boolean = true
-
-  let coordsToCheck: {
-    i: number
-    j: number
-  }[] = []
-
-  if (
-    (fromCoord.j === 0 && toCoord.j === 4) ||
-    (fromCoord.j === 4 && toCoord.j === 0)
-  ) {
-    if (state.isBlackTurn) {
-      coordsToCheck = [
-        { i: 0, j: 0 },
-        { i: 0, j: 1 },
-        { i: 0, j: 2 },
-        { i: 0, j: 3 },
-      ]
-    } else if (!state.isBlackTurn) {
-      coordsToCheck = [
-        { i: 7, j: 0 },
-        { i: 7, j: 1 },
-        { i: 7, j: 2 },
-        { i: 7, j: 3 },
-      ]
-    }
-  } else if (
-    (fromCoord.j === 7 && toCoord.j === 4) ||
-    (fromCoord.j === 4 && toCoord.j === 7)
-  ) {
-    if (state.isBlackTurn) {
-      coordsToCheck = [
-        { i: 0, j: 5 },
-        { i: 0, j: 6 },
-        { i: 0, j: 7 },
-      ]
-    } else if (!state.isBlackTurn) {
-      coordsToCheck = [
-        { i: 7, j: 5 },
-        { i: 7, j: 6 },
-        { i: 7, j: 7 },
-      ]
-    }
-  }
-
-  coordsToCheck.forEach((coord) => {
-    const { isThreatened } = checkIfKingThreatened(state, true, coord)
-    if (isThreatened) {
-      isCastleLegal = !isThreatened
-    }
-  })
-
-  return isCastleLegal
 }
