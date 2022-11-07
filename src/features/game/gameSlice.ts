@@ -37,6 +37,8 @@ export interface GameState {
   isWhiteKingThreatened: boolean
   isBlackKingThreatened: boolean
   isBlackTurn: boolean
+  eatableCellAfterTwoStepsPawnWhite: { i: number; j: number } | null
+  eatableCellAfterTwoStepsPawnBlack: { i: number; j: number } | null
   kingPos: {
     black: { i: number; j: number }
     white: { i: number; j: number }
@@ -53,10 +55,6 @@ export interface GameState {
     blackRightSide: boolean
     blackKing: boolean
   }
-  // isCastlingLegal: {
-  //   white: boolean
-  //   black: boolean
-  // }
 }
 
 export const gPieces = {
@@ -81,6 +79,8 @@ const initialState: GameState = {
   isWhiteKingThreatened: false,
   isBlackKingThreatened: false,
   isBlackTurn: false,
+  eatableCellAfterTwoStepsPawnWhite: null,
+  eatableCellAfterTwoStepsPawnBlack: null,
   kingPos: {
     black: { i: 0, j: 4 },
     white: { i: 7, j: 4 },
@@ -97,10 +97,6 @@ const initialState: GameState = {
     blackRightSide: true,
     blackKing: true,
   },
-  // isCastlingLegal: {
-  //   white: true,
-  //   black: true,
-  // },
 }
 
 export const gameSlice = createSlice({
@@ -131,6 +127,13 @@ export const gameSlice = createSlice({
       state.isWhiteKingThreatened = action.payload.isWhiteKingThreatened
       state.isBlackKingThreatened = action.payload.isBlackKingThreatened
       state.isBlackTurn = action.payload.isBlackTurn
+
+      state.eatableCellAfterTwoStepsPawnWhite =
+        action.payload.eatableCellAfterTwoStepsPawnWhite
+
+      state.eatableCellAfterTwoStepsPawnBlack =
+        action.payload.eatableCellAfterTwoStepsPawnBlack
+
       state.kingPos = action.payload.kingPos
       state.board = action.payload.board
       state.eatenPieces = action.payload.eatenPieces

@@ -4,6 +4,14 @@
   align-items: center;
   min-height: calc(100vh - 60px);
 
+  .pieces {
+    width: 640px;
+    text-align: center;
+    span {
+      font-size: 70px;
+    }
+  }
+
   table {
     border-spacing: 0;
     background-color: #646f40;
@@ -41,6 +49,10 @@
           }
 
           &.eatable {
+            border-radius: 50%;
+            border: 0.5px solid;
+          }
+          &.eatable-cell-after-first-two-steps-pawn {
             border-radius: 50%;
             border: 0.5px solid;
           }

@@ -4,8 +4,6 @@ import { checkIfKingThreatened } from './checkIfKingThreatened'
 import { getCellCoord } from './main'
 
 export function doCastling(state: GameState, elToCell: Element) {
-  console.log('doCastling')
-
   const fromCoord = state.selectedCellCoord
   const toCoord = getCellCoord(elToCell.id)
   if (!fromCoord) return
@@ -187,7 +185,6 @@ export function doCastling(state: GameState, elToCell: Element) {
   return { newState: copiedState, isCastleLegal }
 }
 
-// TODO: create a func that check every cell between the king & rook if they are threatened
 export function isCastleThreatened(
   state: GameState,
   fromCoord: { i: number; j: number },
@@ -241,7 +238,6 @@ export function isCastleThreatened(
   coordsToCheck.forEach((coord) => {
     const { isThreatened } = checkIfKingThreatened(state, true, coord)
     if (isThreatened) {
-      console.log('isThreatened', { coord })
       isCastleLegal = !isThreatened
     }
   })

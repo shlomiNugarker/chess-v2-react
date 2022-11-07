@@ -207,6 +207,42 @@ export function movePiece(
 
   let copiedState = _.cloneDeep(state)
 
+  //** Handle eatable cell after 2 steps of pawn
+  // White
+  if (
+    fromCoord.i === 6 &&
+    copiedState.board[fromCoord.i][fromCoord.j] ===
+      copiedState.pieces.PAWN_WHITE &&
+    toCoord.i === 4 &&
+    !state.isBlackTurn
+  ) {
+    const eatableCellOnlyAfterTwoSteps = {
+      i: fromCoord.i - 1,
+      j: fromCoord.j,
+    }
+
+    copiedState.eatableCellAfterTwoStepsPawnWhite = eatableCellOnlyAfterTwoSteps
+  } else if (!copiedState.isBlackTurn) {
+    copiedState.eatableCellAfterTwoStepsPawnWhite = null
+  }
+  //Black
+  if (
+    fromCoord.i === 1 &&
+    copiedState.board[fromCoord.i][fromCoord.j] ===
+      copiedState.pieces.PAWN_BLACK &&
+    toCoord.i === 3 &&
+    state.isBlackTurn
+  ) {
+    const eatableCellOnlyAfterTwoSteps = {
+      i: fromCoord.i + 1,
+      j: fromCoord.j,
+    }
+    copiedState.eatableCellAfterTwoStepsPawnBlack = eatableCellOnlyAfterTwoSteps
+  } else if (copiedState.isBlackTurn) {
+    copiedState.eatableCellAfterTwoStepsPawnBlack = null
+  }
+  //**
+
   if (isCellWithPiece) {
     // Eat !
     const eatenPiece = copiedState.board[toCoord.i][toCoord.j]
@@ -215,6 +251,34 @@ export function movePiece(
     } else if (isBlackPiece(copiedState, eatenPiece) === false) {
       copiedState.eatenPieces.black.push(eatenPiece)
     }
+  }
+
+  // if the next move below/above the state.eatableCellAfterTwoStepsPawnBlack/White
+  // Black eating:
+  if (
+    copiedState.eatableCellAfterTwoStepsPawnWhite &&
+    toCellCoord.i === copiedState.eatableCellAfterTwoStepsPawnWhite.i &&
+    copiedState.isBlackTurn
+  ) {
+    // alert('eat pawn:' + copiedState.eatableCellAfterTwoStepsPawnWhite)
+    const { eatableCellAfterTwoStepsPawnWhite } = copiedState
+    const { i, j } = eatableCellAfterTwoStepsPawnWhite
+    const pieceToEat = copiedState.board[i - 1][j]
+    copiedState.board[i - 1][j] = ''
+    copiedState.eatenPieces.black.push(pieceToEat)
+  }
+  // White eating:
+  if (
+    copiedState.eatableCellAfterTwoStepsPawnBlack &&
+    toCellCoord.i === copiedState.eatableCellAfterTwoStepsPawnBlack.i &&
+    !copiedState.isBlackTurn
+  ) {
+    // alert('eat pawn:' + copiedState.eatableCellAfterTwoStepsPawnWhite)
+    const { eatableCellAfterTwoStepsPawnBlack } = copiedState
+    const { i, j } = eatableCellAfterTwoStepsPawnBlack
+    const pieceToEat = copiedState.board[i + 1][j]
+    copiedState.board[i + 1][j] = ''
+    copiedState.eatenPieces.white.push(pieceToEat)
   }
 
   const piece = copiedState.board[fromCoord.i][fromCoord.j]
@@ -277,12 +341,11 @@ export function isNextStepLegal(
       copiedState.isCastlingLegal.blackRightSide = false
     }
   }
-  const { isThreatened, state: state2 } = checkIfKingThreatened(
+  const { isThreatened, state: stateToReturn } = checkIfKingThreatened(
     copiedState,
     true
   )
-  return { isMoveLegal: !isThreatened, state: state2 }
-  // return { isMoveLegal: !isThreatened, state: copiedState }
+  return { isMoveLegal: !isThreatened, state: stateToReturn }
 }
 
 export function getCellCoord(strCellId: string) {

@@ -7,7 +7,6 @@ import { Main } from './pages/Main'
 
 const App = () => {
   // const navigate = useNavigate()
-
   return (
     <>
       <nav className="temp-nav">

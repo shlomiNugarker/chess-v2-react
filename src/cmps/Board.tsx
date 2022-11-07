@@ -27,18 +27,13 @@ export const Board = () => {
 
   const { board } = useAppSelector((state: RootState) => state.game)
   const gameState = useAppSelector((state: RootState) => state.game)
+  console.table(gameState.board)
 
   useEffect(() => {
     const { isThreatened, state } = checkIfKingThreatened(gameState)
-
-    // if (
-    //   gameState.isBlackKingThreatened !== state.isBlackKingThreatened ||
-    //   gameState.isWhiteKingThreatened !== state.isWhiteKingThreatened
-    // )
-    //   dispatch(setNewState(state))
-
-    // console.log(gameState)
   }, [dispatch, gameState, gameState.isBlackTurn])
+
+  // TODO: add logic to handle isCastleLegal when eat rooks
 
   const cellClicked = (
     ev: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
@@ -90,7 +85,7 @@ export const Board = () => {
 
       if (isEvSelected) {
         ev.target.classList.remove('selected')
-        dispatch(setSelectedCellCoord(null))
+        // dispatch(setSelectedCellCoord(null))
         cleanBoard()
         return
       }
@@ -121,25 +116,37 @@ export const Board = () => {
 
   return (
     <section className="board-cmp">
-      <table>
-        <tbody>
-          {board.map((tr, i) => (
-            <tr key={'tr' + i}>
-              {board[i].map((td, j) => (
-                <td
-                  key={i + j}
-                  id={`cell-${i}-${j}`}
-                  className={(i + j) % 2 === 0 ? 'white' : 'black'}
-                  onClick={(ev) => cellClicked(ev, i, j)}
-                  style={{ cursor: board[i][j] && 'pointer' }}
-                >
-                  {board[i][j]}
-                </td>
-              ))}
-            </tr>
+      <div>
+        <div className="pieces">
+          {gameState.eatenPieces.white.map((eatenPiece) => (
+            <span>{eatenPiece}</span>
           ))}
-        </tbody>
-      </table>
+        </div>
+        <table>
+          <tbody>
+            {board.map((tr, i) => (
+              <tr key={'tr' + i}>
+                {board[i].map((td, j) => (
+                  <td
+                    key={i + j}
+                    id={`cell-${i}-${j}`}
+                    className={(i + j) % 2 === 0 ? 'white' : 'black'}
+                    onClick={(ev) => cellClicked(ev, i, j)}
+                    style={{ cursor: board[i][j] && 'pointer' }}
+                  >
+                    {board[i][j]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="pieces">
+          {gameState.eatenPieces.black.map((eatenPiece) => (
+            <span>{eatenPiece}</span>
+          ))}
+        </div>
+      </div>
     </section>
   )
 }
