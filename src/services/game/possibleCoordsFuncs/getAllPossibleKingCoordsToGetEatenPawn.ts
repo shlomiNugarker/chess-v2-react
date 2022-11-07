@@ -2,7 +2,7 @@ import { GameState } from '../../../features/game/gameSlice'
 
 export function getAllPossibleKingCoordsToGetEatenPawn(
   state: GameState,
-  _kingCoord: {
+  kingCoord: {
     i: number
     j: number
   }
@@ -11,7 +11,8 @@ export function getAllPossibleKingCoordsToGetEatenPawn(
 
   const { isBlackTurn } = state
 
-  const kingPos = state.isBlackTurn ? state.kingPos.black : state.kingPos.white
+  // const kingPos = state.isBlackTurn ? state.kingPos.black : state.kingPos.white
+  const kingPos = kingCoord
 
   const possibleSteps = [
     {
