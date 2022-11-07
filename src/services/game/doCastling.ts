@@ -1,6 +1,5 @@
 import _ from 'lodash'
-import { GameState } from '../../features/game/gameSlice'
-import { checkIfKingThreatened } from './checkIfKingThreatened'
+import { GameState } from '../../models/GameState'
 import { getCellCoord } from './getCellCoord'
 import { isCastleThreatened } from './isCastleThreatened'
 
@@ -106,24 +105,13 @@ export function doCastling(state: GameState, elToCell: Element) {
       rookCoords = toCoord
     }
 
-    if (rookCoords.j === 0 && !state.isCastlingLegal.blackLeftSide) {
-      console.log('cant castle this rook:', { rookCoords })
-      return
-    }
-    if (rookCoords.j === 7 && !state.isCastlingLegal.blackRightSide) {
-      console.log('cant castle this rook:', { rookCoords })
-      return
-    }
+    if (rookCoords.j === 0 && !state.isCastlingLegal.blackLeftSide) return
 
-    if (!state.isCastlingLegal.blackKing) {
-      console.log('cant castle, king already moved')
-      return
-    }
+    if (rookCoords.j === 7 && !state.isCastlingLegal.blackRightSide) return
 
-    if (state.isBlackKingThreatened) {
-      console.log('you cant castle')
-      return
-    }
+    if (!state.isCastlingLegal.blackKing) return
+
+    if (state.isBlackKingThreatened) return
 
     copiedState.board[fromCoord.i][fromCoord.j] = ''
     copiedState.board[toCoord.i][toCoord.j] = ''

@@ -1,7 +1,8 @@
 import _ from 'lodash'
-import { GameState } from '../../features/game/gameSlice'
+import { GameState } from '../../models/GameState'
 import { paintKingCellToRed } from './paintKingCellToRed'
 import { getAllPossibleCoordsBishop } from './possibleCoordsFuncs/getAllPossibleCoordsBishop'
+import { getAllPossibleCoordsKing } from './possibleCoordsFuncs/getAllPossibleCoordsKing'
 import { getAllPossibleCoordsKnight } from './possibleCoordsFuncs/getAllPossibleCoordsKnight'
 import { getAllPossibleCoordsQueen } from './possibleCoordsFuncs/getAllPossibleCoordsQueen'
 import { getAllPossibleCoordsRook } from './possibleCoordsFuncs/getAllPossibleCoordsRook'
@@ -17,16 +18,15 @@ export function checkIfKingThreatened(
 
   let kingPos = state.isBlackTurn ? state.kingPos.black : state.kingPos.white
 
-  // this act is for check another piece as a king coords
+  // this act is for check another piece as a king coords (when castling..)
   if (coordToCheck) kingPos = coordToCheck
 
   const knightOpts = getAllPossibleCoordsKnight(state, kingPos)
+  const kingOpts = getAllPossibleCoordsKing(state, kingPos)
   const queenOpts = getAllPossibleCoordsQueen(state, kingPos, true)
   const pawnOpts = getAllPossibleKingCoordsToGetEatenPawn(state, kingPos)
   const bishopOpts = getAllPossibleCoordsBishop(state, kingPos)
   const rookOpts = getAllPossibleCoordsRook(state, kingPos)
-
-  // console.log({ knightOpts, queenOpts, pawnOpts, bishopOpts, rookOpts })
 
   !isFoundThreatenPiece &&
     queenOpts.forEach((coord) => {
@@ -34,6 +34,21 @@ export function checkIfKingThreatened(
       const threatenPiece = state.isBlackTurn
         ? state.pieces.QUEEN_WHITE
         : state.pieces.QUEEN_BLACK
+
+      if (pieceToCheck && pieceToCheck === threatenPiece) {
+        console.log(pieceToCheck, '===', threatenPiece)
+
+        isFoundThreatenPiece = true
+        !isFakeCheck && paintKingCellToRed(kingPos)
+      }
+    })
+
+  !isFoundThreatenPiece &&
+    kingOpts.forEach((coord) => {
+      const pieceToCheck = board[coord.i][coord.j]
+      const threatenPiece = state.isBlackTurn
+        ? state.pieces.KING_WHITE
+        : state.pieces.KING_WHITE
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
         console.log(pieceToCheck, '===', threatenPiece)

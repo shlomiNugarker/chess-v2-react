@@ -1,12 +1,5 @@
 import { useEffect, useState } from 'react'
 import { RootState } from '../features'
-import {
-  addHistoryState,
-  GameState,
-  setNewState,
-  setSelectedCellCoord,
-  setSwitchTurn,
-} from '../features/game/gameSlice'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useTypedSelector'
 import { checkIfKingThreatened } from '../services/game/checkIfKingThreatened'
@@ -14,10 +7,17 @@ import { cleanBoard } from '../services/game/cleanBoard'
 import { doCastling } from '../services/game/doCastling'
 import { getPossibleCoords } from '../services/game/getPossibleCoords'
 import { isColorPieceWorthCurrPlayerColor } from '../services/game/isColorPieceWorthCurrPlayerColor'
-import { isNextStepLegal } from '../services/game/isNextStepLegal'
-
 import { markCells } from '../services/game/markCells'
 import { movePiece } from '../services/game/movePiece'
+import { isNextStepLegal } from '../services/game/isNextStepLegal'
+import {
+  addHistoryState,
+  setNewState,
+  setSelectedCellCoord,
+  setSwitchTurn,
+} from '../features/game/gameSlice'
+import { GameState } from '../models/GameState'
+import { getJoke } from '../features/game/asyncActions'
 
 export const Board = () => {
   const dispatch = useAppDispatch()

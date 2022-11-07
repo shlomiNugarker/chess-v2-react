@@ -1,4 +1,4 @@
-import { GameState } from '../../../features/game/gameSlice'
+import { GameState } from '../../../models/GameState'
 import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
 import { isEmptyCell } from '../isEmptyCell'
 
@@ -41,14 +41,11 @@ export function getAllPossibleCoordsKing(
     }
 
     // castling Coord:
-
     const { isCastlingLegal } = state
     let isRightCastleLegal: boolean = true
     let isLeftCastleLegal: boolean = true
 
     if (!state.isBlackTurn && isCastlingLegal.whiteKing) {
-      // todo : add logic to know which side is the castle
-
       // right side:
       if (
         !isEmptyCell(board, { i: 7, j: 5 }) ||
@@ -65,15 +62,14 @@ export function getAllPossibleCoordsKing(
         isLeftCastleLegal = false
       }
 
-      // **
       let coordRightRookForCastle = { i: 7, j: 7 }
       isRightCastleLegal && res.push(coordRightRookForCastle)
 
       let coordLeftRookForCastle = { i: 7, j: 0 }
       isLeftCastleLegal && res.push(coordLeftRookForCastle)
     }
+
     if (state.isBlackTurn && isCastlingLegal.blackKing) {
-      // todo : add logic to know which side is the castle
       // right side:
       if (
         !isEmptyCell(board, { i: 0, j: 5 }) ||
@@ -90,7 +86,6 @@ export function getAllPossibleCoordsKing(
         isLeftCastleLegal = false
       }
 
-      // **
       let coordRightRookForCastle = { i: 0, j: 7 }
       isRightCastleLegal && res.push(coordRightRookForCastle)
 

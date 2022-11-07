@@ -1,78 +1,9 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { GameState } from '../../models/GameState'
 
 import { buildBoard } from '../../services/game/buildBoard'
-
-// ACTION
-// export const getJoke = createAsyncThunk(
-//   'game/getJoke',
-//   async (data, thunkApi) => {
-//     try {
-//       const res = await fetch('https://api.chucknorris.io/jokes/random')
-//       const data = await res.json()
-//       return data.value
-//     } catch (err: any) {
-//       console.log(err)
-//       return thunkApi.rejectWithValue(err.message)
-//     }
-//   }
-// )
-
-export interface GameState {
-  stateHistory: GameState[]
-  boardHistory: string[][][]
-  board: string[][]
-  pieces: {
-    KING_WHITE: string
-    KING_BLACK: string
-    BISHOP_WHITE: string
-    BISHOP_BLACK: string
-    PAWN_WHITE: string
-    PAWN_BLACK: string
-    QUEEN_WHITE: string
-    QUEEN_BLACK: string
-    ROOK_WHITE: string
-    ROOK_BLACK: string
-    KNIGHT_WHITE: string
-    KNIGHT_BLACK: string
-  }
-  selectedCellCoord: { i: number; j: number } | null
-  isWhiteKingThreatened: boolean
-  isBlackKingThreatened: boolean
-  isBlackTurn: boolean
-  eatableCellAfterTwoStepsPawnWhite: { i: number; j: number } | null
-  eatableCellAfterTwoStepsPawnBlack: { i: number; j: number } | null
-  kingPos: {
-    black: { i: number; j: number }
-    white: { i: number; j: number }
-  }
-  eatenPieces: {
-    black: string[]
-    white: string[]
-  }
-  isCastlingLegal: {
-    whiteLeftSide: boolean
-    whiteRightSide: boolean
-    whiteKing: boolean
-    blackLeftSide: boolean
-    blackRightSide: boolean
-    blackKing: boolean
-  }
-}
-
-export const gPieces = {
-  KING_WHITE: '♔',
-  KING_BLACK: '♚',
-  BISHOP_WHITE: '♗',
-  BISHOP_BLACK: '♝',
-  PAWN_WHITE: '♙',
-  PAWN_BLACK: '♟',
-  QUEEN_WHITE: '♕',
-  QUEEN_BLACK: '♛',
-  ROOK_WHITE: '♖',
-  ROOK_BLACK: '♜',
-  KNIGHT_WHITE: '♘',
-  KNIGHT_BLACK: '♞',
-}
+import { gPieces } from '../../services/game/gPieces'
+import { getJoke } from './asyncActions'
 
 const initialState: GameState = {
   stateHistory: [],
@@ -142,25 +73,21 @@ export const gameSlice = createSlice({
         action.payload.eatableCellAfterTwoStepsPawnBlack
 
       state.kingPos = action.payload.kingPos
-      state.board = action.payload.board
       state.eatenPieces = action.payload.eatenPieces
       state.isCastlingLegal = action.payload.isCastlingLegal
     },
   },
-
   extraReducers(builder) {
-    // builder
-    // .addCase(getJoke.pending, (state, action) => {
-    //   state.isLoading = true
-    // })
-    // .addCase(getJoke.fulfilled, (state, action) => {
-    //   state.isLoading = false
-    //   state.joke = action.payload
-    // })
-    // .addCase(getJoke.rejected, (state, action: PayloadAction<any>) => {
-    //   state.isLoading = false
-    //   console.log(action.payload)
-    // })
+    builder
+      .addCase(getJoke.pending, (state, action) => {
+        console.log('panding')
+      })
+      .addCase(getJoke.fulfilled, (state, action) => {
+        console.log('fulfilled:', action.payload)
+      })
+      .addCase(getJoke.rejected, (state, action: PayloadAction<any>) => {
+        console.log('rejected:', action.payload)
+      })
   },
 })
 

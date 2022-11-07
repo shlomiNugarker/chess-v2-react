@@ -1,4 +1,4 @@
-import { GameState } from '../../features/game/gameSlice'
+import { GameState } from '../../models/GameState'
 import { isBlackPiece } from './isBlackPiece'
 
 export function isColorPieceWorthCurrPlayerColor(

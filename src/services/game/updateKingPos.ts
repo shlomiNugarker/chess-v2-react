@@ -1,4 +1,4 @@
-import { GameState } from '../../features/game/gameSlice'
+import { GameState } from '../../models/GameState'
 
 export function updateKingPos(
   state: GameState,

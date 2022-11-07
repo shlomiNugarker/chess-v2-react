@@ -1,4 +1,4 @@
-import { GameState } from '../../../features/game/gameSlice'
+import { GameState } from '../../../models/GameState'
 import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
 import { isEmptyCell } from '../isEmptyCell'
 
@@ -57,7 +57,7 @@ export function getAllPossibleCoordsPawn(
       res.push(nextCoord)
   }
 
-  // Check if can eat cell after 2 steps pawn:
+  // Check if can eat cell after 2 steps of pawn:
   if (
     state.eatableCellAfterTwoStepsPawnWhite &&
     state.isBlackTurn &&

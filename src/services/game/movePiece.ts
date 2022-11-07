@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { GameState } from '../../features/game/gameSlice'
+import { GameState } from '../../models/GameState'
 import { isBlackPiece } from './isBlackPiece'
 import { updateKingPos } from './updateKingPos'
 
@@ -31,7 +31,7 @@ export function movePiece(
 
   let copiedState = _.cloneDeep(state)
 
-  //** Handle eatable cell after 2 steps of pawn
+  //** assigning eatable cell after 2 steps of pawn
   // White
   if (
     fromCoord.i === 6 &&
@@ -84,7 +84,6 @@ export function movePiece(
     toCellCoord.i === copiedState.eatableCellAfterTwoStepsPawnWhite.i &&
     copiedState.isBlackTurn
   ) {
-    // alert('eat pawn:' + copiedState.eatableCellAfterTwoStepsPawnWhite)
     const { eatableCellAfterTwoStepsPawnWhite } = copiedState
     const { i, j } = eatableCellAfterTwoStepsPawnWhite
     const pieceToEat = copiedState.board[i - 1][j]
@@ -97,7 +96,6 @@ export function movePiece(
     toCellCoord.i === copiedState.eatableCellAfterTwoStepsPawnBlack.i &&
     !copiedState.isBlackTurn
   ) {
-    // alert('eat pawn:' + copiedState.eatableCellAfterTwoStepsPawnWhite)
     const { eatableCellAfterTwoStepsPawnBlack } = copiedState
     const { i, j } = eatableCellAfterTwoStepsPawnBlack
     const pieceToEat = copiedState.board[i + 1][j]
