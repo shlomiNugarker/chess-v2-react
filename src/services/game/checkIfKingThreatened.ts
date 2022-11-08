@@ -28,6 +28,8 @@ export function checkIfKingThreatened(
   const bishopOpts = getAllPossibleCoordsBishop(state, kingPos)
   const rookOpts = getAllPossibleCoordsRook(state, kingPos)
 
+  console.log({ pawnOpts })
+
   !isFoundThreatenPiece &&
     queenOpts.forEach((coord) => {
       const pieceToCheck = board[coord.i][coord.j]
@@ -48,7 +50,7 @@ export function checkIfKingThreatened(
       const pieceToCheck = board[coord.i][coord.j]
       const threatenPiece = state.isBlackTurn
         ? state.pieces.KING_WHITE
-        : state.pieces.KING_WHITE
+        : state.pieces.KING_BLACK
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
         console.log(pieceToCheck, '===', threatenPiece)
