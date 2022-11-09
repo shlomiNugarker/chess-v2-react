@@ -63,10 +63,20 @@ export function getAllPossibleCoordsKing(
       }
 
       let coordRightRookForCastle = { i: 7, j: 7 }
-      isRightCastleLegal && res.push(coordRightRookForCastle)
+      isRightCastleLegal &&
+        isColorPieceWorthCurrPlayerColor(
+          state,
+          state.board[coordRightRookForCastle.i][coordRightRookForCastle.j]
+        ) &&
+        res.push(coordRightRookForCastle)
 
       let coordLeftRookForCastle = { i: 7, j: 0 }
-      isLeftCastleLegal && res.push(coordLeftRookForCastle)
+      isLeftCastleLegal &&
+        isColorPieceWorthCurrPlayerColor(
+          state,
+          state.board[coordRightRookForCastle.i][coordRightRookForCastle.j]
+        ) &&
+        res.push(coordLeftRookForCastle)
     }
 
     if (state.isBlackTurn && isCastlingLegal.blackKing) {
@@ -87,10 +97,20 @@ export function getAllPossibleCoordsKing(
       }
 
       let coordRightRookForCastle = { i: 0, j: 7 }
-      isRightCastleLegal && res.push(coordRightRookForCastle)
+      isRightCastleLegal &&
+        isColorPieceWorthCurrPlayerColor(
+          state,
+          state.board[coordRightRookForCastle.i][coordRightRookForCastle.j]
+        ) &&
+        res.push(coordRightRookForCastle)
 
       let coordLeftRookForCastle = { i: 0, j: 0 }
-      isLeftCastleLegal && res.push(coordLeftRookForCastle)
+      isLeftCastleLegal &&
+        isColorPieceWorthCurrPlayerColor(
+          state,
+          state.board[coordRightRookForCastle.i][coordRightRookForCastle.j]
+        ) &&
+        res.push(coordLeftRookForCastle)
     }
   }
 
