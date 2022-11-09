@@ -3,18 +3,18 @@ export interface GameState {
   boardHistory: string[][][]
   board: string[][]
   pieces: {
-    KING_WHITE: string
-    KING_BLACK: string
-    BISHOP_WHITE: string
-    BISHOP_BLACK: string
-    PAWN_WHITE: string
-    PAWN_BLACK: string
-    QUEEN_WHITE: string
-    QUEEN_BLACK: string
-    ROOK_WHITE: string
-    ROOK_BLACK: string
-    KNIGHT_WHITE: string
-    KNIGHT_BLACK: string
+    KING_WHITE: any
+    KING_BLACK: any
+    BISHOP_WHITE: any
+    BISHOP_BLACK: any
+    PAWN_WHITE: any
+    PAWN_BLACK: any
+    QUEEN_WHITE: any
+    QUEEN_BLACK: any
+    ROOK_WHITE: any
+    ROOK_BLACK: any
+    KNIGHT_WHITE: any
+    KNIGHT_BLACK: any
   }
   selectedCellCoord: { i: number; j: number } | null
   isWhiteKingThreatened: boolean
