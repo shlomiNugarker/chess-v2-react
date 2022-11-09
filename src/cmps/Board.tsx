@@ -17,7 +17,6 @@ import {
   setSwitchTurn,
 } from '../features/game/gameSlice'
 import { GameState } from '../models/GameState'
-import { getJoke } from '../features/game/asyncActions'
 
 export const Board = () => {
   const dispatch = useAppDispatch()
@@ -103,6 +102,18 @@ export const Board = () => {
 
   useEffect(() => {
     checkIfKingThreatened(gameState)
+
+    const lastKingThreatened = gameState.isBlackTurn
+      ? gameState.kingPos.white
+      : gameState.kingPos.black
+    if (lastKingThreatened) {
+      const kingEl = document.querySelector(
+        `#cell-${lastKingThreatened.i}-${lastKingThreatened.j}`
+      )
+
+      if (kingEl && kingEl.classList.contains('red'))
+        kingEl.classList.remove('red')
+    }
   }, [gameState, gameState.isBlackTurn])
 
   const onSwitchTurn = () => {
