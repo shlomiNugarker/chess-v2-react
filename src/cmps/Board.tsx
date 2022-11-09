@@ -11,18 +11,60 @@ import { markCells } from '../services/game/markCells'
 import { movePiece } from '../services/game/movePiece'
 import { isNextStepLegal } from '../services/game/isNextStepLegal'
 import {
-  addHistoryState,
   setNewState,
   setSelectedCellCoord,
   setSwitchTurn,
 } from '../features/game/gameSlice'
+import { PromotionChoice } from './PromotionChoice'
 import { GameState } from '../models/GameState'
+import _ from 'lodash'
 
 export const Board = () => {
   const dispatch = useAppDispatch()
 
-  const { board } = useAppSelector((state: RootState) => state.game)
+  const { board, isBlackTurn } = useAppSelector(
+    (state: RootState) => state.game
+  )
   const gameState = useAppSelector((state: RootState) => state.game)
+
+  const [isPromotionChoice, setIsPromotionChoice] = useState(false)
+
+  function isPawnStepsEnd(state: GameState, coord: { i: number; j: number }) {
+    const piece = state.board[coord.i][coord.j]
+    if (piece === gameState.pieces.PAWN_BLACK && isBlackTurn && coord.i === 7) {
+      return true
+    } else if (
+      piece === gameState.pieces.PAWN_WHITE &&
+      !isBlackTurn &&
+      coord.i === 0
+    ) {
+      return true
+    }
+  }
+
+  const [cellCoordsToAddInsteadPawn, setCellCoordsToAddInsteadPawn] = useState<{
+    i: number
+    j: number
+  } | null>(null)
+
+  function onChoosePieceToAdd(piece: string) {
+    console.log(piece)
+    console.log({ cellCoordsToAddInsteadPawn })
+    if (!cellCoordsToAddInsteadPawn) return
+
+    const copiedState = _.cloneDeep(gameState)
+
+    copiedState.board[cellCoordsToAddInsteadPawn.i][
+      cellCoordsToAddInsteadPawn.j
+    ] = piece
+
+    copiedState.isBlackTurn = !copiedState.isBlackTurn
+    copiedState && dispatch(setNewState(copiedState))
+
+    // onSwitchTurn()
+    cleanBoard()
+    setIsPromotionChoice(false)
+  }
 
   const cellClicked = (
     ev: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
@@ -30,28 +72,38 @@ export const Board = () => {
     j: number
   ) => {
     if (ev.target instanceof Element) {
-      const toCellCoord = { i, j }
+      const cellCoord = { i, j }
       const piece = board[i][j]
       const isEvSelected = ev.target.classList.contains('selected')
       const isEvMarked = ev.target.classList.contains('mark')
       const isEvEatable = ev.target.classList.contains('eatable')
       const isEvCastling = ev.target.classList.contains('castle')
 
+      // if it's possible to eat:
       if (isEvEatable && gameState.selectedCellCoord) {
         let { isMoveLegal, state } = isNextStepLegal(gameState, ev.target)
 
         if (state.isBlackTurn && state.isBlackKingThreatened) return
         if (!state.isBlackTurn && state.isWhiteKingThreatened) return
         if (!isMoveLegal) return
-        const newState = movePiece(gameState, toCellCoord)
-        newState && dispatch(setNewState(newState))
-        // newState
-        //  && onAddHistoryState(newState)
-        onSwitchTurn()
+
+        const newState = movePiece(gameState, cellCoord)
+        if (!newState) return
+        if (isPawnStepsEnd(state, cellCoord)) {
+          setIsPromotionChoice(true)
+          newState && dispatch(setNewState(newState))
+          setCellCoordsToAddInsteadPawn(cellCoord)
+          return
+        }
+        newState.isBlackTurn = !newState.isBlackTurn
+        dispatch(setNewState(newState))
+
+        // onSwitchTurn()
         cleanBoard()
         return
       }
 
+      // if it's possible to catling:
       if (isEvCastling && gameState.selectedCellCoord) {
         const { isMoveLegal } = isNextStepLegal(gameState, ev.target)
         if (!isMoveLegal) return
@@ -61,8 +113,6 @@ export const Board = () => {
           isCastleLegals.newState &&
           isCastleLegals.isCastleLegal &&
           dispatch(setNewState(isCastleLegals.newState))
-        //  &&
-        // onAddHistoryState(isCastleLegals.newState)
 
         if (isCastleLegals && !isCastleLegals.isCastleLegal) return
 
@@ -74,28 +124,40 @@ export const Board = () => {
       if (!isColorPieceWorthCurrPlayerColor(gameState, piece) && piece !== '')
         return
 
+      // unselect
       if (isEvSelected) {
         ev.target.classList.remove('selected')
-        // dispatch(setSelectedCellCoord(null))
         cleanBoard()
         return
       }
 
+      // if it's possible to step:
       if (isEvMarked && gameState.selectedCellCoord) {
-        const { isMoveLegal } = isNextStepLegal(gameState, ev.target)
+        const { isMoveLegal, state } = isNextStepLegal(gameState, ev.target)
         if (!isMoveLegal) return
-        const newState = movePiece(gameState, toCellCoord)
-        newState && dispatch(setNewState(newState))
-        // newState && onAddHistoryState(newState)
-        onSwitchTurn()
+
+        const newState = movePiece(gameState, cellCoord)
+        if (!newState) return
+        if (isPawnStepsEnd(state, cellCoord)) {
+          setIsPromotionChoice(true)
+          newState && dispatch(setNewState(newState))
+          setCellCoordsToAddInsteadPawn(cellCoord)
+          return
+        }
+
+        newState.isBlackTurn = !newState.isBlackTurn
+        dispatch(setNewState(newState))
+
+        // onSwitchTurn()
         cleanBoard()
         return
       }
-      cleanBoard()
 
-      ev.target.classList.add('selected')
-      dispatch(setSelectedCellCoord(toCellCoord))
-      const possibleCoords = getPossibleCoords(gameState, piece, toCellCoord)
+      // just selecting cell & get possibleCoords to step
+      cleanBoard()
+      gameState.board[i][j] && ev.target.classList.add('selected')
+      dispatch(setSelectedCellCoord(cellCoord))
+      const possibleCoords = getPossibleCoords(gameState, piece, cellCoord)
       possibleCoords && markCells(gameState, possibleCoords)
     }
   }
@@ -103,9 +165,11 @@ export const Board = () => {
   useEffect(() => {
     checkIfKingThreatened(gameState)
 
+    // handle case if both kings threatened one after one
     const lastKingThreatened = gameState.isBlackTurn
       ? gameState.kingPos.white
       : gameState.kingPos.black
+
     if (lastKingThreatened) {
       const kingEl = document.querySelector(
         `#cell-${lastKingThreatened.i}-${lastKingThreatened.j}`
@@ -120,20 +184,12 @@ export const Board = () => {
     dispatch(setSwitchTurn())
   }
 
-  const onAddHistoryState = (state: GameState) => {
-    dispatch(addHistoryState(state))
-  }
-
   if (!board && !gameState.boardHistory.length)
     return <div className="board-cmp">Loading...</div>
 
   return (
     <section className="board-cmp">
       <div>
-        {/* <div className="btns">
-          <button>back</button>
-          <button>next</button>
-        </div> */}
         <div className="pieces">
           {gameState.eatenPieces.black.map((eatenPiece, idx) => (
             <span key={eatenPiece + idx}>{eatenPiece}</span>
@@ -164,6 +220,12 @@ export const Board = () => {
           ))}
         </div>
       </div>
+      {isPromotionChoice && (
+        <PromotionChoice
+          setIsPromotionChoice={setIsPromotionChoice}
+          onChoosePieceToAdd={onChoosePieceToAdd}
+        />
+      )}
     </section>
   )
 }

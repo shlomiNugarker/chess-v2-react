@@ -1,0 +1,41 @@
+.promotion-choice {
+  position: fixed;
+
+  .bg {
+    background-color: rgba(0, 0, 0, 0.389);
+    position: fixed;
+    inset: 0 0 0 0;
+    z-index: 5;
+  }
+
+  .pieces {
+    width: $td-font-size * 4 +30px;
+    height: $td-font-size + 25px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, calc(30px + -50%));
+    border-radius: 10px;
+
+    z-index: 10;
+
+    .piece {
+      margin: 0 3px;
+      border-radius: 25px;
+      transition: all 0.3s;
+      cursor: pointer;
+      text-align: center;
+
+      &:hover {
+        background-color: rgba(85, 85, 85, 0.24);
+      }
+    }
+  }
+
+  .white {
+    background-color: rgba(255, 255, 255, 0.84);
+  }
+  .black {
+    background-color: rgba(49, 46, 46, 0.875);
+  }
+}
