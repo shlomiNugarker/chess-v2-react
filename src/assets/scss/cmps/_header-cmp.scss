@@ -7,18 +7,100 @@
   padding: 0 1rem;
   color: $clr2;
 
-  div {
+  .container {
+    width: 100%;
     display: flex;
-    span {
+    justify-content: space-between;
+    transition: all 1s;
+
+    .logo {
     }
-    ul {
-      padding: 0;
-      margin: 0;
+
+    .nav {
       display: flex;
-      li {
-        list-style: none;
-        padding: 0 0.7rem;
+      span {
       }
+      ul {
+        padding: 0;
+        margin: 0;
+        display: flex;
+        li {
+          list-style: none;
+          padding: 0 0.7rem;
+        }
+      }
+    }
+
+    .sign-in-container {
+      .sign-in {
+      }
+    }
+  }
+
+  .menu-btn {
+    position: absolute;
+    right: 0;
+    margin: 0 15px;
+    cursor: pointer;
+    font-size: 40px;
+    display: none;
+  }
+}
+
+@media (max-width: 660px) {
+  .header-cmp {
+    position: relative;
+    padding: 0;
+
+    .container {
+      flex-direction: column;
+      justify-content: flex-start;
+      background-color: $clr1;
+      font-size: 40px;
+      position: absolute;
+      height: calc(100vh - 60px);
+      width: 100vw;
+      top: 60px;
+      left: 0;
+
+      .logo {
+        display: flex;
+        position: fixed;
+        left: 50%;
+        transform: translate(-50%);
+        top: 5px;
+      }
+
+      &.hide-menu {
+        transition: all 0.5s;
+        left: -100vw;
+      }
+
+      .nav {
+        order: 2;
+        flex-direction: column;
+        text-align: center;
+        span {
+        }
+        ul {
+          flex-direction: column;
+
+          li {
+            margin: 0;
+            padding: 15px 0;
+          }
+        }
+      }
+      .sign-in-container {
+        order: 1;
+        margin: 15px 0 15px 0;
+        .sign-in {
+          text-align: center;
+        }
+      }
+    }
+    div.menu-btn {
+      display: block;
     }
   }
 }

@@ -74,3 +74,179 @@
     }
   }
 }
+
+@media (max-width: 660px) {
+  .board-cmp {
+    .pieces {
+      width: calc(($td-width - 20px) * 8);
+      span {
+      }
+    }
+
+    table {
+      tbody {
+        tr {
+          td {
+            width: calc($td-width - 20px);
+            height: calc($td-height - 20px);
+            font-size: calc($td-font-size - 20px);
+            &.white {
+            }
+            &.black {
+            }
+            &.selected {
+            }
+            &.mark span {
+            }
+
+            &.mark {
+            }
+
+            &.eatable {
+            }
+            &.eatable-cell-after-first-two-steps-pawn {
+            }
+
+            &.castle {
+            }
+
+            &.red {
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 485px) {
+  .board-cmp {
+    .pieces {
+      width: calc(($td-width - 30px) * 8);
+      span {
+      }
+    }
+
+    table {
+      tbody {
+        tr {
+          td {
+            width: calc($td-width - 30px);
+            height: calc($td-height - 30px);
+            font-size: calc($td-font-size - 30px);
+            &.white {
+            }
+            &.black {
+            }
+            &.selected {
+            }
+            &.mark span {
+            }
+
+            &.mark {
+            }
+
+            &.eatable {
+            }
+            &.eatable-cell-after-first-two-steps-pawn {
+            }
+
+            &.castle {
+            }
+
+            &.red {
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 410px) {
+  .board-cmp {
+    .pieces {
+      width: calc(($td-width - 40px) * 8);
+      span {
+      }
+    }
+
+    table {
+      tbody {
+        tr {
+          td {
+            width: calc($td-width - 40px);
+            height: calc($td-height - 40px);
+            font-size: calc($td-font-size - 40px);
+            &.white {
+            }
+            &.black {
+            }
+            &.selected {
+            }
+            &.mark span {
+            }
+
+            &.mark {
+            }
+
+            &.eatable {
+            }
+            &.eatable-cell-after-first-two-steps-pawn {
+            }
+
+            &.castle {
+            }
+
+            &.red {
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 330px) {
+  .board-cmp {
+    .pieces {
+      width: calc(($td-width - 45px) * 8);
+      span {
+      }
+    }
+
+    table {
+      tbody {
+        tr {
+          td {
+            width: calc($td-width - 45px);
+            height: calc($td-height - 45px);
+            font-size: calc($td-font-size - 45px);
+            &.white {
+            }
+            &.black {
+            }
+            &.selected {
+            }
+            &.mark span {
+            }
+
+            &.mark {
+            }
+
+            &.eatable {
+            }
+            &.eatable-cell-after-first-two-steps-pawn {
+            }
+
+            &.castle {
+            }
+
+            &.red {
+            }
+          }
+        }
+      }
+    }
+  }
+}
