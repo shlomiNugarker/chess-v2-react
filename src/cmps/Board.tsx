@@ -18,29 +18,16 @@ import {
 import { PromotionChoice } from './PromotionChoice'
 import { GameState } from '../models/GameState'
 import _ from 'lodash'
+import { isPawnStepsEnd } from '../services/game/isPawnStepsEnd'
+import { addPieceInsteadPawn } from '../services/game/addPieceInsteadPawn'
 
 export const Board = () => {
   const dispatch = useAppDispatch()
 
-  const { board, isBlackTurn } = useAppSelector(
-    (state: RootState) => state.game
-  )
+  const { board } = useAppSelector((state: RootState) => state.game)
   const gameState = useAppSelector((state: RootState) => state.game)
 
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
-
-  function isPawnStepsEnd(state: GameState, coord: { i: number; j: number }) {
-    const piece = state.board[coord.i][coord.j]
-    if (piece === gameState.pieces.PAWN_BLACK && isBlackTurn && coord.i === 7) {
-      return true
-    } else if (
-      piece === gameState.pieces.PAWN_WHITE &&
-      !isBlackTurn &&
-      coord.i === 0
-    ) {
-      return true
-    }
-  }
 
   const [cellCoordsToAddInsteadPawn, setCellCoordsToAddInsteadPawn] = useState<{
     i: number
@@ -48,20 +35,17 @@ export const Board = () => {
   } | null>(null)
 
   function onChoosePieceToAdd(piece: string) {
-    console.log(piece)
-    console.log({ cellCoordsToAddInsteadPawn })
     if (!cellCoordsToAddInsteadPawn) return
 
-    const copiedState = _.cloneDeep(gameState)
+    const { newState } = addPieceInsteadPawn(
+      gameState,
+      cellCoordsToAddInsteadPawn,
+      piece
+    )
 
-    copiedState.board[cellCoordsToAddInsteadPawn.i][
-      cellCoordsToAddInsteadPawn.j
-    ] = piece
+    newState.isBlackTurn = !newState.isBlackTurn
+    dispatch(setNewState(newState))
 
-    copiedState.isBlackTurn = !copiedState.isBlackTurn
-    copiedState && dispatch(setNewState(copiedState))
-
-    // onSwitchTurn()
     cleanBoard()
     setIsPromotionChoice(false)
   }
@@ -98,7 +82,6 @@ export const Board = () => {
         newState.isBlackTurn = !newState.isBlackTurn
         dispatch(setNewState(newState))
 
-        // onSwitchTurn()
         cleanBoard()
         return
       }
@@ -148,7 +131,6 @@ export const Board = () => {
         newState.isBlackTurn = !newState.isBlackTurn
         dispatch(setNewState(newState))
 
-        // onSwitchTurn()
         cleanBoard()
         return
       }
