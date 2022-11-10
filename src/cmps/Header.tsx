@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export const Header = (props: any) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false)
+
+  const navigate = useNavigate()
 
   return (
     <header className="header-cmp">
@@ -27,7 +30,7 @@ export const Header = (props: any) => {
 
         <div className="sign-in-container">
           <div className="sign-in">
-            <p>Sign In</p>
+            <p onClick={() => navigate('/sign-in')}>Sign In</p>
           </div>
         </div>
       </div>

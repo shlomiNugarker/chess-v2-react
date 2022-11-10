@@ -1,4 +1,10 @@
 .home-page {
-  min-height: 100vh;
+  min-height: calc(100vh - 60px);
   width: 100vw;
+  background-color: $clr1;
+  color: $clr2;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

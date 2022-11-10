@@ -10,16 +10,14 @@ import { isColorPieceWorthCurrPlayerColor } from '../services/game/isColorPieceW
 import { markCells } from '../services/game/markCells'
 import { movePiece } from '../services/game/movePiece'
 import { isNextStepLegal } from '../services/game/isNextStepLegal'
+import { PromotionChoice } from './PromotionChoice'
+import { isPawnStepsEnd } from '../services/game/isPawnStepsEnd'
+import { addPieceInsteadPawn } from '../services/game/addPieceInsteadPawn'
 import {
   setNewState,
   setSelectedCellCoord,
   setSwitchTurn,
 } from '../features/game/gameSlice'
-import { PromotionChoice } from './PromotionChoice'
-import { GameState } from '../models/GameState'
-import _ from 'lodash'
-import { isPawnStepsEnd } from '../services/game/isPawnStepsEnd'
-import { addPieceInsteadPawn } from '../services/game/addPieceInsteadPawn'
 
 export const Board = () => {
   const dispatch = useAppDispatch()

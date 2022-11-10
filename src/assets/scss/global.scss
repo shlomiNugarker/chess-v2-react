@@ -9,9 +9,10 @@
 @import 'basics/typography';
 
 // Pages
-
 @import './pages/home-page';
 @import './pages/main-page';
+@import './pages/sign-in-page';
+@import './pages/sign-up-page';
 
 // Components
 @import './cmps/header-cmp';

@@ -3,6 +3,12 @@
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 60px);
+  text-transform: uppercase;
+
+  div {
+    display: flex;
+    flex-direction: column;
+  }
 
   .pieces {
     width: $td-width * 8;
@@ -80,6 +86,7 @@
     .pieces {
       width: calc(($td-width - 20px) * 8);
       span {
+        font-size: calc($td-font-size - 20px);
       }
     }
 
@@ -97,6 +104,8 @@
             &.selected {
             }
             &.mark span {
+              width: 15px;
+              height: 15px;
             }
 
             &.mark {
@@ -124,6 +133,7 @@
     .pieces {
       width: calc(($td-width - 30px) * 8);
       span {
+        font-size: calc($td-font-size - 30px);
       }
     }
 
@@ -141,6 +151,8 @@
             &.selected {
             }
             &.mark span {
+              width: 10px;
+              height: 10px;
             }
 
             &.mark {
@@ -168,6 +180,7 @@
     .pieces {
       width: calc(($td-width - 40px) * 8);
       span {
+        font-size: calc($td-font-size - 40px);
       }
     }
 
@@ -212,6 +225,7 @@
     .pieces {
       width: calc(($td-width - 45px) * 8);
       span {
+        font-size: calc($td-font-size - 45px);
       }
     }
 
@@ -229,6 +243,54 @@
             &.selected {
             }
             &.mark span {
+            }
+
+            &.mark {
+            }
+
+            &.eatable {
+            }
+            &.eatable-cell-after-first-two-steps-pawn {
+            }
+
+            &.castle {
+            }
+
+            &.red {
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-height: 780px) {
+  .board-cmp {
+    .pieces {
+      width: calc(($td-width - 10px) * 8);
+      span {
+        font-size: calc($td-font-size - 10px);
+      }
+    }
+
+    table {
+      tbody {
+        tr {
+          td {
+            background-color: lightcoral;
+            width: calc($td-width - 10px);
+            height: calc($td-height - 10px);
+            font-size: calc($td-font-size - 10px);
+            &.white {
+            }
+            &.black {
+            }
+            &.selected {
+            }
+            &.mark span {
+              width: 10px;
+              height: 10px;
             }
 
             &.mark {
