@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Chess-V2-React/static/css/main.aa115f1c.css",
-    "main.js": "/Chess-V2-React/static/js/main.3e3ce466.js",
+    "main.css": "/Chess-V2-React/static/css/main.1a72ef96.css",
+    "main.js": "/Chess-V2-React/static/js/main.50648d96.js",
     "static/js/787.e9b33df8.chunk.js": "/Chess-V2-React/static/js/787.e9b33df8.chunk.js",
     "index.html": "/Chess-V2-React/index.html",
-    "main.aa115f1c.css.map": "/Chess-V2-React/static/css/main.aa115f1c.css.map",
-    "main.3e3ce466.js.map": "/Chess-V2-React/static/js/main.3e3ce466.js.map",
+    "main.1a72ef96.css.map": "/Chess-V2-React/static/css/main.1a72ef96.css.map",
+    "main.50648d96.js.map": "/Chess-V2-React/static/js/main.50648d96.js.map",
     "787.e9b33df8.chunk.js.map": "/Chess-V2-React/static/js/787.e9b33df8.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.aa115f1c.css",
-    "static/js/main.3e3ce466.js"
+    "static/css/main.1a72ef96.css",
+    "static/js/main.50648d96.js"
   ]
 }
