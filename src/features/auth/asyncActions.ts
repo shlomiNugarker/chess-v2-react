@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { userService } from '../../services/authService'
+import { authService } from '../../services/authService'
 
 export const signUp = createAsyncThunk(
   'auth/signup',
@@ -12,7 +12,7 @@ export const signUp = createAsyncThunk(
     thunkApi
   ) => {
     try {
-      const user = await userService.signup(userCred)
+      const user = await authService.signup(userCred)
       return user
     } catch (err) {
       console.log('cannot signup:', err)
@@ -30,7 +30,7 @@ export const login = createAsyncThunk(
     thunkApi
   ) => {
     try {
-      const user = await userService.login(userCred)
+      const user = await authService.login(userCred)
       return user
     } catch (err) {
       console.log('cannot login:', err)
@@ -42,7 +42,7 @@ export const logout = createAsyncThunk(
   'auth/logout',
   async (data, thunkApi) => {
     try {
-      await userService.logout()
+      await authService.logout()
     } catch (err) {
       console.log('cannot login:', err)
       if (err instanceof Error) return thunkApi.rejectWithValue(err.message)

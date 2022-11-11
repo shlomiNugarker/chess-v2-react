@@ -8,6 +8,7 @@ export const store = configureStore({
     game: gameReducer,
     auth: authReducer,
   },
+  devTools: process.env.NODE_ENV !== 'production',
 })
 
 export type RootState = ReturnType<typeof store.getState>

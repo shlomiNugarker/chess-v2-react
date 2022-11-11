@@ -1,4 +1,4 @@
-import { Route, Link, useNavigate, Routes } from 'react-router-dom'
+import { Route, Link, Routes } from 'react-router-dom'
 
 import './assets/scss/global.scss'
 import { Header } from './cmps/Header'
@@ -9,7 +9,6 @@ import { SignIn } from './pages/SignIn'
 import { SignUp } from './pages/SignUp'
 
 const App = () => {
-  // const navigate = useNavigate()
   return (
     <>
       <nav className="temp-nav">
@@ -33,10 +32,10 @@ const App = () => {
       </nav>
       <Header></Header>
       <Routes>
-        <Route path="/:id" element={<Main />} />
         <Route path="/about" element={<About />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/:id" element={<Main />} />
         <Route path="/" element={<Home />} />
       </Routes>
     </>

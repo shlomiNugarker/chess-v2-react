@@ -1,14 +1,52 @@
+import { GameState } from '../models/GameState'
+import { buildBoard } from './game/buildBoard'
+import { gPieces } from './game/gPieces'
 import { httpService } from './httpService'
 
-export const postService = {
+export const gameService = {
   getById,
-  startNewGameOffline,
+  saveState,
 }
 
-async function startNewGameOffline() {
-  return await httpService.get(`game/offline`)
+async function saveState(state: GameState) {
+  return state._id
+    ? await httpService.put(`game/${state._id}`, state)
+    : await httpService.post('game', state)
 }
 
 async function getById(id: string) {
   return await httpService.get(`game/${id}`)
+}
+
+function _getNewGame(users?: string[]): GameState {
+  return {
+    players: null,
+    stateHistory: [],
+    boardHistory: [],
+    board: buildBoard(gPieces),
+    pieces: gPieces,
+    selectedCellCoord: null,
+    isWhiteKingThreatened: false,
+    isBlackKingThreatened: false,
+    isBlackTurn: false,
+    eatableCellAfterTwoStepsPawnWhite: null,
+    eatableCellAfterTwoStepsPawnBlack: null,
+    kingPos: {
+      black: { i: 0, j: 4 },
+      white: { i: 7, j: 4 },
+    },
+    eatenPieces: {
+      black: [],
+      white: [],
+    },
+    isCastlingLegal: {
+      whiteLeftSide: true,
+      whiteRightSide: true,
+      whiteKing: true,
+      blackLeftSide: true,
+      blackRightSide: true,
+      blackKing: true,
+    },
+    users,
+  }
 }

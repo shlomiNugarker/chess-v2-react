@@ -14,15 +14,14 @@ import { PromotionChoice } from './PromotionChoice'
 import { isPawnStepsEnd } from '../services/game/isPawnStepsEnd'
 import { addPieceInsteadPawn } from '../services/game/addPieceInsteadPawn'
 import {
-  setNewState,
   setSelectedCellCoord,
   setSwitchTurn,
+  setNewState,
 } from '../features/game/gameSlice'
 
 export const Board = () => {
   const dispatch = useAppDispatch()
 
-  const { board } = useAppSelector((state: RootState) => state.game)
   const gameState = useAppSelector((state: RootState) => state.game)
 
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
@@ -33,7 +32,7 @@ export const Board = () => {
   } | null>(null)
 
   function onChoosePieceToAdd(piece: string) {
-    if (!cellCoordsToAddInsteadPawn) return
+    if (!cellCoordsToAddInsteadPawn || !gameState) return
 
     const { newState } = addPieceInsteadPawn(
       gameState,
@@ -42,6 +41,7 @@ export const Board = () => {
     )
 
     newState.isBlackTurn = !newState.isBlackTurn
+
     dispatch(setNewState(newState))
 
     cleanBoard()
@@ -53,9 +53,9 @@ export const Board = () => {
     i: number,
     j: number
   ) => {
-    if (ev.target instanceof Element) {
+    if (ev.target instanceof Element && gameState) {
       const cellCoord = { i, j }
-      const piece = board[i][j]
+      const piece = gameState.board[i][j]
       const isEvSelected = ev.target.classList.contains('selected')
       const isEvMarked = ev.target.classList.contains('mark')
       const isEvEatable = ev.target.classList.contains('eatable')
@@ -143,61 +143,63 @@ export const Board = () => {
   }
 
   useEffect(() => {
-    checkIfKingThreatened(gameState)
+    if (gameState) {
+      checkIfKingThreatened(gameState)
 
-    // handle case if both kings threatened one after one
-    const lastKingThreatened = gameState.isBlackTurn
-      ? gameState.kingPos.white
-      : gameState.kingPos.black
+      // handle case if both kings threatened one after one
+      const lastKingThreatened = gameState.isBlackTurn
+        ? gameState.kingPos.white
+        : gameState.kingPos.black
 
-    if (lastKingThreatened) {
-      const kingEl = document.querySelector(
-        `#cell-${lastKingThreatened.i}-${lastKingThreatened.j}`
-      )
+      if (lastKingThreatened) {
+        const kingEl = document.querySelector(
+          `#cell-${lastKingThreatened.i}-${lastKingThreatened.j}`
+        )
 
-      if (kingEl && kingEl.classList.contains('red'))
-        kingEl.classList.remove('red')
+        if (kingEl && kingEl.classList.contains('red'))
+          kingEl.classList.remove('red')
+      }
     }
-  }, [gameState, gameState.isBlackTurn])
+  }, [gameState, gameState?.isBlackTurn])
 
   const onSwitchTurn = () => {
     dispatch(setSwitchTurn())
   }
 
-  if (!board && !gameState.boardHistory.length)
-    return <div className="board-cmp">Loading...</div>
-
   return (
     <section className="board-cmp">
       <div>
         <div className="pieces">
-          {gameState.eatenPieces.black.map((eatenPiece, idx) => (
-            <span key={eatenPiece + idx}>{eatenPiece}</span>
-          ))}
+          {gameState &&
+            gameState.eatenPieces.black.map((eatenPiece, idx) => (
+              <span key={eatenPiece + idx}>{eatenPiece}</span>
+            ))}
         </div>
         <table>
           <tbody>
-            {board.map((tr, i) => (
-              <tr key={'tr' + i}>
-                {board[i].map((td, j) => (
-                  <td
-                    key={i + j}
-                    id={`cell-${i}-${j}`}
-                    className={(i + j) % 2 === 0 ? 'white' : 'black'}
-                    onClick={(ev) => cellClicked(ev, i, j)}
-                    style={{ cursor: board[i][j] && 'pointer' }}
-                  >
-                    {board[i][j]}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {gameState &&
+              gameState.board.map((tr, i) => (
+                <tr key={'tr' + i}>
+                  {gameState.board[i].map((td, j) => (
+                    <td
+                      key={i + j}
+                      id={`cell-${i}-${j}`}
+                      className={(i + j) % 2 === 0 ? 'white' : 'black'}
+                      onClick={(ev) => cellClicked(ev, i, j)}
+                      style={{ cursor: gameState.board[i][j] && 'pointer' }}
+                    >
+                      {gameState.board[i][j]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
           </tbody>
         </table>
         <div className="pieces">
-          {gameState.eatenPieces.white.map((eatenPiece, idx) => (
-            <span key={eatenPiece + idx}>{eatenPiece}</span>
-          ))}
+          {gameState &&
+            gameState.eatenPieces.white.map((eatenPiece, idx) => (
+              <span key={eatenPiece + idx}>{eatenPiece}</span>
+            ))}
         </div>
       </div>
       {isPromotionChoice && (

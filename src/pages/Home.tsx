@@ -1,21 +1,14 @@
-import { Link } from 'react-router-dom'
-import { RootState } from '../features'
-import { useAppDispatch } from '../hooks/useAppDispatch'
-import { useAppSelector } from '../hooks/useTypedSelector'
+// import { useNavigate } from 'react-router-dom'
+// import { useAppDispatch } from '../hooks/useAppDispatch'
 
 export const Home = () => {
-  const authState = useAppSelector((state: RootState) => state.auth)
-
-  const playOffline = () => {
-    console.log('playOffline')
-  }
+  // const dispatch = useAppDispatch()
+  // const navigate = useNavigate()
 
   return (
     <div className="home-page">
       <div className="container">
-        <pre>{JSON.stringify(authState, null, 2)}</pre>
-        <Link to={'/main'}>play with friend</Link>
-        <p onClick={playOffline}>play offline with friend</p>
+        <button>Play </button>
       </div>
     </div>
   )

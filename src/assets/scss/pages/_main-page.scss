@@ -1,4 +1,37 @@
 .main-page {
   min-height: 100vh;
   width: 100vw;
+
+  .msg {
+    color: $clr2;
+    font-size: 20px;
+    position: fixed;
+    top: calc(50% - 60px);
+    left: 50%;
+    transform: translate(-50%);
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    button {
+      background-color: $clr4;
+      width: 100%;
+      padding: 1rem;
+      color: #fff;
+      text-transform: uppercase;
+      padding: 0.8em 1em;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      -webkit-user-select: none;
+      user-select: none;
+      white-space: nowrap;
+      display: inline-block;
+      transition: all 150ms;
+      border-radius: 3px;
+      box-shadow: 0 2px 5px 0 rgb(0 0 0 / 23%);
+      font-weight: 600;
+      margin-top: 2rem;
+    }
+  }
 }

@@ -27,26 +27,14 @@ export const authSlice = createSlice({
         console.log('rejected:', action.payload)
       })
       // login:
-      .addCase(login.pending, (state, action) => {
-        console.log('login panding')
-      })
       .addCase(login.fulfilled, (state, action) => {
         console.log('login fulfilled:', action.payload)
         state.loggedInUser = action.payload
       })
-      .addCase(login.rejected, (state, action: PayloadAction<any>) => {
-        console.log('login rejected:', action.payload)
-      })
       //logout:
-      .addCase(logout.pending, (state, action) => {
-        console.log('logout panding')
-      })
       .addCase(logout.fulfilled, (state, action) => {
         console.log('logout fulfilled:', action.payload)
         state.loggedInUser = null
-      })
-      .addCase(logout.rejected, (state, action: PayloadAction<any>) => {
-        console.log('logout rejected:', action.payload)
       })
   },
 })

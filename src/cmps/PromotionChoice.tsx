@@ -11,28 +11,26 @@ export const PromotionChoice = ({
   setIsPromotionChoice,
   onChoosePieceToAdd,
 }: props) => {
-  const { pieces, isBlackTurn } = useAppSelector(
-    (state: RootState) => state.game
-  )
+  const gameState = useAppSelector((state: RootState) => state.game)
 
   const blackPieces = [
-    pieces.QUEEN_BLACK,
-    pieces.KNIGHT_BLACK,
-    pieces.BISHOP_BLACK,
-    pieces.ROOK_BLACK,
+    gameState?.pieces.QUEEN_BLACK,
+    gameState?.pieces.KNIGHT_BLACK,
+    gameState?.pieces.BISHOP_BLACK,
+    gameState?.pieces.ROOK_BLACK,
   ]
   const whitePieces = [
-    pieces.QUEEN_WHITE,
-    pieces.KNIGHT_WHITE,
-    pieces.BISHOP_WHITE,
-    pieces.ROOK_WHITE,
+    gameState?.pieces.QUEEN_WHITE,
+    gameState?.pieces.KNIGHT_WHITE,
+    gameState?.pieces.BISHOP_WHITE,
+    gameState?.pieces.ROOK_WHITE,
   ]
 
-  const piecesToShow = isBlackTurn ? blackPieces : whitePieces
+  const piecesToShow = gameState?.isBlackTurn ? blackPieces : whitePieces
   return (
     <div className="promotion-choice">
       <div className="bg"></div>
-      <div className={isBlackTurn ? 'pieces black' : 'pieces white'}>
+      <div className={gameState?.isBlackTurn ? 'pieces black' : 'pieces white'}>
         {piecesToShow.map((piece: any) => (
           <span
             key={piece}
