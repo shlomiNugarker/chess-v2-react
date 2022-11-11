@@ -28,8 +28,6 @@ export function checkIfKingThreatened(
   const bishopOpts = getAllPossibleCoordsBishop(state, kingPos)
   const rookOpts = getAllPossibleCoordsRook(state, kingPos)
 
-  console.log({ pawnOpts })
-
   !isFoundThreatenPiece &&
     queenOpts.forEach((coord) => {
       const pieceToCheck = board[coord.i][coord.j]

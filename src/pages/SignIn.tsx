@@ -1,8 +1,36 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { login } from '../features/auth/asyncActions'
+import { useAppDispatch } from '../hooks/useAppDispatch'
 
 export const SignIn = () => {
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+
+  const [cred, setCred] = useState({
+    username: '',
+    password: '',
+  })
+
+  const handleChange = async (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const field = ev.target.name
+    let value =
+      ev.target.type === 'number' ? +ev.target.value || '' : ev.target.value
+    setCred((prevCred) => ({ ...prevCred, [field]: value }))
+  }
+
+  const cleanFields = () => setCred(() => ({ username: '', password: '' }))
+
   const submit = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault()
+    console.log(cred)
+
+    if (!cred.username && cred.password.length < 4) return
+    dispatch(login(cred)).then((res) => {
+      console.log(res)
+      if (res.meta.requestStatus === 'fulfilled') navigate('/')
+    })
+    cleanFields()
   }
   return (
     <div className="sign-in-page">
@@ -12,15 +40,29 @@ export const SignIn = () => {
             <h1>Sign in</h1>
           </div>
           <div>
-            <label htmlFor="userName">
-              <p>User name or email</p>
-              <input type="text" id="userName" />
+            <label htmlFor="username">
+              <p>User name </p>
+              <input
+                onChange={handleChange}
+                placeholder="User name"
+                name="username"
+                type="text"
+                id="username"
+                value={cred.username}
+              />
             </label>
           </div>
           <div>
-            <label htmlFor="userPassword">
+            <label htmlFor="password">
               <p>Password</p>
-              <input type="password" id="userPassword" />
+              <input
+                onChange={(ev) => handleChange(ev)}
+                type="password"
+                placeholder="Password"
+                name="password"
+                id="password"
+                value={cred.password}
+              />
             </label>
           </div>
           <div>

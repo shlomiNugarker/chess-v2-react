@@ -9,20 +9,22 @@ export const userService = {
 
 const STORAGE_KEY_LOGGEDIN_USER = 'chess_logged_in_user'
 
-async function login(userCred: any) {
+async function login(userCred: { username: string; password: string }) {
   const user = await httpService.post('auth/login', userCred)
   if (user) return _saveLocalUser(user)
 }
 
-async function signup(userCred: any) {
+async function signup(userCred: {
+  username: string
+  password: string
+  fullname: string
+}) {
   const user = await httpService.post('auth/signup', userCred)
-
   return _saveLocalUser(user)
 }
 
 async function logout() {
   sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
-
   return await httpService.post('auth/logout')
 }
 

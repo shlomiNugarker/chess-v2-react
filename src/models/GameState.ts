@@ -1,4 +1,8 @@
 export interface GameState {
+  players: {
+    black: string
+    white: string
+  } | null
   stateHistory: GameState[]
   boardHistory: string[][][]
   board: string[][]

@@ -1,10 +1,20 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { RootState } from '../features'
+import { logout, signUp } from '../features/auth/asyncActions'
+import { useAppDispatch } from '../hooks/useAppDispatch'
+import { useAppSelector } from '../hooks/useTypedSelector'
 
 export const Header = (props: any) => {
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const [isMenuVisible, setIsMenuVisible] = useState(false)
 
-  const navigate = useNavigate()
+  const { loggedInUser } = useAppSelector((state: RootState) => state.auth)
+
+  const onLogout = () => dispatch(logout())
+
+  console.log({ loggedInUser })
 
   return (
     <header className="header-cmp">
@@ -31,6 +41,8 @@ export const Header = (props: any) => {
         <div className="sign-in-container">
           <div className="sign-in">
             <p onClick={() => navigate('/sign-in')}>Sign In</p>
+
+            <p onClick={onLogout}>Logout</p>
           </div>
         </div>
       </div>

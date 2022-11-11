@@ -1,8 +1,38 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { signUp } from '../features/auth/asyncActions'
+import { useAppDispatch } from '../hooks/useAppDispatch'
 
 export const SignUp = () => {
+  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+
+  const [cred, setCred] = useState({
+    username: '',
+    password: '',
+    fullname: '',
+  })
+
+  const handleChange = async (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const field = ev.target.name
+    let value =
+      ev.target.type === 'number' ? +ev.target.value || '' : ev.target.value
+    setCred((prevCred) => ({ ...prevCred, [field]: value }))
+  }
+
+  const cleanFields = () =>
+    setCred(() => ({ username: '', password: '', fullname: '' }))
+
   const submit = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault()
+    if (!cred.username && !cred.fullname.length && cred.password.length < 4)
+      return
+
+    dispatch(signUp(cred)).then((res) => {
+      console.log(res)
+      if (res.meta.requestStatus === 'fulfilled') navigate('/')
+    })
+    cleanFields()
   }
 
   return (
@@ -13,21 +43,42 @@ export const SignUp = () => {
             <h1>Sign up</h1>
           </div>
           <div>
-            <label htmlFor="userName">
+            <label htmlFor="username">
               <p>User name </p>
-              <input type="text" id="userName" />
+              <input
+                onChange={handleChange}
+                placeholder="User name"
+                name="username"
+                type="text"
+                id="username"
+                value={cred.username}
+              />
             </label>
           </div>
           <div>
-            <label htmlFor="userEmail">
-              <p>Email</p>
-              <input type="email" id="userEmail" />
+            <label htmlFor="fullname">
+              <p>Full name</p>
+              <input
+                onChange={(ev) => handleChange(ev)}
+                type="text"
+                placeholder="Full name"
+                name="fullname"
+                id="fullname"
+                value={cred.fullname}
+              />
             </label>
           </div>
           <div>
             <label htmlFor="userPassword">
               <p>Password</p>
-              <input type="password" id="userPassword" />
+              <input
+                onChange={(ev) => handleChange(ev)}
+                type="password"
+                placeholder="Password"
+                name="password"
+                id="password"
+                value={cred.password}
+              />
             </label>
           </div>
           <div>

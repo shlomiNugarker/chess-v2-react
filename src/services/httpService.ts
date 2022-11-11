@@ -10,7 +10,7 @@ var axios = Axios.create({
 // //localhost:3030/api/user
 
 export const httpService = {
-  get(endpoint: string, data: any) {
+  get(endpoint: string, data: any = null) {
     return ajax(endpoint, 'GET', data)
   },
   post(endpoint: string, data: any = null) {
@@ -38,18 +38,18 @@ async function ajax(endpoint: string, method = 'GET', data = null) {
       `Had Issues ${method}ing to the backend, endpoint: ${endpoint}, with data:`,
       data
     )
-    console.dir(err)
+    // console.dir(err)
 
-    if (Axios.isAxiosError(err)) {
-      if (err.response && err.response.status === 401) {
-        // Depends on routing startegy - hash or history
-        // window.location.assign('/#/login')
-        // window.location.assign('/login')
-        // router.push('/login')
-      }
-    } else {
-      // Just a stock error
-    }
+    // if (Axios.isAxiosError(err)) {
+    //   if (err.response && err.response.status === 401) {
+    //     // Depends on routing startegy - hash or history
+    //     // window.location.assign('/#/login')
+    //     // window.location.assign('/login')
+    //     // router.push('/login')
+    //   }
+    // } else {
+    //   // Just a stock error
+    // }
 
     throw err
   }

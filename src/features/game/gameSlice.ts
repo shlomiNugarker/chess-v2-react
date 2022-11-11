@@ -6,6 +6,7 @@ import { gPieces } from '../../services/game/gPieces'
 import { getJoke } from './asyncActions'
 
 const initialState: GameState = {
+  players: null,
   stateHistory: [],
   boardHistory: [],
   board: buildBoard(gPieces),
@@ -48,17 +49,12 @@ export const gameSlice = createSlice({
       state.kingPos = action.payload
     },
     setIsBlackKingThreatened: (state, action) => {
-      console.log('setIsBlackKingThreatened', action.payload)
       state.isBlackKingThreatened = action.payload
     },
     setIsWhiteKingThreatened: (state, action) => {
-      console.log('setIsWhiteKingThreatened', action.payload)
       state.isWhiteKingThreatened = action.payload
     },
-    addHistoryState: (state, action) => {
-      state.stateHistory.push(action.payload)
-      // state.boardHistory.push(action.payload.board)
-    },
+
     setNewState: (state, action) => {
       state.board = action.payload.board
       state.selectedCellCoord = action.payload.selectedCellCoord
@@ -98,6 +94,5 @@ export const {
   setKingPos,
   setIsBlackKingThreatened,
   setIsWhiteKingThreatened,
-  addHistoryState,
 } = gameSlice.actions
 export default gameSlice.reducer
