@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RootState } from '../features'
-import { logout, signUp } from '../features/auth/asyncActions'
+import { logout } from '../features/auth/asyncActions'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useTypedSelector'
 

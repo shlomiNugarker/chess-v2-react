@@ -2,36 +2,38 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { GameState } from '../../models/GameState'
 import { buildBoard } from '../../services/game/buildBoard'
 import { gPieces } from '../../services/game/gPieces'
+import { getState, setNewState, updateState } from './asyncActions'
 
-const initialState: GameState | null = {
-  players: null,
-  stateHistory: [],
-  boardHistory: [],
-  board: buildBoard(gPieces),
-  pieces: gPieces,
-  selectedCellCoord: null,
-  isWhiteKingThreatened: false,
-  isBlackKingThreatened: false,
-  isBlackTurn: false,
-  eatableCellAfterTwoStepsPawnWhite: null,
-  eatableCellAfterTwoStepsPawnBlack: null,
-  kingPos: {
-    black: { i: 0, j: 4 },
-    white: { i: 7, j: 4 },
-  },
-  eatenPieces: {
-    black: [],
-    white: [],
-  },
-  isCastlingLegal: {
-    whiteLeftSide: true,
-    whiteRightSide: true,
-    whiteKing: true,
-    blackLeftSide: true,
-    blackRightSide: true,
-    blackKing: true,
-  },
-}
+const initialState: GameState | null = null
+// {
+//   players: null,
+//   stateHistory: [],
+//   boardHistory: [],
+//   board: buildBoard(gPieces),
+//   pieces: gPieces,
+//   selectedCellCoord: null,
+//   isWhiteKingThreatened: false,
+//   isBlackKingThreatened: false,
+//   isBlackTurn: false,
+//   eatableCellAfterTwoStepsPawnWhite: null,
+//   eatableCellAfterTwoStepsPawnBlack: null,
+//   kingPos: {
+//     black: { i: 0, j: 4 },
+//     white: { i: 7, j: 4 },
+//   },
+//   eatenPieces: {
+//     black: [],
+//     white: [],
+//   },
+//   isCastlingLegal: {
+//     whiteLeftSide: true,
+//     whiteRightSide: true,
+//     whiteKing: true,
+//     blackLeftSide: true,
+//     blackRightSide: true,
+//     blackKing: true,
+//   },
+// }
 
 export const gameSlice = createSlice({
   name: 'game',
@@ -58,7 +60,7 @@ export const gameSlice = createSlice({
       state.isWhiteKingThreatened = action.payload
     },
 
-    setNewState: (state, action) => {
+    updateStateFromSocket: (state, action) => {
       if (!state) return
 
       state.board = action.payload.board
@@ -73,21 +75,30 @@ export const gameSlice = createSlice({
       state.kingPos = action.payload.kingPos
       state.eatenPieces = action.payload.eatenPieces
       state.isCastlingLegal = action.payload.isCastlingLegal
+      state.players = action.payload.players
     },
   },
-  // extraReducers(builder) {
-  // builder
-  // .addCase(setNewState.fulfilled, (state, action) => {
-  //   console.log('fulfilled:', action.payload)
-  //   state = action.payload
-  //   return state
-  // })
-  // },
+  extraReducers(builder) {
+    builder.addCase(setNewState.fulfilled, (state, action) => {
+      console.log('fulfilled:', action.payload)
+    })
+    builder.addCase(updateState.fulfilled, (state, action) => {
+      console.log('fulfilled:', action.payload)
+      state = action.payload
+      return state
+    })
+    builder.addCase(getState.fulfilled, (state, action) => {
+      console.log('fulfilled:', action.payload)
+      state = action.payload
+      return state
+    })
+  },
 })
 
 export const {
   setSelectedCellCoord,
-  setNewState,
+  // setNewState,
+  updateStateFromSocket,
   setSwitchTurn,
   setKingPos,
   setIsBlackKingThreatened,

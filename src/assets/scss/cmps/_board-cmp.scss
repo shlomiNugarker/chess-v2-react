@@ -5,6 +5,24 @@
   min-height: calc(100vh - 60px);
   text-transform: uppercase;
 
+  &.blackScreen {
+    rotate: 180deg;
+
+    .pieces {
+      rotate: 180deg;
+    }
+
+    table {
+      tbody {
+        tr {
+          td {
+            rotate: 180deg;
+          }
+        }
+      }
+    }
+  }
+
   div {
     display: flex;
     flex-direction: column;

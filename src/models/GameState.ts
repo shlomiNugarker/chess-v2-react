@@ -42,6 +42,5 @@ export interface GameState {
     blackRightSide: boolean
     blackKing: boolean
   }
-  users?: string[]
   _id?: string
 }

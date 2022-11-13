@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { User } from '../../models/User'
+import { authService } from '../../services/authService'
 
 import { login, logout, signUp } from './asyncActions'
 
@@ -7,7 +8,7 @@ interface authState {
   loggedInUser: User | null
 }
 
-const initialState: authState = { loggedInUser: null }
+const initialState: authState = { loggedInUser: authService.getLoggedinUser() }
 
 export const authSlice = createSlice({
   name: 'auth',

@@ -13,16 +13,19 @@ import { isNextStepLegal } from '../services/game/isNextStepLegal'
 import { PromotionChoice } from './PromotionChoice'
 import { isPawnStepsEnd } from '../services/game/isPawnStepsEnd'
 import { addPieceInsteadPawn } from '../services/game/addPieceInsteadPawn'
-import {
-  setSelectedCellCoord,
-  setSwitchTurn,
-  setNewState,
-} from '../features/game/gameSlice'
+import { setSelectedCellCoord, setSwitchTurn } from '../features/game/gameSlice'
+import { updateState } from '../features/game/asyncActions'
 
-export const Board = () => {
+interface props {
+  isTwoPlayerInTheGame: boolean
+  setIsTwoPlayerInTheGame: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const Board = ({ isTwoPlayerInTheGame }: props) => {
   const dispatch = useAppDispatch()
 
   const gameState = useAppSelector((state: RootState) => state.game)
+  const authState = useAppSelector((state: RootState) => state.auth)
 
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
 
@@ -33,17 +36,13 @@ export const Board = () => {
 
   function onChoosePieceToAdd(piece: string) {
     if (!cellCoordsToAddInsteadPawn || !gameState) return
-
     const { newState } = addPieceInsteadPawn(
       gameState,
       cellCoordsToAddInsteadPawn,
       piece
     )
-
     newState.isBlackTurn = !newState.isBlackTurn
-
-    dispatch(setNewState(newState))
-
+    dispatch(updateState(newState))
     cleanBoard()
     setIsPromotionChoice(false)
   }
@@ -53,6 +52,8 @@ export const Board = () => {
     i: number,
     j: number
   ) => {
+    if (!isTwoPlayerInTheGame) return
+
     if (ev.target instanceof Element && gameState) {
       const cellCoord = { i, j }
       const piece = gameState.board[i][j]
@@ -73,18 +74,18 @@ export const Board = () => {
         if (!newState) return
         if (isPawnStepsEnd(state, cellCoord)) {
           setIsPromotionChoice(true)
-          newState && dispatch(setNewState(newState))
+          newState && dispatch(updateState(newState))
           setCellCoordsToAddInsteadPawn(cellCoord)
           return
         }
         newState.isBlackTurn = !newState.isBlackTurn
-        dispatch(setNewState(newState))
+        dispatch(updateState(newState))
 
         cleanBoard()
         return
       }
 
-      // if it's possible to catling:
+      // if it's possible to castling:
       if (isEvCastling && gameState.selectedCellCoord) {
         const { isMoveLegal } = isNextStepLegal(gameState, ev.target)
         if (!isMoveLegal) return
@@ -93,7 +94,7 @@ export const Board = () => {
         isCastleLegals &&
           isCastleLegals.newState &&
           isCastleLegals.isCastleLegal &&
-          dispatch(setNewState(isCastleLegals.newState))
+          dispatch(updateState(isCastleLegals.newState))
 
         if (isCastleLegals && !isCastleLegals.isCastleLegal) return
 
@@ -121,13 +122,13 @@ export const Board = () => {
         if (!newState) return
         if (isPawnStepsEnd(state, cellCoord)) {
           setIsPromotionChoice(true)
-          newState && dispatch(setNewState(newState))
+          newState && dispatch(updateState(newState))
           setCellCoordsToAddInsteadPawn(cellCoord)
           return
         }
 
         newState.isBlackTurn = !newState.isBlackTurn
-        dispatch(setNewState(newState))
+        dispatch(updateState(newState))
 
         cleanBoard()
         return
@@ -166,8 +167,13 @@ export const Board = () => {
     dispatch(setSwitchTurn())
   }
 
+  const screenStyle =
+    gameState?.players?.black === authState?.loggedInUser?._id
+      ? 'blackScreen'
+      : 'whiteScreen'
+
   return (
-    <section className="board-cmp">
+    <section className={'board-cmp ' + screenStyle}>
       <div>
         <div className="pieces">
           {gameState &&

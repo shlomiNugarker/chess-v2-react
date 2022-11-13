@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { authService } from '../../services/authService'
+import { socketService } from '../../services/socketService'
 
 export const signUp = createAsyncThunk(
   'auth/signup',
@@ -31,6 +32,7 @@ export const login = createAsyncThunk(
   ) => {
     try {
       const user = await authService.login(userCred)
+      socketService.emit('setUserSocket', user._id)
       return user
     } catch (err) {
       console.log('cannot login:', err)

@@ -3,9 +3,10 @@ import { buildBoard } from './game/buildBoard'
 import { gPieces } from './game/gPieces'
 import { httpService } from './httpService'
 
-export const gameService = {
+export const gameStateService = {
   getById,
   saveState,
+  getNewGame,
 }
 
 async function saveState(state: GameState) {
@@ -18,9 +19,9 @@ async function getById(id: string) {
   return await httpService.get(`game/${id}`)
 }
 
-function _getNewGame(users?: string[]): GameState {
+function getNewGame(firstPlayerId: string): GameState {
   return {
-    players: null,
+    players: { white: firstPlayerId, black: '' },
     stateHistory: [],
     boardHistory: [],
     board: buildBoard(gPieces),
@@ -47,6 +48,5 @@ function _getNewGame(users?: string[]): GameState {
       blackRightSide: true,
       blackKing: true,
     },
-    users,
   }
 }

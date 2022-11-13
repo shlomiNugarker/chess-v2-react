@@ -1,14 +1,46 @@
+import { useEffect } from 'react'
 import { Route, Link, Routes } from 'react-router-dom'
 
 import './assets/scss/global.scss'
 import { Header } from './cmps/Header'
+import { RootState } from './features'
+import { updateState } from './features/game/asyncActions'
+import { updateStateFromSocket } from './features/game/gameSlice'
+import { useAppDispatch } from './hooks/useAppDispatch'
+import { useAppSelector } from './hooks/useTypedSelector'
+import { GameState } from './models/GameState'
 import { About } from './pages/About'
 import { Home } from './pages/Home'
 import { Main } from './pages/Main'
 import { SignIn } from './pages/SignIn'
 import { SignUp } from './pages/SignUp'
+import { socketService } from './services/socketService'
 
 const App = () => {
+  const authState = useAppSelector((state: RootState) => state.auth)
+  const dispatch = useAppDispatch()
+
+  // handle sockets:
+  useEffect(() => {
+    if (authState.loggedInUser) {
+      socketService.emit('setUserSocket', authState.loggedInUser._id)
+    }
+    socketService.on('add-connected-users', (connectedUsers: any[]) => {
+      console.log(connectedUsers)
+    })
+    socketService.on('update-state', (updatedState: GameState) => {
+      console.log('on update state')
+      console.log({ updatedState })
+      dispatch(updateStateFromSocket(updatedState))
+      // dispatch(updateState(updatedState))
+    })
+
+    return () => {
+      socketService.off('add-connected-users')
+      socketService.off('update-state')
+    }
+  }, [authState.loggedInUser, dispatch])
+
   return (
     <>
       <nav className="temp-nav">
