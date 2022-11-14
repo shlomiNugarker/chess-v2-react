@@ -36,8 +36,6 @@ export function checkIfKingThreatened(
         : state.pieces.QUEEN_BLACK
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
-        console.log(pieceToCheck, '===', threatenPiece)
-
         isFoundThreatenPiece = true
         !isFakeCheck && paintKingCellToRed(kingPos)
       }
@@ -51,8 +49,6 @@ export function checkIfKingThreatened(
         : state.pieces.KING_BLACK
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
-        console.log(pieceToCheck, '===', threatenPiece)
-
         isFoundThreatenPiece = true
         !isFakeCheck && paintKingCellToRed(kingPos)
       }
@@ -66,8 +62,6 @@ export function checkIfKingThreatened(
         : state.pieces.KNIGHT_BLACK
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
-        console.log(pieceToCheck, '===', threatenPiece)
-
         isFoundThreatenPiece = true
         !isFakeCheck && paintKingCellToRed(kingPos)
       }
@@ -81,8 +75,6 @@ export function checkIfKingThreatened(
         : state.pieces.PAWN_BLACK
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
-        console.log(pieceToCheck, '===', threatenPiece)
-
         isFoundThreatenPiece = true
         !isFakeCheck && paintKingCellToRed(kingPos)
       }
@@ -96,8 +88,6 @@ export function checkIfKingThreatened(
         : state.pieces.BISHOP_BLACK
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
-        console.log(pieceToCheck, '===', threatenPiece)
-
         isFoundThreatenPiece = true
         !isFakeCheck && paintKingCellToRed(kingPos)
       }
@@ -111,8 +101,6 @@ export function checkIfKingThreatened(
         : state.pieces.ROOK_BLACK
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
-        console.log(pieceToCheck, '===', threatenPiece)
-
         isFoundThreatenPiece = true
         !isFakeCheck && paintKingCellToRed(kingPos)
       }

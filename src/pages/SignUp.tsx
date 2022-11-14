@@ -29,7 +29,6 @@ export const SignUp = () => {
       return
 
     dispatch(signUp(cred)).then((res) => {
-      console.log(res)
       if (res.meta.requestStatus === 'fulfilled') navigate('/')
     })
     cleanFields()

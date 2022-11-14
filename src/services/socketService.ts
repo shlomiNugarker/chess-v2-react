@@ -13,8 +13,6 @@ function createSocketService() {
   var socket: Socket<DefaultEventsMap, DefaultEventsMap> | null = null
   const socketService = {
     async setup() {
-      console.log('setup')
-
       socket = io(baseUrl)
     },
     on(eventName: any, cb: any) {

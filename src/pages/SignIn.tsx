@@ -23,11 +23,8 @@ export const SignIn = () => {
 
   const submit = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault()
-    console.log(cred)
-
     if (!cred.username && cred.password.length < 4) return
     dispatch(login(cred)).then((res) => {
-      console.log(res)
       if (res.meta.requestStatus === 'fulfilled') navigate('/')
     })
     cleanFields()

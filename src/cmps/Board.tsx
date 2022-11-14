@@ -21,6 +21,8 @@ interface props {
   setIsTwoPlayerInTheGame: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+var audioStep = new Audio(require('../assets/sound/step.mp3'))
+
 export const Board = ({ isTwoPlayerInTheGame }: props) => {
   const dispatch = useAppDispatch()
 
@@ -54,6 +56,19 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
   ) => {
     if (gameState?.isOnline && !isTwoPlayerInTheGame) return
 
+    if (
+      gameState?.isBlackTurn &&
+      authState.loggedInUser?._id !== gameState.players?.black
+    )
+      return
+    if (
+      gameState?.isBlackTurn === false &&
+      authState.loggedInUser?._id !== gameState.players?.white
+    )
+      return
+
+    // audioStep.play()
+
     if (ev.target instanceof Element && gameState) {
       const cellCoord = { i, j }
       const piece = gameState.board[i][j]
@@ -71,6 +86,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
         if (!isMoveLegal) return
 
         const newState = movePiece(gameState, cellCoord)
+        audioStep.play()
         if (!newState) return
         if (isPawnStepsEnd(state, cellCoord)) {
           setIsPromotionChoice(true)
@@ -91,6 +107,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
         if (!isMoveLegal) return
 
         const isCastleLegals = doCastling(gameState, ev.target)
+        audioStep.play()
         isCastleLegals &&
           isCastleLegals.newState &&
           isCastleLegals.isCastleLegal &&
@@ -119,6 +136,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
         if (!isMoveLegal) return
 
         const newState = movePiece(gameState, cellCoord)
+        audioStep.play()
         if (!newState) return
         if (isPawnStepsEnd(state, cellCoord)) {
           setIsPromotionChoice(true)

@@ -86,7 +86,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
         <>
           <p className="is-waiting">Waiting for a player...</p>
           <p className="is-waiting" onClick={copyToClipBoard}>
-            Share this link for play <span>copy</span>
+            Share this link for play <span>click to copy </span>
           </p>
         </>
       )}

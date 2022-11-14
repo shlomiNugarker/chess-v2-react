@@ -5,7 +5,6 @@ import './assets/scss/global.scss'
 import { Header } from './cmps/Header'
 import { RootState } from './features'
 import { setLocalUser } from './features/auth/authSlice'
-import { updateState } from './features/game/asyncActions'
 import { updateStateFromSocket } from './features/game/gameSlice'
 import { useAppDispatch } from './hooks/useAppDispatch'
 import { useAppSelector } from './hooks/useTypedSelector'
@@ -22,12 +21,7 @@ const App = () => {
   const authState = useAppSelector((state: RootState) => state.auth)
   const dispatch = useAppDispatch()
 
-  // useEffect(() => {
-  //   return () => {}
-  // }, [])
-
   // handle sockets:
-
   const onLoginAsGuest = () => {
     const newUser = authService.signupAsGuest()
     dispatch(setLocalUser(newUser))
@@ -38,7 +32,7 @@ const App = () => {
       socketService.emit('setUserSocket', authState.loggedInUser._id)
     }
     socketService.on('add-connected-users', (connectedUsers: any[]) => {
-      console.log(connectedUsers)
+      // console.log(connectedUsers)
     })
     socketService.on('update-state', (updatedState: GameState) => {
       dispatch(updateStateFromSocket(updatedState))
@@ -58,7 +52,7 @@ const App = () => {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/:id">Main</Link>
+            <Link to="/">Main</Link>
           </li>
           <li>
             <Link to="/about">About</Link>

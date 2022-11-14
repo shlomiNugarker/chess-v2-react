@@ -6,6 +6,11 @@
     text-align: center;
     color: $clr2;
     margin: 10px 0;
+
+    span {
+      color: $clr4;
+      cursor: pointer;
+    }
   }
 
   .msg {
