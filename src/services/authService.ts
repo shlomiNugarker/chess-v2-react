@@ -57,7 +57,5 @@ function getLoggedinUser() {
   const loggedInUserStorage: User | null = utilService.loadFromStorage(
     STORAGE_KEY_LOGGEDIN_USER
   )
-  console.log({ loggedInUserStorage })
-
   return loggedInUserSession || loggedInUserStorage || null
 }

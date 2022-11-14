@@ -1,4 +1,5 @@
 export interface GameState {
+  isOnline: boolean
   players: {
     black: string
     white: string
@@ -43,4 +44,5 @@ export interface GameState {
     blackKing: boolean
   }
   _id?: string
+  createdAt?: number
 }

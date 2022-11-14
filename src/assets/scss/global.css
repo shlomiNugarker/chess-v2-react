@@ -296,6 +296,9 @@ input {
   align-items: center;
   justify-content: center;
 }
+.header-cmp .container .logo a:hover {
+  text-decoration: none;
+}
 .header-cmp .container .nav {
   display: flex;
 }

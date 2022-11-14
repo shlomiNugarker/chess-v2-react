@@ -6,10 +6,11 @@ import { useAppSelector } from '../hooks/useTypedSelector'
 import { gameStateService } from '../services/gameStateService'
 import { setNewState } from '../features/game/asyncActions'
 import { ValidAuthModal } from '../cmps/ValidAuthModal'
-import { authService } from '../services/authService'
-import { setLocalUser } from '../features/auth/authSlice'
 
-export const Home = () => {
+interface props {
+  onLoginAsGuest: any
+}
+export const Home = ({ onLoginAsGuest }: props) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
@@ -21,7 +22,7 @@ export const Home = () => {
       alert('please login')
       return
     }
-    const newGame = gameStateService.getNewGame(userId)
+    const newGame = gameStateService.getNewGame(userId, true)
     dispatch(setNewState(newGame)).then((res) => {
       const gameId = res.payload._id
       navigate(`/${gameId}`)
@@ -29,23 +30,12 @@ export const Home = () => {
   }
 
   const onStartNewGameOffline = () => {
-    // const userId = authState.loggedInUser?._id
-    // if (!userId) {
-    //   alert('please login')
-    //   return
-    // }
-    // const newGame = gameStateService.getNewGame(userId)
-    // console.log({ newGame })
-    // dispatch(setNewState(newGame)).then((res) => {
-    //   const gameId = res.payload._id
-    //   navigate(`/${gameId}`)
-    // })
-  }
-
-  const onLoginAsGuest = () => {
-    console.log('onLoginAsGuest')
-    const newUser = authService.signupAsGuest()
-    dispatch(setLocalUser(newUser))
+    const userId = authState.loggedInUser?._id || 'Guest'
+    const newGame = gameStateService.getNewGame(userId, false)
+    dispatch(setNewState(newGame)).then((res) => {
+      const gameId = res.payload._id
+      navigate(`/${gameId}`)
+    })
   }
 
   return (
@@ -55,7 +45,9 @@ export const Home = () => {
           Play with a friend online
         </button>
         <button>Play with the computer </button>
-        <button>Play with a friend offline </button>
+        <button onClick={onStartNewGameOffline}>
+          Play with a friend offline
+        </button>
       </div>
       {!authState.loggedInUser && (
         <ValidAuthModal onLoginAsGuest={onLoginAsGuest} />

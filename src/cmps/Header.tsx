@@ -1,11 +1,10 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { RootState } from '../features'
 import { logout } from '../features/auth/asyncActions'
-import { authSlice } from '../features/auth/authSlice'
+
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useTypedSelector'
-import { authService } from '../services/authService'
 
 export const Header = (props: any) => {
   const dispatch = useAppDispatch()
@@ -13,17 +12,16 @@ export const Header = (props: any) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false)
 
   const { loggedInUser } = useAppSelector((state: RootState) => state.auth)
-
   const onLogout = () => dispatch(logout())
-
-  console.log({ loggedInUser })
 
   return (
     <header className="header-cmp">
       <div
         className={` ${!isMenuVisible ? 'container hide-menu' : 'container'}`}
       >
-        <span className="logo">chess logo</span>
+        <span className="logo">
+          <Link to={'/'}>chess logo</Link>
+        </span>
         <div className="nav">
           <ul>
             <li>Play</li>

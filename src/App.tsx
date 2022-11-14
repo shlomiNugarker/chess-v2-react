@@ -4,6 +4,7 @@ import { Route, Link, Routes } from 'react-router-dom'
 import './assets/scss/global.scss'
 import { Header } from './cmps/Header'
 import { RootState } from './features'
+import { setLocalUser } from './features/auth/authSlice'
 import { updateState } from './features/game/asyncActions'
 import { updateStateFromSocket } from './features/game/gameSlice'
 import { useAppDispatch } from './hooks/useAppDispatch'
@@ -14,6 +15,7 @@ import { Home } from './pages/Home'
 import { Main } from './pages/Main'
 import { SignIn } from './pages/SignIn'
 import { SignUp } from './pages/SignUp'
+import { authService } from './services/authService'
 import { socketService } from './services/socketService'
 
 const App = () => {
@@ -25,6 +27,12 @@ const App = () => {
   // }, [])
 
   // handle sockets:
+
+  const onLoginAsGuest = () => {
+    const newUser = authService.signupAsGuest()
+    dispatch(setLocalUser(newUser))
+  }
+
   useEffect(() => {
     if (authState.loggedInUser) {
       socketService.emit('setUserSocket', authState.loggedInUser._id)
@@ -68,8 +76,8 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/:id" element={<Main />} />
-        <Route path="/" element={<Home />} />
+        <Route path="/:id" element={<Main onLoginAsGuest={onLoginAsGuest} />} />
+        <Route path="/" element={<Home onLoginAsGuest={onLoginAsGuest} />} />
       </Routes>
     </>
   )

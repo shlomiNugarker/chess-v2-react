@@ -52,18 +52,18 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
     i: number,
     j: number
   ) => {
-    if (!isTwoPlayerInTheGame) return
+    if (gameState?.isOnline && !isTwoPlayerInTheGame) return
 
     if (ev.target instanceof Element && gameState) {
       const cellCoord = { i, j }
       const piece = gameState.board[i][j]
-      const isEvSelected = ev.target.classList.contains('selected')
-      const isEvMarked = ev.target.classList.contains('mark')
-      const isEvEatable = ev.target.classList.contains('eatable')
-      const isEvCastling = ev.target.classList.contains('castle')
+      const isSquareSelected = ev.target.classList.contains('selected')
+      const isSquareMarked = ev.target.classList.contains('mark')
+      const isSquareEatable = ev.target.classList.contains('eatable')
+      const isSquareCastling = ev.target.classList.contains('castle')
 
       // if it's possible to eat:
-      if (isEvEatable && gameState.selectedCellCoord) {
+      if (isSquareEatable && gameState.selectedCellCoord) {
         let { isMoveLegal, state } = isNextStepLegal(gameState, ev.target)
 
         if (state.isBlackTurn && state.isBlackKingThreatened) return
@@ -86,7 +86,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
       }
 
       // if it's possible to castling:
-      if (isEvCastling && gameState.selectedCellCoord) {
+      if (isSquareCastling && gameState.selectedCellCoord) {
         const { isMoveLegal } = isNextStepLegal(gameState, ev.target)
         if (!isMoveLegal) return
 
@@ -107,14 +107,14 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
         return
 
       // unselect
-      if (isEvSelected) {
+      if (isSquareSelected) {
         ev.target.classList.remove('selected')
         cleanBoard()
         return
       }
 
       // if it's possible to step:
-      if (isEvMarked && gameState.selectedCellCoord) {
+      if (isSquareMarked && gameState.selectedCellCoord) {
         const { isMoveLegal, state } = isNextStepLegal(gameState, ev.target)
         if (!isMoveLegal) return
 

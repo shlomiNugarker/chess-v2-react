@@ -19,8 +19,9 @@ async function getById(id: string) {
   return await httpService.get(`game/${id}`)
 }
 
-function getNewGame(firstPlayerId: string): GameState {
+function getNewGame(firstPlayerId: string, isOnline: boolean): GameState {
   return {
+    isOnline,
     players: { white: firstPlayerId, black: '' },
     stateHistory: [],
     boardHistory: [],
