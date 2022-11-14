@@ -38,7 +38,12 @@
 
     .sign-in-container {
       .sign-in {
-        cursor: pointer;
+        display: flex;
+        align-items: center;
+
+        button {
+          margin-left: 5px;
+        }
       }
     }
   }

@@ -13,7 +13,13 @@ const initialState: authState = { loggedInUser: authService.getLoggedinUser() }
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    setLocalUser: (state, action) => {
+      if (!state) return
+      console.log(action.payload)
+      state.loggedInUser = action.payload
+    },
+  },
   extraReducers(builder) {
     builder
       //signup:
@@ -40,5 +46,5 @@ export const authSlice = createSlice({
   },
 })
 
-export const {} = authSlice.actions
+export const { setLocalUser } = authSlice.actions
 export default authSlice.reducer

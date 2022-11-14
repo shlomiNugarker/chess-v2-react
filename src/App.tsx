@@ -20,6 +20,10 @@ const App = () => {
   const authState = useAppSelector((state: RootState) => state.auth)
   const dispatch = useAppDispatch()
 
+  // useEffect(() => {
+  //   return () => {}
+  // }, [])
+
   // handle sockets:
   useEffect(() => {
     if (authState.loggedInUser) {
@@ -29,10 +33,7 @@ const App = () => {
       console.log(connectedUsers)
     })
     socketService.on('update-state', (updatedState: GameState) => {
-      console.log('on update state')
-      console.log({ updatedState })
       dispatch(updateStateFromSocket(updatedState))
-      // dispatch(updateState(updatedState))
     })
 
     return () => {
@@ -49,7 +50,7 @@ const App = () => {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/636df31410ae89490489dc12">Main</Link>
+            <Link to="/:id">Main</Link>
           </li>
           <li>
             <Link to="/about">About</Link>

@@ -14,10 +14,11 @@
 @import './pages/sign-in-page';
 @import './pages/sign-up-page';
 
-// Components
+// Cmps
 @import './cmps/header-cmp';
 @import './cmps/board-cmp';
 @import './cmps/promotion-choice';
+@import './cmps/valid-auth-modal';
 
 .temp-nav {
   position: fixed;

@@ -7,4 +7,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    button {
+      margin: 5px 0;
+    }
+  }
 }

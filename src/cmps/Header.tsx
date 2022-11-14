@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RootState } from '../features'
 import { logout } from '../features/auth/asyncActions'
+import { authSlice } from '../features/auth/authSlice'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useTypedSelector'
+import { authService } from '../services/authService'
 
 export const Header = (props: any) => {
   const dispatch = useAppDispatch()
@@ -40,9 +42,11 @@ export const Header = (props: any) => {
 
         <div className="sign-in-container">
           <div className="sign-in">
-            <p onClick={() => navigate('/sign-in')}>Sign In</p>
-
-            <p onClick={onLogout}>Logout</p>
+            {!loggedInUser && (
+              <p onClick={() => navigate('/sign-in')}>Sign In</p>
+            )}
+            {loggedInUser && <span>Hello, {loggedInUser.fullname}</span>}
+            {loggedInUser && <button onClick={onLogout}>Logout</button>}
           </div>
         </div>
       </div>
