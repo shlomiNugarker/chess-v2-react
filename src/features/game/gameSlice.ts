@@ -59,10 +59,8 @@ export const gameSlice = createSlice({
       if (!state) return
       state.isWhiteKingThreatened = action.payload
     },
-
     updateStateFromSocket: (state, action) => {
       if (!state) return
-
       state.board = action.payload.board
       state.selectedCellCoord = action.payload.selectedCellCoord
       state.isWhiteKingThreatened = action.payload.isWhiteKingThreatened
@@ -97,7 +95,6 @@ export const gameSlice = createSlice({
 
 export const {
   setSelectedCellCoord,
-  // setNewState,
   updateStateFromSocket,
   setSwitchTurn,
   setKingPos,

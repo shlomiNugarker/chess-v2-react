@@ -46,7 +46,10 @@ export const logout = createAsyncThunk(
   'auth/logout',
   async (data, thunkApi) => {
     try {
+      const user = authService.getLoggedinUser()
       await authService.logout()
+
+      user && socketService.emit('user-disconnect', user._id)
     } catch (err) {
       console.log('cannot login:', err)
       if (err instanceof Error) return thunkApi.rejectWithValue(err.message)

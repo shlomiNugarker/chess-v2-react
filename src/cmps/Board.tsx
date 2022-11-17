@@ -21,7 +21,9 @@ interface props {
   setIsTwoPlayerInTheGame: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-var audioStep = new Audio(require('../assets/sound/step.mp3'))
+const audioStep = new Audio(require('../assets/sound/step.mp3'))
+const castleStep = new Audio(require('../assets/sound/castle.mp3'))
+const checkStep = new Audio(require('../assets/sound/check.mp3'))
 
 export const Board = ({ isTwoPlayerInTheGame }: props) => {
   const dispatch = useAppDispatch()
@@ -105,7 +107,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
         if (!isMoveLegal) return
 
         const isCastleLegals = doCastling(gameState, ev.target)
-        audioStep.play()
+        castleStep.play()
         isCastleLegals &&
           isCastleLegals.newState &&
           isCastleLegals.isCastleLegal &&
@@ -162,7 +164,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
   useEffect(() => {
     if (gameState) {
       checkIfKingThreatened(gameState)
-
+      //
       // handle case if both kings threatened one after one
       const lastKingThreatened = gameState.isBlackTurn
         ? gameState.kingPos.white

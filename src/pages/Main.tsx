@@ -86,6 +86,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     gameState?.players?.black,
     gameState?.players?.white,
     authState.loggedInUser,
+    gameState?.isOnline,
   ])
 
   useEffect(() => {

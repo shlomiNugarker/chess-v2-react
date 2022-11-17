@@ -119,11 +119,9 @@ export function checkIfKingThreatened(
     return { isThreatened: false, state: copiedState }
   }
 
-  // if (!isFakeCheck) {
   copiedState.isBlackTurn
     ? (copiedState.isBlackKingThreatened = true)
     : (copiedState.isWhiteKingThreatened = true)
-  // }
 
   return { isThreatened: true, state: copiedState }
 }

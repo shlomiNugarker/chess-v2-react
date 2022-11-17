@@ -6,19 +6,22 @@ import { login, logout, setLocalUser, signUp } from './asyncActions'
 
 interface authState {
   loggedInUser: User | null
+  connectedUsers: string[]
 }
 
-const initialState: authState = { loggedInUser: authService.getLoggedinUser() }
+const initialState: authState = {
+  loggedInUser: authService.getLoggedinUser(),
+  connectedUsers: [],
+}
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // setLocalUser: (state, action) => {
-    //   if (!state) return
-    //   console.log(action.payload)
-    //   state.loggedInUser = action.payload
-    // },
+    setConnectedUsers: (state, action) => {
+      // if (!state) return
+      state.connectedUsers = action.payload
+    },
   },
   extraReducers(builder) {
     builder
@@ -50,5 +53,5 @@ export const authSlice = createSlice({
   },
 })
 
-export const {} = authSlice.actions
+export const { setConnectedUsers } = authSlice.actions
 export default authSlice.reducer

@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Route, Link, Routes } from 'react-router-dom'
 
 import './assets/scss/global.scss'
 import { Header } from './cmps/Header'
 import { RootState } from './features'
 import { setLocalUser } from './features/auth/asyncActions'
+import { setConnectedUsers } from './features/auth/authSlice'
 
 import { updateStateFromSocket } from './features/game/gameSlice'
 import { useAppDispatch } from './hooks/useAppDispatch'
@@ -34,7 +35,8 @@ const App = () => {
       socketService.emit('setUserSocket', authState.loggedInUser._id)
     }
     socketService.on('add-connected-users', (connectedUsers: any[]) => {
-      // console.log(connectedUsers)
+      console.log(connectedUsers)
+      dispatch(setConnectedUsers(connectedUsers))
     })
     socketService.on('update-state', (updatedState: GameState) => {
       dispatch(updateStateFromSocket(updatedState))
@@ -70,6 +72,7 @@ const App = () => {
           </li>
         </ul>
       </nav>
+
       <Header></Header>
       <Routes>
         <Route path="/about" element={<About />} />

@@ -13,6 +13,27 @@ export const GameDetails = () => {
   const [whitePlayer, setWhitePlayer] = useState<User | null>(null)
   const [blackPlayer, setBlackPlayer] = useState<User | null>(null)
 
+  const [isWhitePlayerConnected, setIsWhitePlayerConnected] = useState(false)
+  const [isBlackPlayerConnected, setIsBlackPlayerConnected] = useState(false)
+  console.log({ isWhitePlayerConnected, isBlackPlayerConnected })
+
+  useEffect(() => {
+    const isWhitePlayerConnected = authState.connectedUsers.some(
+      (userId) => userId === whitePlayer?._id
+    )
+    setIsWhitePlayerConnected(isWhitePlayerConnected)
+
+    const isBlackPlayerConnected = authState.connectedUsers.some(
+      (userId) => userId === blackPlayer?._id
+    )
+    setIsBlackPlayerConnected(isBlackPlayerConnected)
+  }, [
+    authState.connectedUsers,
+    authState.connectedUsers.length,
+    whitePlayer?._id,
+    blackPlayer?._id,
+  ])
+
   const getUsers = async () => {
     if (!gameState) return
     if (!gameState?.players) return
@@ -31,8 +52,6 @@ export const GameDetails = () => {
     getUsers()
   }, [gameState?.players?.black, gameState?.players?.white])
 
-  console.log({ whitePlayer, blackPlayer })
-
   const screenStyle =
     gameState?.players?.black === authState?.loggedInUser?._id
       ? 'black-screen'
@@ -50,7 +69,13 @@ export const GameDetails = () => {
           <div className={'timer ' + screenStyle}>05:00</div>
           <div className="bar"></div>
           <div className="player-name">
-            <span className="is-connected"></span>
+            <span
+              className={
+                isBlackPlayerConnected
+                  ? 'is-connected connected'
+                  : 'is-connected'
+              }
+            ></span>
             <p>{blackPlayer?.fullname}</p>
           </div>
         </div>
@@ -58,14 +83,20 @@ export const GameDetails = () => {
         <div className="actions"></div>
         <div className={'white-player ' + screenStyle}>
           <div className="player-name">
-            <span className="is-connected"></span>
+            <span
+              className={
+                isWhitePlayerConnected
+                  ? 'is-connected connected'
+                  : 'is-connected '
+              }
+            ></span>
             <p>{whitePlayer?.fullname}</p>
           </div>
           <div className="bar"></div>
           <div className="timer">05:00</div>
           <div className="eaten-pieces">
-            {gameState?.eatenPieces.white.map((piece) => (
-              <span>{piece}</span>
+            {gameState?.eatenPieces.white.map((piece, idx) => (
+              <span key={piece + idx}>{piece}</span>
             ))}
           </div>
         </div>

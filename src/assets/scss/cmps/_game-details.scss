@@ -3,7 +3,7 @@
   color: $clr2;
   // height: calc($td-width * 5);
   display: flex;
-  width: 80%;
+  width: 100%;
 
   .container {
     width: 100%;
@@ -69,8 +69,12 @@
           width: 7px;
           height: 7px;
           margin: 0 5px;
-          background-color: #629924;
+          background-color: #bc3232;
           border-radius: 50%;
+
+          &.connected {
+            background-color: #629924;
+          }
         }
         p {
         }
