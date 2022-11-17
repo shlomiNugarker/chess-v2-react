@@ -117,9 +117,9 @@ export const Main = ({ onLoginAsGuest }: props) => {
         />
       )}
 
-      <GameDetails />
+      {gameState && <GameDetails />}
 
-      <Chat />
+      {gameState && <Chat />}
 
       {!gameState && (
         <div className="msg">

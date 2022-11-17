@@ -7,15 +7,7 @@ export const Chat = () => {
       <div className="body">
         <div>
           <span>player:</span>
-          <div className="">Hey</div>
-        </div>
-        <div>
-          <span>player:</span>
-          <div className="">Hey</div>
-        </div>
-        <div>
-          <span>player:</span>
-          <div className="">Hey</div>
+          <div></div>
         </div>
       </div>
       <div className="input-container">
