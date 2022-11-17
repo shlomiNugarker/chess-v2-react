@@ -57,6 +57,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
     if (gameState?.isOnline && !isTwoPlayerInTheGame) return
 
     if (
+      gameState?.isOnline &&
       gameState?.isBlackTurn &&
       authState.loggedInUser?._id !== gameState.players?.black
     )
@@ -66,8 +67,6 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
       authState.loggedInUser?._id !== gameState.players?.white
     )
       return
-
-    // audioStep.play()
 
     if (ev.target instanceof Element && gameState) {
       const cellCoord = { i, j }
@@ -96,7 +95,6 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
         }
         newState.isBlackTurn = !newState.isBlackTurn
         dispatch(updateState(newState))
-
         cleanBoard()
         return
       }
@@ -193,12 +191,6 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
   return (
     <section className={'board-cmp ' + screenStyle}>
       <div>
-        <div className="pieces">
-          {gameState &&
-            gameState.eatenPieces.black.map((eatenPiece, idx) => (
-              <span key={eatenPiece + idx}>{eatenPiece}</span>
-            ))}
-        </div>
         <table>
           <tbody>
             {gameState &&
@@ -219,12 +211,6 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
               ))}
           </tbody>
         </table>
-        <div className="pieces">
-          {gameState &&
-            gameState.eatenPieces.white.map((eatenPiece, idx) => (
-              <span key={eatenPiece + idx}>{eatenPiece}</span>
-            ))}
-        </div>
       </div>
       {isPromotionChoice && (
         <PromotionChoice

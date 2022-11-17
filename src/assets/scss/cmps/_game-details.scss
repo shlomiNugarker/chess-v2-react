@@ -1,0 +1,84 @@
+.game-details {
+  grid-area: game-details;
+  color: $clr2;
+  // height: calc($td-width * 5);
+  display: flex;
+  width: 80%;
+
+  .container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    &.black-screen {
+      rotate: 180deg;
+    }
+
+    .black-player,
+    .white-player {
+      &.black-screen {
+        rotate: 180deg;
+
+        .eaten-pieces {
+          // order: 3;
+        }
+        .timer {
+          // order: 2;
+        }
+        .bar {
+          // order: 3;
+        }
+        .player-name {
+          // order: 1;
+        }
+      }
+
+      .eaten-pieces {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        span {
+          font-size: 30px;
+        }
+      }
+      .timer {
+        font-size: 40px;
+        background: $clr3;
+        display: inline;
+
+        &.black-screen {
+          rotate: 180deg;
+        }
+      }
+      .bar {
+        display: block;
+        // position: absolute;
+        width: 100%;
+        height: 4px;
+        background: #629924;
+        // transform-origin: left;
+      }
+      .player-name {
+        background-color: $clr3;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        .is-connected {
+          display: flex;
+          width: 7px;
+          height: 7px;
+          margin: 0 5px;
+          background-color: #629924;
+          border-radius: 50%;
+        }
+        p {
+        }
+      }
+    }
+
+    .moves {
+      min-height: 100px;
+    }
+  }
+}

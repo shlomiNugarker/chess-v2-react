@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { User } from '../../models/User'
 import { authService } from '../../services/authService'
 
-import { login, logout, signUp } from './asyncActions'
+import { login, logout, setLocalUser, signUp } from './asyncActions'
 
 interface authState {
   loggedInUser: User | null
@@ -14,11 +14,11 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setLocalUser: (state, action) => {
-      if (!state) return
-      console.log(action.payload)
-      state.loggedInUser = action.payload
-    },
+    // setLocalUser: (state, action) => {
+    //   if (!state) return
+    //   console.log(action.payload)
+    //   state.loggedInUser = action.payload
+    // },
   },
   extraReducers(builder) {
     builder
@@ -43,8 +43,12 @@ export const authSlice = createSlice({
         console.log('logout fulfilled:', action.payload)
         state.loggedInUser = null
       })
+      .addCase(setLocalUser.fulfilled, (state, action) => {
+        console.log('logout fulfilled:', action.payload)
+        if (action.payload) state.loggedInUser = action.payload
+      })
   },
 })
 
-export const { setLocalUser } = authSlice.actions
+export const {} = authSlice.actions
 export default authSlice.reducer

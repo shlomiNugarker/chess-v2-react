@@ -4,7 +4,8 @@ import { Route, Link, Routes } from 'react-router-dom'
 import './assets/scss/global.scss'
 import { Header } from './cmps/Header'
 import { RootState } from './features'
-import { setLocalUser } from './features/auth/authSlice'
+import { setLocalUser } from './features/auth/asyncActions'
+
 import { updateStateFromSocket } from './features/game/gameSlice'
 import { useAppDispatch } from './hooks/useAppDispatch'
 import { useAppSelector } from './hooks/useTypedSelector'
@@ -12,6 +13,7 @@ import { GameState } from './models/GameState'
 import { About } from './pages/About'
 import { Home } from './pages/Home'
 import { Main } from './pages/Main'
+import { Profile } from './pages/Profile'
 import { SignIn } from './pages/SignIn'
 import { SignUp } from './pages/SignUp'
 import { authService } from './services/authService'
@@ -22,8 +24,8 @@ const App = () => {
   const dispatch = useAppDispatch()
 
   // handle sockets:
-  const onLoginAsGuest = () => {
-    const newUser = authService.signupAsGuest()
+  const onLoginAsGuest = async () => {
+    const newUser = await authService.signupAsGuest()
     dispatch(setLocalUser(newUser))
   }
 
@@ -58,6 +60,9 @@ const App = () => {
             <Link to="/about">About</Link>
           </li>
           <li>
+            <Link to="/profile">profile</Link>
+          </li>
+          <li>
             <Link to="/sign-in">sign-in</Link>
           </li>
           <li>
@@ -70,6 +75,7 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/:id" element={<Main onLoginAsGuest={onLoginAsGuest} />} />
         <Route path="/" element={<Home onLoginAsGuest={onLoginAsGuest} />} />
       </Routes>

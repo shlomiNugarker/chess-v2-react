@@ -1,18 +1,43 @@
 .main-page {
-  min-height: 100vh;
+  min-height: calc(100vh - 60px);
   width: 100vw;
 
-  .is-waiting {
-    text-align: center;
-    color: $clr2;
-    margin: 10px 0;
+  display: grid;
+  grid-template-areas: 'chat board game-details';
+  align-items: center;
+  grid-template-columns: 1fr calc($td-width * 8) 1fr;
+  gap: 15px;
+  padding: 0 15px;
 
-    span {
-      color: $clr4;
-      cursor: pointer;
+  .wait-container {
+    background-color: rgb(107, 105, 102);
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 30%;
+    min-height: 30%;
+    .share-btn {
+      // position: absolute;
+      // left: 50%;
+      // transform: translate(-50%, 0);
+    }
+
+    .is-waiting {
+      text-align: center;
+      color: $clr2;
+      margin: 10px 0;
+
+      span {
+        color: $clr4;
+        cursor: pointer;
+      }
     }
   }
-
   .msg {
     color: $clr2;
     font-size: 20px;

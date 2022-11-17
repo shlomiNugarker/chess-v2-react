@@ -2,11 +2,13 @@ import _ from 'lodash'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Board } from '../cmps/Board'
+import { GameDetails } from '../cmps/GameDetails'
 import { ValidAuthModal } from '../cmps/ValidAuthModal'
 import { RootState } from '../features'
 import { getState, updateState } from '../features/game/asyncActions'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useTypedSelector'
+import { Chat } from './Chat'
 
 interface props {
   onLoginAsGuest: any
@@ -20,6 +22,20 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
   const [isTwoPlayerInTheGame, setIsTwoPlayerInTheGame] = useState(false)
   const { id } = useParams()
+
+  const onShareGameUrl = async () => {
+    const shareData = {
+      title: 'Chess game',
+      text: `${authState.loggedInUser?.fullname} invited you to play chess !`,
+      url: `https://ichess.onrender.com/#/${id}`,
+    }
+
+    try {
+      await navigator.share(shareData)
+    } catch (err) {
+      console.log(`Error: ${err}`)
+    }
+  }
 
   const joinPlayerToTheGame = () => {
     // if no black player:
@@ -83,13 +99,17 @@ export const Main = ({ onLoginAsGuest }: props) => {
   return (
     <div className="main-page">
       {gameState?.isOnline && !isTwoPlayerInTheGame && (
-        <>
+        <div className="wait-container">
           <p className="is-waiting">Waiting for a player...</p>
           <p className="is-waiting" onClick={copyToClipBoard}>
             Share this link for play <span>click to copy </span>
           </p>
-        </>
+          <button className="share-btn " onClick={onShareGameUrl}>
+            Share
+          </button>
+        </div>
       )}
+
       {gameState && (
         <Board
           isTwoPlayerInTheGame={isTwoPlayerInTheGame}
@@ -97,12 +117,17 @@ export const Main = ({ onLoginAsGuest }: props) => {
         />
       )}
 
+      <GameDetails />
+
+      <Chat />
+
       {!gameState && (
         <div className="msg">
           <p>Did not found a game..</p>
           <button onClick={() => navigate('/')}>Go home</button>
         </div>
       )}
+
       {!authState.loggedInUser && (
         <ValidAuthModal onLoginAsGuest={onLoginAsGuest} />
       )}

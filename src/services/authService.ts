@@ -1,5 +1,6 @@
 import { User } from '../models/User'
 import { httpService } from './httpService'
+import { userService } from './userServise'
 import { utilService } from './utilService'
 
 export const authService = {
@@ -17,18 +18,20 @@ async function login(userCred: { username: string; password: string }) {
   if (user) return _saveLocalUser(user)
 }
 
-function signupAsGuest(fullname?: string) {
+async function signupAsGuest(fullname?: string) {
   const userFromStorage: User | null = utilService.loadFromStorage(
     STORAGE_KEY_LOGGEDIN_USER
   )
   if (userFromStorage) return userFromStorage
 
-  const newUser: User = {
-    _id: utilService.makeId(14),
+  const newUser = {
     fullname: fullname || 'Guest-' + utilService.makeId(5),
   }
-  utilService.saveToStorage(STORAGE_KEY_LOGGEDIN_USER, newUser)
-  return newUser
+
+  const savedUser: User = await userService.saveUser(newUser)
+
+  utilService.saveToStorage(STORAGE_KEY_LOGGEDIN_USER, savedUser)
+  return savedUser
 }
 
 async function signup(userCred: {

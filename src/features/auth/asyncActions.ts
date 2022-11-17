@@ -1,6 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import { User } from '../../models/User'
 import { authService } from '../../services/authService'
 import { socketService } from '../../services/socketService'
+import { userService } from '../../services/userServise'
 
 export const signUp = createAsyncThunk(
   'auth/signup',
@@ -45,6 +47,18 @@ export const logout = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       await authService.logout()
+    } catch (err) {
+      console.log('cannot login:', err)
+      if (err instanceof Error) return thunkApi.rejectWithValue(err.message)
+    }
+  }
+)
+export const setLocalUser = createAsyncThunk(
+  'auth/setLocalUser',
+  async (newUser: User, thunkApi) => {
+    try {
+      const savedUser: User = await userService.saveUser(newUser)
+      return savedUser
     } catch (err) {
       console.log('cannot login:', err)
       if (err instanceof Error) return thunkApi.rejectWithValue(err.message)

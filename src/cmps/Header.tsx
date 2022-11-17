@@ -20,11 +20,11 @@ export const Header = (props: any) => {
         className={` ${!isMenuVisible ? 'container hide-menu' : 'container'}`}
       >
         <span className="logo">
-          <Link to={'/'}>chess logo</Link>
+          <Link to={'/'}>Ichess</Link>
         </span>
         <div className="nav">
           <ul>
-            <li>Play</li>
+            {/* <li>Play</li>
 
             <li>Puzzles</li>
 
@@ -34,7 +34,7 @@ export const Header = (props: any) => {
 
             <li>Community</li>
 
-            <li>Tools</li>
+            <li>Tools</li> */}
           </ul>
         </div>
 
@@ -43,8 +43,16 @@ export const Header = (props: any) => {
             {!loggedInUser && (
               <p onClick={() => navigate('/sign-in')}>Sign In</p>
             )}
-            {loggedInUser && <span>Hello, {loggedInUser.fullname}</span>}
-            {loggedInUser && <button onClick={onLogout}>Logout</button>}
+            {loggedInUser && (
+              <span onClick={() => navigate('/profile')}>
+                Hello, {loggedInUser.fullname}
+              </span>
+            )}
+            {loggedInUser && (
+              <button className="blue-btn" onClick={onLogout}>
+                Logout
+              </button>
+            )}
           </div>
         </div>
       </div>
