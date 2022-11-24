@@ -8,7 +8,6 @@ export const userService = {
 
 async function getUser(userId: string): Promise<User> {
   const user = await httpService.get('user/' + userId)
-  console.log(user)
   return user
 }
 

@@ -8,7 +8,8 @@ import { RootState } from '../features'
 import { getState, updateState } from '../features/game/asyncActions'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useTypedSelector'
-import { Chat } from './Chat'
+import { Chat } from '../cmps/Chat'
+import { saveChat } from '../features/chat/asyncActions'
 
 interface props {
   onLoginAsGuest: any
@@ -19,6 +20,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
   const gameState = useAppSelector((state: RootState) => state.game)
   const authState = useAppSelector((state: RootState) => state.auth)
+  const chatState = useAppSelector((state: RootState) => state.chat)
 
   const [isTwoPlayerInTheGame, setIsTwoPlayerInTheGame] = useState(false)
   const { id } = useParams()
@@ -29,7 +31,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
       text: `${authState.loggedInUser?.fullname} invited you to play chess !`,
       url: `https://ichess.onrender.com/#/${id}`,
     }
-
     try {
       await navigator.share(shareData)
     } catch (err) {
@@ -41,6 +42,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
     // if no black player:
     if (gameState?.players?.white && gameState?.players?.black === '') {
       const stateToUpdate = _.cloneDeep(gameState)
+      const chatToUpdate = _.cloneDeep(chatState)
+
       if (stateToUpdate.players) {
         const userId = authState.loggedInUser?._id
         // if player exist: return
@@ -49,6 +52,12 @@ export const Main = ({ onLoginAsGuest }: props) => {
           // alert('please login')
           return
         }
+        if (gameState.chatId && chatToUpdate && userId) {
+          if (!chatToUpdate.userId2) chatToUpdate.userId2 = userId
+          else if (!chatToUpdate.userId) chatToUpdate.userId = userId
+          // console.log('save chat', { userId, chatToUpdate })
+          dispatch(saveChat(chatToUpdate))
+        }
         stateToUpdate.players.black = userId
       }
       return stateToUpdate
@@ -56,7 +65,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
     // if no white player:
     else if (gameState?.players?.black && gameState?.players?.white === '') {
       const stateToUpdate = _.cloneDeep(gameState)
-
       if (stateToUpdate.players) {
         const userId = authState.loggedInUser?._id
         // if player exist: return
@@ -79,7 +87,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     if (gameState?.players?.black && gameState?.players?.white) {
       setIsTwoPlayerInTheGame(true)
     }
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     dispatch,
     gameState,
@@ -87,6 +95,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     gameState?.players?.white,
     authState.loggedInUser,
     gameState?.isOnline,
+    chatState?._id,
   ])
 
   useEffect(() => {
@@ -110,25 +119,20 @@ export const Main = ({ onLoginAsGuest }: props) => {
           </button>
         </div>
       )}
-
       {gameState && (
         <Board
           isTwoPlayerInTheGame={isTwoPlayerInTheGame}
           setIsTwoPlayerInTheGame={setIsTwoPlayerInTheGame}
         />
       )}
-
       {gameState && <GameDetails />}
-
       {gameState && <Chat />}
-
       {!gameState && (
         <div className="msg">
           <p>Did not found a game..</p>
           <button onClick={() => navigate('/')}>Go home</button>
         </div>
       )}
-
       {!authState.loggedInUser && (
         <ValidAuthModal onLoginAsGuest={onLoginAsGuest} />
       )}

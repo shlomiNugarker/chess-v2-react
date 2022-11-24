@@ -12,11 +12,14 @@ export const setNewState = createAsyncThunk(
     try {
       // if game is offline mode, save in local storage
       if (!newState.isOnline) {
-        const stateWithId = storageService.post('chess-game', newState)
+        const stateWithId: GameState = storageService.post(
+          'chess-game',
+          newState
+        )
         return stateWithId
       }
       // just save new state in DB and after the page navigate, load the game with the param id (getGame)
-      const savedState = await gameStateService.saveState(newState)
+      const savedState: GameState = await gameStateService.saveState(newState)
       return savedState
     } catch (err: any) {
       console.log(err)

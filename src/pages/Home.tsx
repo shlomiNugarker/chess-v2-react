@@ -6,6 +6,7 @@ import { useAppSelector } from '../hooks/useTypedSelector'
 import { gameStateService } from '../services/gameStateService'
 import { setNewState } from '../features/game/asyncActions'
 import { ValidAuthModal } from '../cmps/ValidAuthModal'
+import { GameState } from '../models/GameState'
 
 interface props {
   onLoginAsGuest: any
@@ -24,7 +25,7 @@ export const Home = ({ onLoginAsGuest }: props) => {
     }
     const newGame = gameStateService.getNewGame(userId, true)
     dispatch(setNewState(newGame)).then((res) => {
-      const gameId = res.payload._id
+      const gameId = (res.payload as GameState)._id
       navigate(`/${gameId}`)
     })
   }
@@ -33,7 +34,7 @@ export const Home = ({ onLoginAsGuest }: props) => {
     const userId = authState.loggedInUser?._id || 'Guest'
     const newGame = gameStateService.getNewGame(userId, false)
     dispatch(setNewState(newGame)).then((res) => {
-      const gameId = res.payload._id
+      const gameId = (res.payload as GameState)._id
       navigate(`/${gameId}`)
     })
   }

@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react"
+import { DependencyList, useEffect, useRef } from "react"
 
-export const useEffectUpdate = (cb, dependencies) => {
+export const useEffectUpdate = (cb: () => void, dependencies: DependencyList | undefined) => {
     const isMounting = useRef(true)
 
     useEffect(() => {

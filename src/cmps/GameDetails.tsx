@@ -15,7 +15,6 @@ export const GameDetails = () => {
 
   const [isWhitePlayerConnected, setIsWhitePlayerConnected] = useState(false)
   const [isBlackPlayerConnected, setIsBlackPlayerConnected] = useState(false)
-  console.log({ isWhitePlayerConnected, isBlackPlayerConnected })
 
   useEffect(() => {
     const isWhitePlayerConnected = authState.connectedUsers.some(
@@ -32,6 +31,9 @@ export const GameDetails = () => {
     authState.connectedUsers.length,
     whitePlayer?._id,
     blackPlayer?._id,
+    gameState?.players,
+    gameState?.players?.black,
+    gameState?.players?.white,
   ])
 
   const getUsers = async () => {
@@ -50,7 +52,12 @@ export const GameDetails = () => {
 
   useEffect(() => {
     getUsers()
-  }, [gameState?.players?.black, gameState?.players?.white])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    gameState?.players?.black,
+    gameState?.players?.white,
+    authState.connectedUsers.length,
+  ])
 
   const screenStyle =
     gameState?.players?.black === authState?.loggedInUser?._id

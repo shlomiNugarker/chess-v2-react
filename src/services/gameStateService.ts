@@ -1,4 +1,6 @@
+import { stat } from 'fs'
 import { GameState } from '../models/GameState'
+import { chatService } from './chatService'
 import { buildBoard } from './game/buildBoard'
 import { gPieces } from './game/gPieces'
 import { httpService } from './httpService'
@@ -10,9 +12,19 @@ export const gameStateService = {
 }
 
 async function saveState(state: GameState) {
-  return state._id
-    ? await httpService.put(`game/${state._id}`, state)
-    : await httpService.post('game', state)
+  if (state._id) {
+    return await httpService.put(`game/${state._id}`, state)
+  }
+  if (!state._id) {
+    try {
+      const newChat = await chatService.createChat() // create new chat for tha game
+      state.chatId = newChat._id
+      const newState = await httpService.post('game', state)
+      return newState
+    } catch (err) {
+      console.log(err)
+    }
+  }
 }
 
 async function getById(id: string) {

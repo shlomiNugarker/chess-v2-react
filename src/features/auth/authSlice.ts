@@ -30,7 +30,6 @@ export const authSlice = createSlice({
         console.log('panding')
       })
       .addCase(signUp.fulfilled, (state, action) => {
-        console.log('fulfilled:', action.payload)
         state.loggedInUser = action.payload
       })
       .addCase(signUp.rejected, (state, action: PayloadAction<any>) => {
@@ -38,16 +37,13 @@ export const authSlice = createSlice({
       })
       // login:
       .addCase(login.fulfilled, (state, action) => {
-        console.log('login fulfilled:', action.payload)
         state.loggedInUser = action.payload
       })
       //logout:
       .addCase(logout.fulfilled, (state, action) => {
-        console.log('logout fulfilled:', action.payload)
         state.loggedInUser = null
       })
       .addCase(setLocalUser.fulfilled, (state, action) => {
-        console.log('logout fulfilled:', action.payload)
         if (action.payload) state.loggedInUser = action.payload
       })
   },

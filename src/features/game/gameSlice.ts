@@ -78,15 +78,12 @@ export const gameSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(setNewState.fulfilled, (state, action) => {
-      // console.log('fulfilled:', action.payload)
     })
     builder.addCase(updateState.fulfilled, (state, action) => {
-      // console.log('fulfilled:', action.payload)
       state = action.payload
       return state
     })
     builder.addCase(getState.fulfilled, (state, action) => {
-      // console.log('fulfilled:', action.payload)
       state = action.payload
       return state
     })

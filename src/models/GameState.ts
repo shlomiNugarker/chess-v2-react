@@ -45,4 +45,5 @@ export interface GameState {
   }
   _id?: string
   createdAt?: number
+  chatId?: string
 }

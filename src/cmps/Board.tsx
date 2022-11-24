@@ -107,23 +107,26 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
         if (!isMoveLegal) return
 
         const isCastleLegals = doCastling(gameState, ev.target)
+        if(isCastleLegals?.newState){
+          isCastleLegals.newState.isBlackTurn = !isCastleLegals.newState.isBlackTurn
+        }
         castleStep.play()
+
         isCastleLegals &&
           isCastleLegals.newState &&
           isCastleLegals.isCastleLegal &&
           dispatch(updateState(isCastleLegals.newState))
 
         if (isCastleLegals && !isCastleLegals.isCastleLegal) return
-
-        onSwitchTurn()
+        // onSwitchTurn()
+        dispatch(setSwitchTurn())
         cleanBoard()
         return
       }
 
       if (!isColorPieceWorthCurrPlayerColor(gameState, piece) && piece !== '')
         return
-
-      // unselect
+      // unselect:
       if (isSquareSelected) {
         ev.target.classList.remove('selected')
         cleanBoard()
@@ -144,7 +147,6 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
           setCellCoordsToAddInsteadPawn(cellCoord)
           return
         }
-
         newState.isBlackTurn = !newState.isBlackTurn
         dispatch(updateState(newState))
 
@@ -164,7 +166,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
   useEffect(() => {
     if (gameState) {
       checkIfKingThreatened(gameState)
-      //
+      
       // handle case if both kings threatened one after one
       const lastKingThreatened = gameState.isBlackTurn
         ? gameState.kingPos.white
@@ -180,10 +182,6 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
       }
     }
   }, [gameState, gameState?.isBlackTurn])
-
-  const onSwitchTurn = () => {
-    dispatch(setSwitchTurn())
-  }
 
   const screenStyle =
     gameState?.players?.black === authState?.loggedInUser?._id
@@ -214,6 +212,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
           </tbody>
         </table>
       </div>
+
       {isPromotionChoice && (
         <PromotionChoice
           setIsPromotionChoice={setIsPromotionChoice}
