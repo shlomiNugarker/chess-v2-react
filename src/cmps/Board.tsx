@@ -3,11 +3,11 @@ import { RootState } from '../features'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useTypedSelector'
 import { checkIfKingThreatened } from '../services/game/checkIfKingThreatened'
-import { cleanBoard } from '../services/game/cleanBoard'
+import { cleanBoard } from '../services/game/controller/cleanBoard'
 import { doCastling } from '../services/game/doCastling'
 import { getPossibleCoords } from '../services/game/getPossibleCoords'
 import { isColorPieceWorthCurrPlayerColor } from '../services/game/isColorPieceWorthCurrPlayerColor'
-import { markCells } from '../services/game/markCells'
+import { markCells } from '../services/game/controller/markCells'
 import { movePiece } from '../services/game/movePiece'
 import { isNextStepLegal } from '../services/game/isNextStepLegal'
 import { PromotionChoice } from './PromotionChoice'
@@ -107,8 +107,9 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
         if (!isMoveLegal) return
 
         const isCastleLegals = doCastling(gameState, ev.target)
-        if(isCastleLegals?.newState){
-          isCastleLegals.newState.isBlackTurn = !isCastleLegals.newState.isBlackTurn
+        if (isCastleLegals?.newState) {
+          isCastleLegals.newState.isBlackTurn =
+            !isCastleLegals.newState.isBlackTurn
         }
         castleStep.play()
 
@@ -166,7 +167,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
   useEffect(() => {
     if (gameState) {
       checkIfKingThreatened(gameState)
-      
+
       // handle case if both kings threatened one after one
       const lastKingThreatened = gameState.isBlackTurn
         ? gameState.kingPos.white

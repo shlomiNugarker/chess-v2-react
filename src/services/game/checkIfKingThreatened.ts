@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { GameState } from '../../models/GameState'
-import { paintKingCellToRed } from './paintKingCellToRed'
+import { paintKingCellToRed } from './controller/paintKingCellToRed'
 import { getAllPossibleCoordsBishop } from './possibleCoordsFuncs/getAllPossibleCoordsBishop'
 import { getAllPossibleCoordsKing } from './possibleCoordsFuncs/getAllPossibleCoordsKing'
 import { getAllPossibleCoordsKnight } from './possibleCoordsFuncs/getAllPossibleCoordsKnight'

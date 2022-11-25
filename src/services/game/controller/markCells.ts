@@ -1,5 +1,5 @@
-import { GameState } from '../../models/GameState'
-import { isColorPieceWorthCurrPlayerColor } from './isColorPieceWorthCurrPlayerColor'
+import { GameState } from '../../../models/GameState'
+import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
 
 export function markCells(
   state: GameState,
