@@ -77,6 +77,10 @@ export const GameDetails = () => {
       ? 'black-screen'
       : 'white-screen'
 
+  const isCurrBlackTurnBg = gameState?.isBlackTurn
+    ? ' curr-turn-bg'
+    : ' curr-turn-bg'
+
   return (
     <section className="game-details">
       <div className={'container ' + screenStyle}>
@@ -86,7 +90,11 @@ export const GameDetails = () => {
               <span>{piece}</span>
             ))}
           </div>
-          <div className={'timer ' + screenStyle}>
+          <div
+            className={`timer ${screenStyle} ${
+              gameState?.isBlackTurn ? 'curr-turn-bg ' : ''
+            }`}
+          >
             {gameState?.remainingTime?.black &&
               millisToMinutesAndSeconds(gameState.remainingTime.black)}
           </div>
@@ -130,7 +138,11 @@ export const GameDetails = () => {
                 timeToPercents(gameState.remainingTime.white),
             }}
           ></div>
-          <div className="timer">
+          <div
+            className={`timer ${
+              !gameState?.isBlackTurn ? 'curr-turn-bg ' : ''
+            }`}
+          >
             {gameState?.remainingTime?.white &&
               millisToMinutesAndSeconds(gameState.remainingTime.white)}
           </div>

@@ -25,6 +25,9 @@
         }
         .timer {
           // order: 2;
+          &.curr-turn-bg {
+            background-color: #384722;
+          }
         }
         .bar {
           // order: 3;
@@ -49,6 +52,10 @@
 
         &.black-screen {
           rotate: 180deg;
+        }
+
+        &.curr-turn-bg {
+          background-color: #384722;
         }
       }
       .bar {
