@@ -17,14 +17,17 @@ export const Chat = () => {
   const createMsg = (txt: string) => {
     return {
       _id: utilService.makeId(24),
+      userId: authState?.loggedInUser?._id || '',
       txt,
       fullname: authState.loggedInUser?.fullname || 'Guest',
     }
   }
 
+  const isBlackUser = (userId: string) =>
+    userId === authState?.loggedInUser?._id
+
   const sendMsg = (ev: React.KeyboardEvent<HTMLInputElement>) => {
     if (ev.key === 'Enter' || ev.keyCode === 13) {
-      // Do something
       const newMsg = createMsg(msg)
       const chatToSave = _.cloneDeep(chatState)
       chatToSave?.messages.push(newMsg)
@@ -35,7 +38,6 @@ export const Chat = () => {
   }
 
   const sendAutoMsg = (msg: string) => {
-    console.log('sendAutoMsg', msg)
     const newMsg = createMsg(msg)
     const chatToSave = _.cloneDeep(chatState)
     chatToSave?.messages.push(newMsg)
@@ -70,7 +72,9 @@ export const Chat = () => {
           {chatState?.messages.map((msg) => (
             <div key={msg._id}>
               <span>
-                {msg.fullname}: {msg.txt}
+                {`${msg.fullname} ${
+                  isBlackUser(msg.userId) ? '[black]' : '[white]'
+                }:  ${msg.txt}`}
               </span>
             </div>
           ))}

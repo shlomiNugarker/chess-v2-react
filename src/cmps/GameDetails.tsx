@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
 import { RootState } from '../features'
-import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useTypedSelector'
 import { User } from '../models/User'
 import { userService } from '../services/userServise'
 
 export const GameDetails = () => {
-  const dispatch = useAppDispatch()
   const gameState = useAppSelector((state: RootState) => state.game)
   const authState = useAppSelector((state: RootState) => state.auth)
 
@@ -36,6 +34,12 @@ export const GameDetails = () => {
     gameState?.players?.white,
   ])
 
+  function timeToPercents(remainigTime: number) {
+    const fiveMinutes = 1000 * 60 * 5
+    const num = (remainigTime / fiveMinutes) * 100
+    return num + '%'
+  }
+
   const getUsers = async () => {
     if (!gameState) return
     if (!gameState?.players) return
@@ -51,6 +55,7 @@ export const GameDetails = () => {
   }
 
   function millisToMinutesAndSeconds(millis: number) {
+    if (millis < 0) return '00:00'
     var minutes = Math.floor(millis / 60000)
       .toFixed(0)
       .padStart(2, '0')
@@ -85,7 +90,14 @@ export const GameDetails = () => {
             {gameState?.remainingTime?.black &&
               millisToMinutesAndSeconds(gameState.remainingTime.black)}
           </div>
-          <div className="bar"></div>
+          <div
+            className="bar"
+            style={{
+              width:
+                gameState?.remainingTime?.black &&
+                timeToPercents(gameState.remainingTime.black),
+            }}
+          ></div>
           <div className="player-name">
             <span
               className={
@@ -110,7 +122,14 @@ export const GameDetails = () => {
             ></span>
             <p>{whitePlayer?.fullname}</p>
           </div>
-          <div className="bar"></div>
+          <div
+            className="bar"
+            style={{
+              width:
+                gameState?.remainingTime?.white &&
+                timeToPercents(gameState.remainingTime.white),
+            }}
+          ></div>
           <div className="timer">
             {gameState?.remainingTime?.white &&
               millisToMinutesAndSeconds(gameState.remainingTime.white)}

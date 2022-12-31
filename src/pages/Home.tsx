@@ -45,7 +45,7 @@ export const Home = ({ onLoginAsGuest }: props) => {
         <button className="blue-btn" onClick={onStartNewGameOnline}>
           Play with a friend online
         </button>
-        <button className="blue-btn">Play with the computer (soon) </button>
+        {/* <button className="blue-btn">Play with the computer (soon) </button> */}
         <button className="blue-btn" onClick={onStartNewGameOffline}>
           Play with a friend offline
         </button>

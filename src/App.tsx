@@ -44,6 +44,8 @@ const App = () => {
       dispatch(setConnectedUsers(connectedUsers))
     })
     socketService.on('update-state', (updatedState: GameState) => {
+      console.log('update-state')
+
       dispatch(updateStateFromSocket(updatedState))
     })
     socketService.on('update-chat', (updatedChat: Chat) => {
