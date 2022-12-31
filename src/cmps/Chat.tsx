@@ -23,8 +23,7 @@ export const Chat = () => {
     }
   }
 
-  const isBlackUser = (userId: string) =>
-    userId === authState?.loggedInUser?._id
+  const isBlackUser = (userId: string) => userId === gameState?.players?.black
 
   const sendMsg = (ev: React.KeyboardEvent<HTMLInputElement>) => {
     if (ev.key === 'Enter' || ev.keyCode === 13) {
