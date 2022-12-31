@@ -13,8 +13,14 @@ import { isNextStepLegal } from '../services/game/isNextStepLegal'
 import { PromotionChoice } from './PromotionChoice'
 import { isPawnStepsEnd } from '../services/game/isPawnStepsEnd'
 import { addPieceInsteadPawn } from '../services/game/addPieceInsteadPawn'
-import { setSelectedCellCoord, setSwitchTurn } from '../features/game/gameSlice'
+import {
+  setIsGameStarted,
+  setSelectedCellCoord,
+  setSwitchTurn,
+  updateTime,
+} from '../features/game/gameSlice'
 import { updateState } from '../features/game/asyncActions'
+import { isPlayerWin } from '../services/game/isPlayerWin'
 
 interface props {
   isTwoPlayerInTheGame: boolean
@@ -88,6 +94,9 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
 
         const newState = movePiece(gameState, cellCoord)
         audioStep.play()
+
+        newState && isPlayerWin(newState)
+
         if (!newState) return
         if (isPawnStepsEnd(state, cellCoord)) {
           setIsPromotionChoice(true)
@@ -119,7 +128,6 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
           dispatch(updateState(isCastleLegals.newState))
 
         if (isCastleLegals && !isCastleLegals.isCastleLegal) return
-        // onSwitchTurn()
         dispatch(setSwitchTurn())
         cleanBoard()
         return
@@ -127,6 +135,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
 
       if (!isColorPieceWorthCurrPlayerColor(gameState, piece) && piece !== '')
         return
+
       // unselect:
       if (isSquareSelected) {
         ev.target.classList.remove('selected')
@@ -140,7 +149,14 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
         if (!isMoveLegal) return
 
         const newState = movePiece(gameState, cellCoord)
+
+        if (newState && !newState?.isGameStarted && !newState?.isGameStarted)
+          newState.isGameStarted = true
+        // dispatch(setIsGameStarted())
+
         audioStep.play()
+        newState && isPlayerWin(newState)
+
         if (!newState) return
         if (isPawnStepsEnd(state, cellCoord)) {
           setIsPromotionChoice(true)
@@ -183,6 +199,33 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
       }
     }
   }, [gameState, gameState?.isBlackTurn])
+
+  useEffect(() => {
+    // handle time:
+
+    const intervalId = setInterval(() => {
+      if (gameState && gameState.isBlackTurn && gameState.isGameStarted) {
+        dispatch(
+          updateTime({
+            white: gameState?.remainingTime.white,
+            black: gameState?.remainingTime.black - 1000,
+          })
+        )
+      }
+      if (gameState && !gameState.isBlackTurn && gameState.isGameStarted) {
+        dispatch(
+          updateTime({
+            white: gameState?.remainingTime.white - 1000,
+            black: gameState?.remainingTime.black,
+          })
+        )
+      }
+    }, 1000)
+
+    return () => {
+      clearInterval(intervalId)
+    }
+  }, [dispatch, gameState, gameState?.isGameStarted])
 
   const screenStyle =
     gameState?.players?.black === authState?.loggedInUser?._id

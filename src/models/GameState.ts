@@ -1,5 +1,6 @@
 export interface GameState {
   isOnline: boolean
+  isGameStarted: boolean
   players: {
     black: string
     white: string
@@ -43,6 +44,7 @@ export interface GameState {
     blackRightSide: boolean
     blackKing: boolean
   }
+  remainingTime: { black: number; white: number }
   _id?: string
   createdAt?: number
   chatId?: string

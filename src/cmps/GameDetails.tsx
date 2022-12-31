@@ -50,6 +50,14 @@ export const GameDetails = () => {
     }
   }
 
+  function millisToMinutesAndSeconds(millis: number) {
+    var minutes = Math.floor(millis / 60000)
+      .toFixed(0)
+      .padStart(2, '0')
+    var seconds = ((millis % 60000) / 1000).toFixed(0)
+    return minutes + ':' + (+seconds < 10 ? '0' : '') + seconds
+  }
+
   useEffect(() => {
     getUsers()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,7 +81,10 @@ export const GameDetails = () => {
               <span>{piece}</span>
             ))}
           </div>
-          <div className={'timer ' + screenStyle}>05:00</div>
+          <div className={'timer ' + screenStyle}>
+            {gameState?.remainingTime?.black &&
+              millisToMinutesAndSeconds(gameState.remainingTime.black)}
+          </div>
           <div className="bar"></div>
           <div className="player-name">
             <span
@@ -100,7 +111,10 @@ export const GameDetails = () => {
             <p>{whitePlayer?.fullname}</p>
           </div>
           <div className="bar"></div>
-          <div className="timer">05:00</div>
+          <div className="timer">
+            {gameState?.remainingTime?.white &&
+              millisToMinutesAndSeconds(gameState.remainingTime.white)}
+          </div>
           <div className="eaten-pieces">
             {gameState?.eatenPieces.white.map((piece, idx) => (
               <span key={piece + idx}>{piece}</span>

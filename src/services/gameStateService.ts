@@ -33,6 +33,7 @@ async function getById(id: string) {
 function getNewGame(firstPlayerId: string, isOnline: boolean): GameState {
   return {
     isOnline,
+    isGameStarted: false,
     players: { white: firstPlayerId, black: '' },
     stateHistory: [],
     boardHistory: [],
@@ -52,6 +53,7 @@ function getNewGame(firstPlayerId: string, isOnline: boolean): GameState {
       black: [],
       white: [],
     },
+    remainingTime: { black: 1000 * 60 * 5, white: 1000 * 60 * 5 },
     isCastlingLegal: {
       whiteLeftSide: true,
       whiteRightSide: true,

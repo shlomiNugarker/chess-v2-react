@@ -22,8 +22,6 @@ export const saveChat = createAsyncThunk(
   async (chat: Chat, thunkApi) => {
     try {
       const savedChat = await chatService.save(chat)
-      console.log({ savedChat })
-
       // if (chat._id && chat.userId && chat.userId2)
       socketService.emit('chat-updated', savedChat)
       return savedChat

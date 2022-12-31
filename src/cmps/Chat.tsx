@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import { RootState } from '../features'
 import { getChatById, saveChat } from '../features/chat/asyncActions'
 import { useAppDispatch } from '../hooks/useAppDispatch'
@@ -29,47 +28,97 @@ export const Chat = () => {
       const newMsg = createMsg(msg)
       const chatToSave = _.cloneDeep(chatState)
       chatToSave?.messages.push(newMsg)
-      console.log(chatToSave)
       chatToSave && dispatch(saveChat(chatToSave))
 
       setMsg('')
     }
   }
 
+  const sendAutoMsg = (msg: string) => {
+    console.log('sendAutoMsg', msg)
+    const newMsg = createMsg(msg)
+    const chatToSave = _.cloneDeep(chatState)
+    chatToSave?.messages.push(newMsg)
+    chatToSave && dispatch(saveChat(chatToSave))
+  }
+
   useEffect(() => {
     if (gameState?.chatId) dispatch(getChatById(gameState.chatId))
   }, [dispatch, gameState?.chatId])
-  // useEffect(() => {}, [chatState?.messages.length])
+
+  if (!gameState?.isOnline)
+    return (
+      <div
+        className="chat"
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        Have fun !
+      </div>
+    )
 
   return (
-    <div className="chat">
-      <header>
-        <h1>Chat room</h1>
-      </header>
-      <div className="body">
-        {chatState?.messages.map((msg) => (
-          <div key={msg._id}>
-            <span>
-              {msg.fullname}: {msg.txt}
-            </span>
-          </div>
-        ))}
+    <>
+      <div className="chat">
+        <header>
+          <h1>Chat room</h1>
+        </header>
+        <div className="body">
+          {chatState?.messages.map((msg) => (
+            <div key={msg._id}>
+              <span>
+                {msg.fullname}: {msg.txt}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="input-container">
+          <input
+            value={msg}
+            type="text"
+            onKeyUp={(ev) => sendMsg(ev)}
+            onChange={(ev) => setMsg(ev.target.value)}
+            placeholder="Please be nice in the chat!"
+          />
+        </div>
+        <div className="auto-msg">
+          <span
+            onClick={() => {
+              sendAutoMsg('Hello')
+            }}
+            title="Hello"
+          >
+            HI
+          </span>
+          <span
+            onClick={() => {
+              sendAutoMsg('Good luck')
+            }}
+            title="Good luck"
+          >
+            GL
+          </span>
+          <span
+            onClick={() => {
+              sendAutoMsg('Have fun!')
+            }}
+            title="Have fun!"
+          >
+            HF
+          </span>
+          <span
+            onClick={() => {
+              sendAutoMsg('Yoo too!')
+            }}
+            title="Yoo too!"
+          >
+            U2
+          </span>
+        </div>
       </div>
-      <div className="input-container">
-        <input
-          value={msg}
-          type="text"
-          onKeyUp={(ev) => sendMsg(ev)}
-          onChange={(ev) => setMsg(ev.target.value)}
-          placeholder="Please be nice in the chat!"
-        />
-      </div>
-      <div className="auto-msg">
-        <span>HI</span>
-        <span>GL</span>
-        <span>HF</span>
-        <span>U2</span>
-      </div>
-    </div>
+    </>
   )
 }

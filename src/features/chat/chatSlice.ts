@@ -18,8 +18,6 @@ export const chatSlice = createSlice({
     },
     updateStateChatFromSocket: (state, action) => {
       if (!state) return
-      console.log(action.payload)
-
       state._id = action.payload._id
       state.userId = action.payload.userId
       state.userId2 = action.payload.userId2
