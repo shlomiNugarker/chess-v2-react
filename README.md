@@ -1,6 +1,6 @@
 ﻿# Chess-V2-React
 
-https://ichess.onrender.com/
+Demo: https://chess-v2-backend-production.up.railway.app/
 
 My first version with vanilla JS: https://github.com/shlomiNugarker/Chess
 
