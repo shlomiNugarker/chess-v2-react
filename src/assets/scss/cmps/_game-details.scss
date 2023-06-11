@@ -93,3 +93,54 @@
     }
   }
 }
+
+@media (max-width: 660px) {
+  .game-details {
+    display: none;
+    .container {
+      &.black-screen {
+      }
+
+      .black-player,
+      .white-player {
+        &.black-screen {
+          .eaten-pieces {
+          }
+          .timer {
+            &.curr-turn-bg {
+            }
+          }
+          .bar {
+          }
+          .player-name {
+          }
+        }
+
+        .eaten-pieces {
+          span {
+          }
+        }
+        .timer {
+          &.black-screen {
+          }
+
+          &.curr-turn-bg {
+          }
+        }
+        .bar {
+        }
+        .player-name {
+          .is-connected {
+            &.connected {
+            }
+          }
+          p {
+          }
+        }
+      }
+
+      .moves {
+      }
+    }
+  }
+}

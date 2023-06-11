@@ -43,9 +43,9 @@ export const SignIn = () => {
                 onChange={handleChange}
                 placeholder="User name"
                 name="username"
-                type="text"
                 id="username"
                 value={cred.username}
+                type="text"
               />
             </label>
           </div>

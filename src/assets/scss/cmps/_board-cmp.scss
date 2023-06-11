@@ -1,8 +1,4 @@
 .board-cmp {
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
-  // min-height: calc(100vh - 60px);
   text-transform: uppercase;
   grid-area: board;
 
@@ -102,4 +98,190 @@
 }
 
 @media (max-width: 660px) {
+  .board-cmp {
+    &.blackScreen {
+      .pieces {
+      }
+
+      table {
+        tbody {
+          tr {
+            td {
+            }
+          }
+        }
+      }
+    }
+
+    div {
+    }
+
+    .pieces {
+      span {
+      }
+    }
+
+    table {
+      tbody {
+        tr {
+          td {
+            width: 45px;
+            height: 45px;
+            font-size: 35px;
+
+            &.white {
+            }
+            &.black {
+            }
+            &.selected {
+            }
+            &.mark span {
+              width: 10px;
+              height: 10px;
+            }
+
+            &.mark {
+            }
+
+            &.eatable {
+            }
+            &.eatable-cell-after-first-two-steps-pawn {
+            }
+
+            &.castle {
+            }
+
+            &.red {
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 370px) {
+  .board-cmp {
+    &.blackScreen {
+      .pieces {
+      }
+
+      table {
+        tbody {
+          tr {
+            td {
+            }
+          }
+        }
+      }
+    }
+
+    div {
+    }
+
+    .pieces {
+      span {
+      }
+    }
+
+    table {
+      tbody {
+        tr {
+          td {
+            width: 30px;
+            height: 30px;
+            font-size: 25px;
+
+            &.white {
+            }
+            &.black {
+            }
+            &.selected {
+            }
+            &.mark span {
+              width: 7px;
+              height: 7px;
+            }
+
+            &.mark {
+            }
+
+            &.eatable {
+            }
+            &.eatable-cell-after-first-two-steps-pawn {
+            }
+
+            &.castle {
+            }
+
+            &.red {
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-height: 370px) {
+  .board-cmp {
+    &.blackScreen {
+      .pieces {
+      }
+
+      table {
+        tbody {
+          tr {
+            td {
+            }
+          }
+        }
+      }
+    }
+
+    div {
+    }
+
+    .pieces {
+      span {
+      }
+    }
+
+    table {
+      tbody {
+        tr {
+          td {
+            width: 30px;
+            height: 30px;
+            font-size: 25px;
+
+            &.white {
+            }
+            &.black {
+            }
+            &.selected {
+            }
+            &.mark span {
+              width: 7px;
+              height: 7px;
+            }
+
+            &.mark {
+            }
+
+            &.eatable {
+            }
+            &.eatable-cell-after-first-two-steps-pawn {
+            }
+
+            &.castle {
+            }
+
+            &.red {
+            }
+          }
+        }
+      }
+    }
+  }
 }

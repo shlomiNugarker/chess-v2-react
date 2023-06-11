@@ -86,8 +86,8 @@ export const GameDetails = () => {
       <div className={'container ' + screenStyle}>
         <div className={'black-player ' + screenStyle}>
           <div className="eaten-pieces">
-            {gameState?.eatenPieces.black.map((piece) => (
-              <span>{piece}</span>
+            {gameState?.eatenPieces.black.map((piece, idx) => (
+              <span key={piece}>{piece + idx}</span>
             ))}
           </div>
           <div

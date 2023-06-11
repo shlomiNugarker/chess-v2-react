@@ -48,14 +48,11 @@ export const Main = ({ onLoginAsGuest }: props) => {
         const userId = authState.loggedInUser?._id
         // if player exist: return
         if (gameState.players.white === userId) return
-        if (!userId) {
-          // alert('please login')
-          return
-        }
+        if (!userId) return
+
         if (gameState.chatId && chatToUpdate && userId) {
           if (!chatToUpdate.userId2) chatToUpdate.userId2 = userId
           else if (!chatToUpdate.userId) chatToUpdate.userId = userId
-          // console.log('save chat', { userId, chatToUpdate })
           dispatch(saveChat(chatToUpdate))
         }
         stateToUpdate.players.black = userId
@@ -69,10 +66,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
         const userId = authState.loggedInUser?._id
         // if player exist: return
         if (gameState.players.black === userId) return
-        if (!userId) {
-          // alert('please login')
-          return
-        }
+        if (!userId) return
+
         stateToUpdate.players.white = userId
       }
       return stateToUpdate
@@ -96,14 +91,21 @@ export const Main = ({ onLoginAsGuest }: props) => {
     authState.loggedInUser,
     gameState?.isOnline,
     chatState?._id,
+    chatState?.userId,
+    chatState?.userId2,
+    authState.loggedInUser?._id,
   ])
 
   useEffect(() => {
     if (id) dispatch(getState(id))
+
+    return () => {}
   }, [dispatch, id])
 
   function copyToClipBoard() {
-    navigator.clipboard.writeText(`https://ichess.onrender.com/#/${id}`)
+    navigator.clipboard.writeText(
+      `https://chess-v2-backend-production.up.railway.app/#/${id}`
+    )
   }
 
   return (
@@ -119,20 +121,25 @@ export const Main = ({ onLoginAsGuest }: props) => {
           </button>
         </div>
       )}
+
       {gameState && (
         <Board
           isTwoPlayerInTheGame={isTwoPlayerInTheGame}
           setIsTwoPlayerInTheGame={setIsTwoPlayerInTheGame}
         />
       )}
+
       {gameState && <GameDetails />}
+
       {gameState && <Chat />}
+
       {!gameState && (
         <div className="msg">
           <p>Did not found a game..</p>
           <button onClick={() => navigate('/')}>Go home</button>
         </div>
       )}
+
       {!authState.loggedInUser && (
         <ValidAuthModal onLoginAsGuest={onLoginAsGuest} />
       )}

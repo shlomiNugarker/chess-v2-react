@@ -19,21 +19,14 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     setConnectedUsers: (state, action) => {
-      // if (!state) return
       state.connectedUsers = action.payload
     },
   },
   extraReducers(builder) {
     builder
       //signup:
-      .addCase(signUp.pending, (state, action) => {
-        console.log('panding')
-      })
       .addCase(signUp.fulfilled, (state, action) => {
         state.loggedInUser = action.payload
-      })
-      .addCase(signUp.rejected, (state, action: PayloadAction<any>) => {
-        console.log('rejected:', action.payload)
       })
       // login:
       .addCase(login.fulfilled, (state, action) => {

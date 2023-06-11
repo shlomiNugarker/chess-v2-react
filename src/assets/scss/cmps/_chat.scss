@@ -5,6 +5,12 @@
   // padding: 5px;
   height: calc($td-width * 8);
 
+  &.not-online {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   header {
     height: 10%;
     h1 {
@@ -17,6 +23,7 @@
     height: 80%;
     overflow-y: auto;
     overflow-x: hidden;
+
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -68,6 +75,37 @@
 
       &:last-child {
         border-right: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 660px) {
+  .chat {
+    display: none;
+    &.not-online {
+      display: none;
+    }
+    header {
+      h1 {
+      }
+    }
+
+    .body {
+      div {
+      }
+    }
+
+    .input-container {
+      input {
+        &:focus {
+        }
+      }
+    }
+    .auto-msg {
+      span {
+        &:last-child {
+        }
       }
     }
   }

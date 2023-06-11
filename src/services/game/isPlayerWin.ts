@@ -1,7 +1,6 @@
 import { GameState } from '../../models/GameState'
 
 export function isPlayerWin(state: GameState) {
-  console.log('isPlayerWin', state)
   // 1- to check if there are legal moves to the player
   //    1.0- to make sure player threatened, if no return false
   //    1.2- find all pieces

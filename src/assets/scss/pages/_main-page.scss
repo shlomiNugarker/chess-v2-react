@@ -72,3 +72,25 @@
     }
   }
 }
+
+@media (max-width: 660px) {
+  .main-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .wait-container {
+      .share-btn {
+      }
+
+      .is-waiting {
+        span {
+        }
+      }
+    }
+    .msg {
+      button {
+      }
+    }
+  }
+}

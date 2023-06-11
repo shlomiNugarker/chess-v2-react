@@ -26,6 +26,7 @@ export const Chat = () => {
   const isBlackUser = (userId: string) => userId === gameState?.players?.black
 
   const sendMsg = (ev: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!msg.trim().length) return
     if (ev.key === 'Enter' || ev.keyCode === 13) {
       const newMsg = createMsg(msg)
       const chatToSave = _.cloneDeep(chatState)
@@ -44,18 +45,32 @@ export const Chat = () => {
   }
 
   useEffect(() => {
+    // saving the black user into the chat (because sometimes not recognize the user on first load)
+    if (chatState && !chatState.userId2 && gameState?.players?.black) {
+      const chatToSave = _.cloneDeep(chatState)
+      chatToSave.userId2 = gameState.players.black
+      chatToSave && dispatch(saveChat(chatToSave))
+    }
+  }, [
+    chatState,
+    dispatch,
+    gameState?.players?.black,
+    gameState?.players?.white,
+  ])
+
+  useEffect(() => {
     if (gameState?.chatId) dispatch(getChatById(gameState.chatId))
   }, [dispatch, gameState?.chatId])
 
   if (!gameState?.isOnline)
     return (
       <div
-        className="chat"
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
+        className="chat not-online"
+        // style={{
+        //   display: 'flex',
+        //   justifyContent: 'center',
+        //   alignItems: 'center',
+        // }}
       >
         Have fun !
       </div>
@@ -68,7 +83,7 @@ export const Chat = () => {
           <h1>Chat room</h1>
         </header>
         <div className="body">
-          {chatState?.messages.map((msg) => (
+          {chatState?.messages.map((msg: any) => (
             <div key={msg._id}>
               <span>
                 {`${msg.fullname} ${

@@ -202,7 +202,6 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
 
   useEffect(() => {
     // handle time:
-
     const intervalId = setInterval(() => {
       if (gameState && gameState.isBlackTurn && gameState.isGameStarted) {
         dispatch(
