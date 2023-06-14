@@ -103,6 +103,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
   }, [dispatch, id])
 
   function copyToClipBoard() {
+    console.log()
+
     navigator.clipboard.writeText(
       `https://chess-v2-backend-production.up.railway.app/#/${id}`
     )
