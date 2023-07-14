@@ -24,17 +24,29 @@ export const Header = (props: any) => {
         </span>
         <div className="nav">
           <ul>
-            {/* <li>Play</li>
+            <li>
+              <Link to={'/'}>Play</Link>
+            </li>
 
-            <li>Puzzles</li>
+            <li>
+              <Link to={'/puzzles'}>Puzzles</Link>
+            </li>
 
-            <li>Learn</li>
+            <li>
+              <Link to={'/'}>Learn</Link>
+            </li>
 
-            <li>Watch</li>
+            <li>
+              <Link to={'/'}>Watch</Link>
+            </li>
 
-            <li>Community</li>
+            <li>
+              <Link to={'/'}>Community</Link>
+            </li>
 
-            <li>Tools</li> */}
+            <li>
+              <Link to={'/'}>Tools</Link>
+            </li>
           </ul>
         </div>
 

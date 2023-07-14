@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Route, Link, Routes } from 'react-router-dom'
 
 import './assets/scss/global.scss'
@@ -21,6 +21,7 @@ import { SignIn } from './pages/SignIn'
 import { SignUp } from './pages/SignUp'
 import { authService } from './services/authService'
 import { socketService } from './services/socketService'
+import { Puzzles } from './pages/Puzzles'
 
 const App = () => {
   const authState = useAppSelector((state: RootState) => state.auth)
@@ -78,19 +79,20 @@ const App = () => {
           <li>
             <Link to="/sign-up">sign-up</Link>
           </li>
+          <li>
+            <Link to="/puzzles">Puzzles</Link>
+          </li>
         </ul>
       </nav> */}
 
-      <Header></Header>
+      <Header />
 
-      {/* <div style={{ color: 'white' }}>
-        {JSON.stringify(authState?.connectedUsers, null, 2)}
-      </div> */}
       <Routes>
         <Route path="/about" element={<About />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/puzzles" element={<Puzzles />} />
         <Route path="/:id" element={<Main onLoginAsGuest={onLoginAsGuest} />} />
         <Route path="/" element={<Home onLoginAsGuest={onLoginAsGuest} />} />
       </Routes>
