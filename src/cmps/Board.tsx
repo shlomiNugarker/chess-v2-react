@@ -14,7 +14,6 @@ import { PromotionChoice } from './PromotionChoice'
 import { isPawnStepsEnd } from '../services/game/isPawnStepsEnd'
 import { addPieceInsteadPawn } from '../services/game/addPieceInsteadPawn'
 import {
-  setIsGameStarted,
   setSelectedCellCoord,
   setSwitchTurn,
   updateTime,
@@ -152,7 +151,6 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
 
         if (newState && !newState?.isGameStarted && !newState?.isGameStarted)
           newState.isGameStarted = true
-        // dispatch(setIsGameStarted())
 
         audioStep.play()
         newState && isPlayerWin(newState)
@@ -236,22 +234,31 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
       <div>
         <table>
           <tbody>
-            {gameState &&
-              gameState.board.map((tr, i) => (
-                <tr key={'tr' + i}>
-                  {gameState.board[i].map((td, j) => (
-                    <td
-                      key={i + j}
-                      id={`cell-${i}-${j}`}
-                      className={(i + j) % 2 === 0 ? 'white' : 'black'}
-                      onClick={(ev) => cellClicked(ev, i, j)}
-                      style={{ cursor: gameState.board[i][j] && 'pointer' }}
-                    >
-                      {gameState.board[i][j]}
-                    </td>
-                  ))}
-                </tr>
-              ))}
+            {gameState?.board.map((tr, i) => (
+              <tr key={'tr' + i}>
+                {gameState.board[i].map((piece, j) => (
+                  <td
+                    key={i.toString() + j}
+                    id={`cell-${i}-${j}`}
+                    className={(i + j) % 2 === 0 ? 'white' : 'black'}
+                    style={{ cursor: gameState.board[i][j] && 'pointer' }}
+                    onDrop={(ev) => {
+                      ev.preventDefault()
+                      cellClicked(ev, i, j)
+                    }}
+                    onDragOver={(ev) => {
+                      ev.preventDefault()
+                    }}
+                    draggable="true"
+                    onMouseDown={(ev) => {
+                      cellClicked(ev, i, j)
+                    }}
+                  >
+                    {piece}
+                  </td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
