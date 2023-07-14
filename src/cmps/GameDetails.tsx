@@ -77,17 +77,13 @@ export const GameDetails = () => {
       ? 'black-screen'
       : 'white-screen'
 
-  const isCurrBlackTurnBg = gameState?.isBlackTurn
-    ? ' curr-turn-bg'
-    : ' curr-turn-bg'
-
   return (
     <section className="game-details">
       <div className={'container ' + screenStyle}>
         <div className={'black-player ' + screenStyle}>
           <div className="eaten-pieces">
             {gameState?.eatenPieces.black.map((piece, idx) => (
-              <span key={piece}>{piece + idx}</span>
+              <span key={piece + idx}>{piece}</span>
             ))}
           </div>
           <div

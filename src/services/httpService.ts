@@ -1,4 +1,4 @@
-import Axios, { AxiosError } from 'axios'
+import Axios from 'axios'
 
 const BASE_URL =
   process.env.NODE_ENV === 'production' ? '/api/' : '//localhost:3030/api/'
@@ -31,24 +31,8 @@ async function ajax(endpoint: string, method = 'GET', data = null) {
       params: method === 'GET' ? data : null,
     })
     return res.data
-  } catch (err: AxiosError | any) {
-    console.log(
-      `Had Issues ${method}ing to the backend, endpoint: ${endpoint}, with data:`,
-      data
-    )
-    // console.dir(err)
-
-    // if (Axios.isAxiosError(err)) {
-    //   if (err.response && err.response.status === 401) {
-    //     // Depends on routing startegy - hash or history
-    //     // window.location.assign('/#/login')
-    //     // window.location.assign('/login')
-    //     // router.push('/login')
-    //   }
-    // } else {
-    //   // Just a stock error
-    // }
-
+  } catch (err: any) {
+    console.log(err)
     throw err
   }
 }

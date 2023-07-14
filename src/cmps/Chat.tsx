@@ -63,18 +63,7 @@ export const Chat = () => {
   }, [dispatch, gameState?.chatId])
 
   if (!gameState?.isOnline)
-    return (
-      <div
-        className="chat not-online"
-        // style={{
-        //   display: 'flex',
-        //   justifyContent: 'center',
-        //   alignItems: 'center',
-        // }}
-      >
-        Have fun !
-      </div>
-    )
+    return <div className="chat not-online">Have fun !</div>
 
   return (
     <>
