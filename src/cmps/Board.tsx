@@ -20,6 +20,7 @@ import {
 } from '../features/game/gameSlice'
 import { updateState } from '../features/game/asyncActions'
 import { isPlayerWin } from '../services/game/isPlayerWin'
+import { GameState } from '../models/GameState'
 
 interface props {
   isTwoPlayerInTheGame: boolean
@@ -28,7 +29,7 @@ interface props {
 
 const audioStep = new Audio(require('../assets/sound/step.mp3'))
 const castleStep = new Audio(require('../assets/sound/castle.mp3'))
-const checkStep = new Audio(require('../assets/sound/check.mp3'))
+// const checkStep = new Audio(require('../assets/sound/check.mp3'))
 
 export const Board = ({ isTwoPlayerInTheGame }: props) => {
   const dispatch = useAppDispatch()
@@ -37,13 +38,12 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
   const authState = useAppSelector((state: RootState) => state.auth)
 
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
-
   const [cellCoordsToAddInsteadPawn, setCellCoordsToAddInsteadPawn] = useState<{
     i: number
     j: number
   } | null>(null)
 
-  function onChoosePieceToAdd(piece: string) {
+  const onChoosePieceToAdd = (piece: string) => {
     if (!cellCoordsToAddInsteadPawn || !gameState) return
     const { newState } = addPieceInsteadPawn(
       gameState,
@@ -55,25 +55,124 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
     cleanBoard()
     setIsPromotionChoice(false)
   }
+  const handleEatableMove = (
+    target: Element,
+    gameState: GameState,
+    cellCoord: { i: number; j: number }
+  ) => {
+    let { isMoveLegal, state } = isNextStepLegal(gameState, target)
+
+    if (state.isBlackTurn && state.isBlackKingThreatened) return
+    if (!state.isBlackTurn && state.isWhiteKingThreatened) return
+    if (!isMoveLegal) return
+
+    const newState = movePiece(gameState, cellCoord)
+    audioStep.play()
+
+    newState && isPlayerWin(newState)
+
+    if (!newState) return
+    if (isPawnStepsEnd(state, cellCoord)) {
+      setIsPromotionChoice(true)
+      newState && dispatch(updateState(newState))
+      setCellCoordsToAddInsteadPawn(cellCoord)
+      return
+    }
+    newState.isBlackTurn = !newState.isBlackTurn
+    dispatch(updateState(newState))
+    cleanBoard()
+  }
+  const handleCastlingMove = (
+    target: Element,
+    gameState: GameState,
+    cellCoord: { i: number; j: number }
+  ) => {
+    const { isMoveLegal } = isNextStepLegal(gameState, target)
+    if (!isMoveLegal) return
+
+    const isCastleLegals = doCastling(gameState, target)
+    if (isCastleLegals?.newState) {
+      isCastleLegals.newState.isBlackTurn = !isCastleLegals.newState.isBlackTurn
+    }
+    castleStep.play()
+
+    isCastleLegals &&
+      isCastleLegals.newState &&
+      isCastleLegals.isCastleLegal &&
+      dispatch(updateState(isCastleLegals.newState))
+
+    if (isCastleLegals && !isCastleLegals.isCastleLegal) return
+    dispatch(setSwitchTurn())
+    cleanBoard()
+  }
+  const handleStepMove = (
+    target: Element,
+    gameState: GameState,
+    cellCoord: { i: number; j: number }
+  ) => {
+    const { isMoveLegal, state } = isNextStepLegal(gameState, target)
+    if (!isMoveLegal) return
+
+    const newState = movePiece(gameState, cellCoord)
+
+    if (newState && !newState?.isGameStarted && !newState?.isGameStarted)
+      newState.isGameStarted = true
+
+    audioStep.play()
+    newState && isPlayerWin(newState)
+
+    if (!newState) return
+    if (isPawnStepsEnd(state, cellCoord)) {
+      setIsPromotionChoice(true)
+      newState && dispatch(updateState(newState))
+      setCellCoordsToAddInsteadPawn(cellCoord)
+      return
+    }
+    newState.isBlackTurn = !newState.isBlackTurn
+    dispatch(updateState(newState))
+
+    cleanBoard()
+  }
+  const handlePieceSelection = (
+    target: Element,
+    gameState: GameState,
+    cellCoord: { i: number; j: number },
+    piece: string
+  ) => {
+    cleanBoard()
+    gameState.board[cellCoord.i][cellCoord.j] &&
+      target.classList.add('selected')
+    dispatch(setSelectedCellCoord(cellCoord))
+    const possibleCoords = getPossibleCoords(gameState, piece, cellCoord)
+    possibleCoords && markCells(gameState, possibleCoords)
+  }
+
+  const isValidMove = (
+    ev: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
+    i: number,
+    j: number
+  ) => {
+    if (gameState?.isOnline && !isTwoPlayerInTheGame) return false
+    if (gameState?.isOnline && !isValidPlayerTurn()) return false
+    if (ev.target instanceof Element && gameState) return true
+    return false
+  }
+
+  const isValidPlayerTurn = () => {
+    const loggedInUserId = authState.loggedInUser?._id
+    const isBlackTurn = gameState?.isBlackTurn
+    const isBlackPlayer = loggedInUserId === gameState?.players?.black
+    const isWhitePlayer = loggedInUserId === gameState?.players?.white
+
+    return (isBlackTurn && isBlackPlayer) || (!isBlackTurn && isWhitePlayer)
+  }
 
   const cellClicked = (
     ev: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
     i: number,
     j: number
   ) => {
-    if (gameState?.isOnline && !isTwoPlayerInTheGame) return
-
-    if (
-      gameState?.isOnline &&
-      gameState?.isBlackTurn &&
-      authState.loggedInUser?._id !== gameState.players?.black
-    )
-      return
-    if (
-      gameState?.isBlackTurn === false &&
-      authState.loggedInUser?._id !== gameState.players?.white
-    )
-      return
+    if (!isValidMove(ev, i, j)) return
 
     if (ev.target instanceof Element && gameState) {
       const cellCoord = { i, j }
@@ -83,52 +182,13 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
       const isSquareEatable = ev.target.classList.contains('eatable')
       const isSquareCastling = ev.target.classList.contains('castle')
 
-      // if it's possible to eat:
       if (isSquareEatable && gameState.selectedCellCoord) {
-        let { isMoveLegal, state } = isNextStepLegal(gameState, ev.target)
-
-        if (state.isBlackTurn && state.isBlackKingThreatened) return
-        if (!state.isBlackTurn && state.isWhiteKingThreatened) return
-        if (!isMoveLegal) return
-
-        const newState = movePiece(gameState, cellCoord)
-        audioStep.play()
-
-        newState && isPlayerWin(newState)
-
-        if (!newState) return
-        if (isPawnStepsEnd(state, cellCoord)) {
-          setIsPromotionChoice(true)
-          newState && dispatch(updateState(newState))
-          setCellCoordsToAddInsteadPawn(cellCoord)
-          return
-        }
-        newState.isBlackTurn = !newState.isBlackTurn
-        dispatch(updateState(newState))
-        cleanBoard()
+        handleEatableMove(ev.target, gameState, cellCoord)
         return
       }
 
-      // if it's possible to castling:
       if (isSquareCastling && gameState.selectedCellCoord) {
-        const { isMoveLegal } = isNextStepLegal(gameState, ev.target)
-        if (!isMoveLegal) return
-
-        const isCastleLegals = doCastling(gameState, ev.target)
-        if (isCastleLegals?.newState) {
-          isCastleLegals.newState.isBlackTurn =
-            !isCastleLegals.newState.isBlackTurn
-        }
-        castleStep.play()
-
-        isCastleLegals &&
-          isCastleLegals.newState &&
-          isCastleLegals.isCastleLegal &&
-          dispatch(updateState(isCastleLegals.newState))
-
-        if (isCastleLegals && !isCastleLegals.isCastleLegal) return
-        dispatch(setSwitchTurn())
-        cleanBoard()
+        handleCastlingMove(ev.target, gameState, cellCoord)
         return
       }
 
@@ -142,39 +202,12 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
         return
       }
 
-      // if it's possible to step:
       if (isSquareMarked && gameState.selectedCellCoord) {
-        const { isMoveLegal, state } = isNextStepLegal(gameState, ev.target)
-        if (!isMoveLegal) return
-
-        const newState = movePiece(gameState, cellCoord)
-
-        if (newState && !newState?.isGameStarted && !newState?.isGameStarted)
-          newState.isGameStarted = true
-
-        audioStep.play()
-        newState && isPlayerWin(newState)
-
-        if (!newState) return
-        if (isPawnStepsEnd(state, cellCoord)) {
-          setIsPromotionChoice(true)
-          newState && dispatch(updateState(newState))
-          setCellCoordsToAddInsteadPawn(cellCoord)
-          return
-        }
-        newState.isBlackTurn = !newState.isBlackTurn
-        dispatch(updateState(newState))
-
-        cleanBoard()
+        handleStepMove(ev.target, gameState, cellCoord)
         return
       }
 
-      // just selecting cell & get possibleCoords to step
-      cleanBoard()
-      gameState.board[i][j] && ev.target.classList.add('selected')
-      dispatch(setSelectedCellCoord(cellCoord))
-      const possibleCoords = getPossibleCoords(gameState, piece, cellCoord)
-      possibleCoords && markCells(gameState, possibleCoords)
+      handlePieceSelection(ev.target, gameState, cellCoord, piece)
     }
   }
 
@@ -197,7 +230,6 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
       }
     }
   }, [gameState, gameState?.isBlackTurn])
-
   useEffect(() => {
     // handle time:
     const intervalId = setInterval(() => {
