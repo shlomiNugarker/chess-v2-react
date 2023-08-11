@@ -241,7 +241,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
                     key={i.toString() + j}
                     id={`cell-${i}-${j}`}
                     className={(i + j) % 2 === 0 ? 'white' : 'black'}
-                    style={{ cursor: gameState.board[i][j] && 'pointer' }}
+                    style={{ cursor: piece && 'pointer' }}
                     onDrop={(ev) => {
                       ev.preventDefault()
                       cellClicked(ev, i, j)

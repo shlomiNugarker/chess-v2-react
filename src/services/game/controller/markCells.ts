@@ -22,9 +22,6 @@ export function markCells(
     //
     else {
       elCell.innerHTML = '<span class="span"></span>'
-      // const spanEl = document.createElement('span')
-      // spanEl.className = 'span'
-      // elCell.appendChild(spanEl)
       elCell.classList.add('mark')
     }
   }
