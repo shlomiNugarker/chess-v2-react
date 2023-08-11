@@ -6,9 +6,8 @@ export function getAllPossibleCoordsKing(
   state: GameState,
   pieceCoord: { i: number; j: number }
 ) {
-  const { board } = state
-  let res: { i: number; j: number }[] = []
-
+  const { board, isBlackTurn, isCastlingLegal } = state
+  const { i: pieceI, j: pieceJ } = pieceCoord
   const possibleSteps = [
     { i: -1, j: 0 },
     { i: 0, j: 1 },
@@ -20,10 +19,13 @@ export function getAllPossibleCoordsKing(
     { i: 1, j: 1 },
   ]
 
-  for (let k = 0; k < possibleSteps.length; k++) {
-    const diffI = possibleSteps[k].i
-    const diffJ = possibleSteps[k].j
-    const nextCoord = { i: pieceCoord.i + diffI, j: pieceCoord.j + diffJ }
+  const possibleCoords: { i: number; j: number }[] = []
+
+  for (const step of possibleSteps) {
+    const nextCoord = {
+      i: pieceI + step.i,
+      j: pieceJ + step.j,
+    }
 
     if (
       nextCoord.i >= 0 &&
@@ -31,88 +33,40 @@ export function getAllPossibleCoordsKing(
       nextCoord.j >= 0 &&
       nextCoord.j < 8
     ) {
-      if (isEmptyCell(board, nextCoord)) res.push(nextCoord)
-      else {
+      if (isEmptyCell(board, nextCoord)) {
+        possibleCoords.push(nextCoord)
+      } else {
         const piece = board[nextCoord.i][nextCoord.j]
         if (!isColorPieceWorthCurrPlayerColor(state, piece)) {
-          res.push(nextCoord) //push eatable coord
+          possibleCoords.push(nextCoord) // push eatable coord
         }
       }
     }
+  }
 
-    // castling Coord:
-    const { isCastlingLegal } = state
-    let isRightCastleLegal: boolean = true
-    let isLeftCastleLegal: boolean = true
+  // Castling Coord:
+  let castlingCoord: { i: number; j: number } = isBlackTurn
+    ? { i: 0, j: 4 }
+    : { i: 7, j: 4 }
 
-    if (!state.isBlackTurn && isCastlingLegal.whiteKing) {
-      // right side:
-      if (
-        !isEmptyCell(board, { i: 7, j: 5 }) ||
-        !isEmptyCell(board, { i: 7, j: 6 })
-      ) {
-        isRightCastleLegal = false
+  if (isCastlingLegal[isBlackTurn ? 'blackKing' : 'whiteKing']) {
+    for (const direction of [1, -1]) {
+      const targetColumn = direction === 1 ? 7 : 0
+      if (isEmptyCell(board, { i: castlingCoord.i, j: targetColumn })) {
+        const rookColumn = direction === 1 ? 7 : 0
+        const coordForCastle = { i: castlingCoord.i, j: rookColumn }
+
+        if (
+          isColorPieceWorthCurrPlayerColor(
+            state,
+            board[coordForCastle.i][coordForCastle.j]
+          )
+        ) {
+          possibleCoords.push(coordForCastle)
+        }
       }
-      // left side:
-      if (
-        !isEmptyCell(board, { i: 7, j: 1 }) ||
-        !isEmptyCell(board, { i: 7, j: 2 }) ||
-        !isEmptyCell(board, { i: 7, j: 3 })
-      ) {
-        isLeftCastleLegal = false
-      }
-
-      let coordRightRookForCastle = { i: 7, j: 7 }
-      isRightCastleLegal &&
-        isColorPieceWorthCurrPlayerColor(
-          state,
-          state.board[coordRightRookForCastle.i][coordRightRookForCastle.j]
-        ) &&
-        res.push(coordRightRookForCastle)
-
-      let coordLeftRookForCastle = { i: 7, j: 0 }
-      isLeftCastleLegal &&
-        isColorPieceWorthCurrPlayerColor(
-          state,
-          state.board[coordRightRookForCastle.i][coordRightRookForCastle.j]
-        ) &&
-        res.push(coordLeftRookForCastle)
-    }
-
-    if (state.isBlackTurn && isCastlingLegal.blackKing) {
-      // right side:
-      if (
-        !isEmptyCell(board, { i: 0, j: 5 }) ||
-        !isEmptyCell(board, { i: 0, j: 6 })
-      ) {
-        isRightCastleLegal = false
-      }
-      // left side:
-      if (
-        !isEmptyCell(board, { i: 0, j: 1 }) ||
-        !isEmptyCell(board, { i: 0, j: 2 }) ||
-        !isEmptyCell(board, { i: 0, j: 3 })
-      ) {
-        isLeftCastleLegal = false
-      }
-
-      let coordRightRookForCastle = { i: 0, j: 7 }
-      isRightCastleLegal &&
-        isColorPieceWorthCurrPlayerColor(
-          state,
-          state.board[coordRightRookForCastle.i][coordRightRookForCastle.j]
-        ) &&
-        res.push(coordRightRookForCastle)
-
-      let coordLeftRookForCastle = { i: 0, j: 0 }
-      isLeftCastleLegal &&
-        isColorPieceWorthCurrPlayerColor(
-          state,
-          state.board[coordRightRookForCastle.i][coordRightRookForCastle.j]
-        ) &&
-        res.push(coordLeftRookForCastle)
     }
   }
 
-  return res
+  return possibleCoords
 }
