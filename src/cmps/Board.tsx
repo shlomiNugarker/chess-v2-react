@@ -62,9 +62,13 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
   ) => {
     let { isMoveLegal, state } = isNextStepLegal(gameState, target)
 
-    if (state.isBlackTurn && state.isBlackKingThreatened) return
-    if (!state.isBlackTurn && state.isWhiteKingThreatened) return
-    if (!isMoveLegal) return
+    if (
+      (state.isBlackTurn && state.isBlackKingThreatened) ||
+      (!state.isBlackTurn && state.isWhiteKingThreatened) ||
+      !isMoveLegal
+    ) {
+      return
+    }
 
     const newState = movePiece(gameState, cellCoord)
     audioStep.play()
