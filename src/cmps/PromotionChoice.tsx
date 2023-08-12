@@ -3,14 +3,10 @@ import { RootState } from '../features'
 import { useAppSelector } from '../hooks/useTypedSelector'
 
 interface props {
-  setIsPromotionChoice: React.Dispatch<React.SetStateAction<boolean>>
   onChoosePieceToAdd: any
 }
 
-export const PromotionChoice = ({
-  setIsPromotionChoice,
-  onChoosePieceToAdd,
-}: props) => {
+export const PromotionChoice = ({ onChoosePieceToAdd }: props) => {
   const gameState = useAppSelector((state: RootState) => state.game)
 
   const blackPieces = [

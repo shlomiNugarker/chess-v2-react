@@ -10,7 +10,7 @@ export const socketService = createSocketService()
 socketService.setup()
 
 function createSocketService() {
-  var socket: Socket<DefaultEventsMap, DefaultEventsMap> | null = null
+  let socket: Socket<DefaultEventsMap, DefaultEventsMap> | null = null
   const socketService = {
     async setup() {
       socket = io(baseUrl)

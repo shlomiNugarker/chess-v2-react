@@ -146,7 +146,6 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
     const possibleCoords = getPossibleCoords(gameState, piece, cellCoord)
     possibleCoords && markCells(gameState, possibleCoords)
   }
-
   const isValidMove = (
     ev: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
     i: number,
@@ -157,7 +156,6 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
     if (ev.target instanceof Element && gameState) return true
     return false
   }
-
   const isValidPlayerTurn = () => {
     const loggedInUserId = authState.loggedInUser?._id
     const isBlackTurn = gameState?.isBlackTurn
@@ -296,10 +294,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
       </div>
 
       {isPromotionChoice && (
-        <PromotionChoice
-          setIsPromotionChoice={setIsPromotionChoice}
-          onChoosePieceToAdd={onChoosePieceToAdd}
-        />
+        <PromotionChoice onChoosePieceToAdd={onChoosePieceToAdd} />
       )}
     </section>
   )
