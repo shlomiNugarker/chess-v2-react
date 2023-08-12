@@ -1,15 +1,14 @@
-import { getAllPossibleCoordsPawn } from '../../possibleCoordsFuncs/getAllPossibleCoordsPawn'
-import { gPieces } from '../../gPieces'
-import { GameState } from '../../../../models/GameState'
+import { getPossibleCoords } from '../getPossibleCoords'
+import { gPieces } from '../gPieces'
+import { GameState } from '../../../models/GameState'
 
-describe('getAllPossibleCoordsPawn', () => {
-  test('returns possible coordinates for a pawn with no obstructions', () => {
+describe('getPossibleCoords', () => {
+  test('returns possible coordinates for a pawn', () => {
     const pieces = gPieces
-
     const state = {
       pieces,
-      isBlackTurn: false,
-      isCastlingLegal: { blackKing: true, whiteKing: true },
+      isBlackTurn: true,
+      selectedCellCoord: { i: 1, j: 0 },
       board: [
         [
           pieces.ROOK_BLACK,
@@ -17,8 +16,8 @@ describe('getAllPossibleCoordsPawn', () => {
           pieces.BISHOP_BLACK,
           pieces.QUEEN_BLACK,
           pieces.KING_BLACK,
-          pieces.BISHOP_BLACK,
-          pieces.KNIGHT_BLACK,
+          '',
+          '',
           pieces.ROOK_BLACK,
         ],
         [
@@ -32,7 +31,7 @@ describe('getAllPossibleCoordsPawn', () => {
           pieces.PAWN_BLACK,
         ],
         ['', '', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', '', ''],
+        ['', '', pieces.BISHOP_BLACK, '', '', pieces.KNIGHT_BLACK, '', ''],
         ['', '', '', '', '', '', '', ''],
         ['', '', '', '', '', '', '', ''],
         [
@@ -57,41 +56,32 @@ describe('getAllPossibleCoordsPawn', () => {
         ],
       ],
     }
-
-    const pieceCoord = { i: 1, j: 0 }
-    const result = getAllPossibleCoordsPawn(
-      state as GameState,
-      pieceCoord,
-      state.isBlackTurn
-    )
-
-    const expectedCoords: {
-      i: number
-      j: number
-    }[] = [
+    const piece = state.pieces.PAWN_BLACK
+    const cellCoord = { i: 1, j: 0 }
+    const expectedCoords = [
       { i: 2, j: 0 },
       { i: 3, j: 0 },
     ]
 
+    const result = getPossibleCoords(state as GameState, piece, cellCoord)
+
     expect(result).toEqual(expectedCoords)
   })
-
-  test('returns possible coordinates for a pawn with obstructions', () => {
+  test('returns possible coordinates for a queen', () => {
     const pieces = gPieces
-
     const state = {
       pieces,
       isBlackTurn: true,
-      isCastlingLegal: { blackKing: true, whiteKing: true },
+      selectedCellCoord: { i: 1, j: 0 },
       board: [
         [
           pieces.ROOK_BLACK,
           pieces.KNIGHT_BLACK,
           pieces.BISHOP_BLACK,
-          pieces.QUEEN_BLACK,
+          '',
           pieces.KING_BLACK,
-          pieces.BISHOP_BLACK,
-          pieces.KNIGHT_BLACK,
+          '',
+          '',
           pieces.ROOK_BLACK,
         ],
         [
@@ -105,7 +95,16 @@ describe('getAllPossibleCoordsPawn', () => {
           pieces.PAWN_BLACK,
         ],
         ['', '', '', '', '', '', '', ''],
-        ['', '', '', '', '', '', '', ''],
+        [
+          pieces.QUEEN_BLACK,
+          '',
+          pieces.BISHOP_BLACK,
+          '',
+          '',
+          pieces.KNIGHT_BLACK,
+          '',
+          '',
+        ],
         ['', '', '', '', '', '', '', ''],
         ['', '', '', '', '', '', '', ''],
         [
@@ -116,7 +115,7 @@ describe('getAllPossibleCoordsPawn', () => {
           pieces.PAWN_WHITE,
           pieces.PAWN_WHITE,
           pieces.PAWN_WHITE,
-          pieces.ROOK_WHITE,
+          pieces.PAWN_WHITE,
         ],
         [
           pieces.ROOK_WHITE,
@@ -126,23 +125,25 @@ describe('getAllPossibleCoordsPawn', () => {
           pieces.KING_WHITE,
           pieces.BISHOP_WHITE,
           pieces.KNIGHT_WHITE,
-          pieces.PAWN_WHITE,
+          pieces.ROOK_WHITE,
         ],
       ],
     }
+    const piece = pieces.QUEEN_BLACK
+    const cellCoord = { i: 3, j: 0 }
+    const expectedCoords = [
+      { i: 4, j: 1 },
+      { i: 5, j: 2 },
+      { i: 6, j: 3 },
+      { i: 2, j: 1 },
+      { i: 2, j: 0 },
+      { i: 4, j: 0 },
+      { i: 5, j: 0 },
+      { i: 6, j: 0 },
+      { i: 3, j: 1 },
+    ]
 
-    const pieceCoord = { i: 7, j: 7 }
-
-    const result = getAllPossibleCoordsPawn(
-      state as GameState,
-      pieceCoord,
-      state.isBlackTurn
-    )
-
-    const expectedCoords: {
-      i: number
-      j: number
-    }[] = [{ i: 6, j: 6 }]
+    const result = getPossibleCoords(state as GameState, piece, cellCoord)
 
     expect(result).toEqual(expectedCoords)
   })

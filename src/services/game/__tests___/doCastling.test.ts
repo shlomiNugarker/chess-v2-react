@@ -152,7 +152,6 @@ describe('doCastling', () => {
       },
     }
 
-    // console.table(state.board)
     const elToCell = {
       id: 'cell-0-7',
     }
