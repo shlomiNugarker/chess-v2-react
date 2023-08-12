@@ -72,7 +72,7 @@ describe('getPossibleCoords', () => {
     const state = {
       pieces,
       isBlackTurn: true,
-      selectedCellCoord: { i: 1, j: 0 },
+      selectedCellCoord: { i: 3, j: 0 },
       board: [
         [
           pieces.ROOK_BLACK,
