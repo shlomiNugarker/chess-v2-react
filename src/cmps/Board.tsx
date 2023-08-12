@@ -29,7 +29,6 @@ interface props {
 
 const audioStep = new Audio(require('../assets/sound/step.mp3'))
 const castleStep = new Audio(require('../assets/sound/castle.mp3'))
-// const checkStep = new Audio(require('../assets/sound/check.mp3'))
 
 export const Board = ({ isTwoPlayerInTheGame }: props) => {
   const dispatch = useAppDispatch()
@@ -231,7 +230,8 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
           kingEl.classList.remove('red')
       }
     }
-  }, [gameState, gameState?.isBlackTurn])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState?.isBlackTurn])
   useEffect(() => {
     // handle time:
     const intervalId = setInterval(() => {
