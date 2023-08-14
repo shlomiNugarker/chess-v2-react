@@ -14,4 +14,5 @@ export function isPawnStepsEnd(
   ) {
     return true
   }
+  return false
 }
