@@ -1,7 +1,9 @@
 export function cleanBoard() {
-  const elTds = document.querySelectorAll('.mark, .selected, .eatable, .castle')
+  const elTds = document.querySelectorAll(
+    '.mark, .selected, .eatable, .castle, .red'
+  )
 
   for (let i = 0; i < elTds.length; i++) {
-    elTds[i].classList.remove('mark', 'selected', 'eatable', 'castle')
+    elTds[i].classList.remove('mark', 'selected', 'eatable', 'castle', 'red')
   }
 }
