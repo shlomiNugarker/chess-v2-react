@@ -18,7 +18,7 @@ export function checkIfKingThreatened(
 
   let kingPos = state.isBlackTurn ? state.kingPos.black : state.kingPos.white
 
-  // this act is for check another piece as a king coords (when castling..)
+  // this act is for check another piece as a king coords (for example when castling..)
   if (coordToCheck) kingPos = coordToCheck
 
   const knightOpts = getAllPossibleCoordsKnight(state, kingPos)

@@ -59,34 +59,7 @@ const App = () => {
 
   return (
     <>
-      {/* <nav className="temp-nav">
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/">Main</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-          <li>
-            <Link to="/profile">profile</Link>
-          </li>
-          <li>
-            <Link to="/sign-in">sign-in</Link>
-          </li>
-          <li>
-            <Link to="/sign-up">sign-up</Link>
-          </li>
-          <li>
-            <Link to="/puzzles">Puzzles</Link>
-          </li>
-        </ul>
-      </nav> */}
-
       <Header />
-
       <Routes>
         <Route path="/about" element={<About />} />
         <Route path="/sign-in" element={<SignIn />} />

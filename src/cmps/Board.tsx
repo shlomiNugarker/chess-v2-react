@@ -122,7 +122,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
       newState.isGameStarted = true
 
     audioStep.play()
-    newState && isPlayerWin(newState)
+    // newState && isPlayerWin(newState)
 
     if (!newState) return
     if (isPawnStepsEnd(state, cellCoord)) {
@@ -213,6 +213,12 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
   }
 
   useEffect(() => {
+    if (gameState && isPlayerWin(gameState)) {
+      alert('Win!')
+    }
+  }, [gameState, gameState?.isBlackTurn])
+
+  useEffect(() => {
     if (gameState) {
       checkIfKingThreatened(gameState)
 
@@ -232,31 +238,32 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState?.isBlackTurn])
-  useEffect(() => {
-    // handle time:
-    const intervalId = setInterval(() => {
-      if (gameState && gameState.isBlackTurn && gameState.isGameStarted) {
-        dispatch(
-          updateTime({
-            white: gameState?.remainingTime.white,
-            black: gameState?.remainingTime.black - 1000,
-          })
-        )
-      }
-      if (gameState && !gameState.isBlackTurn && gameState.isGameStarted) {
-        dispatch(
-          updateTime({
-            white: gameState?.remainingTime.white - 1000,
-            black: gameState?.remainingTime.black,
-          })
-        )
-      }
-    }, 1000)
 
-    return () => {
-      clearInterval(intervalId)
-    }
-  }, [dispatch, gameState, gameState?.isGameStarted])
+  // useEffect(() => {
+  //   // handle time:
+  //   const intervalId = setInterval(() => {
+  //     if (gameState && gameState.isBlackTurn && gameState.isGameStarted) {
+  //       dispatch(
+  //         updateTime({
+  //           white: gameState?.remainingTime.white,
+  //           black: gameState?.remainingTime.black - 1000,
+  //         })
+  //       )
+  //     }
+  //     if (gameState && !gameState.isBlackTurn && gameState.isGameStarted) {
+  //       dispatch(
+  //         updateTime({
+  //           white: gameState?.remainingTime.white - 1000,
+  //           black: gameState?.remainingTime.black,
+  //         })
+  //       )
+  //     }
+  //   }, 1000)
+
+  //   return () => {
+  //     clearInterval(intervalId)
+  //   }
+  // }, [dispatch, gameState, gameState?.isGameStarted])
 
   const screenStyle =
     gameState?.players?.black === authState?.loggedInUser?._id
