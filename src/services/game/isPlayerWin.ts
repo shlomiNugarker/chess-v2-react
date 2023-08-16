@@ -1,11 +1,66 @@
 import { GameState } from '../../models/GameState'
+import { getPossibleCoords } from './getPossibleCoords'
+import { isBlackPiece } from './isBlackPiece'
+import { isNextStepLegal } from './isNextStepLegal'
+import _ from 'lodash'
 
 export function isPlayerWin(state: GameState) {
-  // 1- to check if there are legal moves to the player
-  //    1.0- to make sure player threatened, if no return false
-  //    1.2- find all pieces
-  //    1.3- get all moves each piece
-  //    1.4- check each piece if has a legal move
-  // 2- if no, return true
-  // 3- else return false
+  const { board, isBlackTurn } = state
+
+  if (isBlackTurn) {
+    let isBlackWin = true
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        const piece = board[i][j]
+        if (isBlackPiece(state, piece)) {
+          const possibleCoords = getPossibleCoords(state, piece, { i, j })
+
+          if (!possibleCoords) return
+          for (let k = 0; k < possibleCoords.length; k++) {
+            const coord = possibleCoords[k]
+            const copyState = _.cloneDeep(state)
+            copyState.selectedCellCoord = { i, j }
+            const element = {} as Element
+            element.id = `cell-${coord.i}-${coord.j}`
+            const { isMoveLegal } = isNextStepLegal(copyState, element)
+
+            if (isMoveLegal) {
+              isBlackWin = false
+              break
+            }
+          }
+        }
+      }
+    }
+
+    return isBlackWin
+  } else if (!isBlackTurn) {
+    let isWhiteWin = true
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[i].length; j++) {
+        const piece = board[i][j]
+        const isBlack = isBlackPiece(state, piece)
+        const isWhite = typeof isBlack === 'boolean' && isBlack === false
+        if (isWhite) {
+          const possibleCoords = getPossibleCoords(state, piece, { i, j })
+
+          if (!possibleCoords) return
+          for (let k = 0; k < possibleCoords.length; k++) {
+            const coord = possibleCoords[k]
+            const copyState = _.cloneDeep(state)
+            copyState.selectedCellCoord = { i, j }
+            const element = {} as Element
+            element.id = `cell-${coord.i}-${coord.j}`
+            const { isMoveLegal } = isNextStepLegal(copyState, element)
+
+            if (isMoveLegal) {
+              isWhiteWin = false
+              break
+            }
+          }
+        }
+      }
+    }
+    return isWhiteWin
+  }
 }
