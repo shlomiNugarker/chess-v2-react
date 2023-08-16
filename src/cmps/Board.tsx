@@ -36,6 +36,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
   const gameState = useAppSelector((state: RootState) => state.game)
   const authState = useAppSelector((state: RootState) => state.auth)
 
+  const [isWin, setIsWin] = useState(false)
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
   const [cellCoordsToAddInsteadPawn, setCellCoordsToAddInsteadPawn] = useState<{
     i: number
@@ -213,10 +214,10 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
   }
 
   useEffect(() => {
-    if (gameState && isPlayerWin(gameState)) {
-      alert('Win!')
+    if (gameState && !isWin && isPlayerWin(gameState)) {
+      setIsWin(true)
     }
-  }, [gameState, gameState?.isBlackTurn])
+  }, [gameState, gameState?.isBlackTurn, isWin])
 
   useEffect(() => {
     if (gameState) {
@@ -239,31 +240,31 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState?.isBlackTurn])
 
-  // useEffect(() => {
-  //   // handle time:
-  //   const intervalId = setInterval(() => {
-  //     if (gameState && gameState.isBlackTurn && gameState.isGameStarted) {
-  //       dispatch(
-  //         updateTime({
-  //           white: gameState?.remainingTime.white,
-  //           black: gameState?.remainingTime.black - 1000,
-  //         })
-  //       )
-  //     }
-  //     if (gameState && !gameState.isBlackTurn && gameState.isGameStarted) {
-  //       dispatch(
-  //         updateTime({
-  //           white: gameState?.remainingTime.white - 1000,
-  //           black: gameState?.remainingTime.black,
-  //         })
-  //       )
-  //     }
-  //   }, 1000)
+  useEffect(() => {
+    // handle time:
+    const intervalId = setInterval(() => {
+      if (gameState && gameState.isBlackTurn && gameState.isGameStarted) {
+        dispatch(
+          updateTime({
+            white: gameState?.remainingTime.white,
+            black: gameState?.remainingTime.black - 1000,
+          })
+        )
+      }
+      if (gameState && !gameState.isBlackTurn && gameState.isGameStarted) {
+        dispatch(
+          updateTime({
+            white: gameState?.remainingTime.white - 1000,
+            black: gameState?.remainingTime.black,
+          })
+        )
+      }
+    }, 1000)
 
-  //   return () => {
-  //     clearInterval(intervalId)
-  //   }
-  // }, [dispatch, gameState, gameState?.isGameStarted])
+    return () => {
+      clearInterval(intervalId)
+    }
+  }, [dispatch, gameState, gameState?.isGameStarted])
 
   const screenStyle =
     gameState?.players?.black === authState?.loggedInUser?._id
@@ -272,6 +273,7 @@ export const Board = ({ isTwoPlayerInTheGame }: props) => {
 
   return (
     <section className={'board-cmp ' + screenStyle}>
+      {isWin && <p style={{ color: 'white' }}>We have a winner here !'😁</p>}
       <div>
         <table>
           <tbody>
