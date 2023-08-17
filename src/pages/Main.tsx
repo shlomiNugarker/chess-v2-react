@@ -29,7 +29,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     const shareData = {
       title: 'Chess game',
       text: `${authState.loggedInUser?.fullname} invited you to play chess !`,
-      url: `https://ichess.onrender.com/#/${id}`,
+      url: `https://chess-v2-backend-production.up.railway.app/#/${id}`,
     }
     try {
       await navigator.share(shareData)
