@@ -9,7 +9,7 @@
   }
 
   .pieces {
-    width: $td-font-size * 4 +30px;
+    width: $td-font-size * 4 (+30px);
     height: $td-font-size + 25px;
     position: fixed;
     top: 50%;
