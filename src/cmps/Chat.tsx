@@ -62,8 +62,11 @@ export const Chat = ({
   }, [chatState, gameState, gameState?.players?.black, saveChat])
 
   useEffect(() => {
-    if (gameState?.chatId && !chatState) getChatById(gameState.chatId)
-  }, [chatState, gameState.chatId, getChatById])
+    if (gameState.chatId) {
+      getChatById(gameState.chatId)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (!gameState?.isOnline)
     return <div className="chat not-online">Have fun !</div>

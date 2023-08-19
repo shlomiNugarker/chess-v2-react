@@ -19,13 +19,18 @@ interface Props {
   isTwoPlayerInTheGame: boolean
   gameState: GameState | null
   loggedInUser: User | null
-  updateState: (newState: GameState) => Promise<void | GameState>
+  updateGameState: (newState: GameState) => Promise<void | GameState>
   setSwitchTurn: () => void
   setSelectedCellCoord: (cellCoord: GameState['selectedCellCoord']) => void
+  setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
+  setChatState: React.Dispatch<React.SetStateAction<ChatState | null>>
 }
 
 import audioStepUrl from '../assets/sound/step.mp3'
 import castleStepUrl from '../assets/sound/castle.mp3'
+import { ChatState } from '../models/ChatState'
+import { useNavigate } from 'react-router-dom'
+import { ChessBoard } from './ChessBoard'
 
 const audioStep = new Audio(audioStepUrl)
 const castleStep = new Audio(castleStepUrl)
@@ -34,10 +39,13 @@ export const Board = ({
   isTwoPlayerInTheGame,
   gameState,
   loggedInUser,
-  updateState,
+  updateGameState,
   setSwitchTurn,
   setSelectedCellCoord,
+  setGameState,
+  setChatState,
 }: Props) => {
+  const navigate = useNavigate()
   const [isWin, setIsWin] = useState(false)
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
   const [cellCoordsToAddInsteadPawn, setCellCoordsToAddInsteadPawn] = useState<{
@@ -53,7 +61,7 @@ export const Board = ({
       piece
     )
     newState.isBlackTurn = !newState.isBlackTurn
-    updateState(newState)
+    updateGameState(newState)
     cleanBoard()
     setIsPromotionChoice(false)
   }
@@ -80,12 +88,12 @@ export const Board = ({
     if (!newState) return
     if (isPawnStepsEnd(state, cellCoord)) {
       setIsPromotionChoice(true)
-      newState && updateState(newState)
+      newState && updateGameState(newState)
       setCellCoordsToAddInsteadPawn(cellCoord)
       return
     }
     newState.isBlackTurn = !newState.isBlackTurn
-    updateState(newState)
+    updateGameState(newState)
     cleanBoard()
   }
   const handleCastlingMove = (target: Element, gameState: GameState) => {
@@ -98,11 +106,16 @@ export const Board = ({
     }
     castleStep.play()
 
-    isCastleLegals &&
+    if (
+      isCastleLegals &&
       isCastleLegals.newState &&
-      isCastleLegals.isCastleLegal &&
-      updateState(isCastleLegals.newState)
+      isCastleLegals.isCastleLegal
+    ) {
+      console.log('update')
+      console.table(isCastleLegals.newState.board)
 
+      updateGameState(isCastleLegals.newState)
+    }
     if (isCastleLegals && !isCastleLegals.isCastleLegal) return
     setSwitchTurn()
     cleanBoard()
@@ -125,12 +138,12 @@ export const Board = ({
     if (!newState) return
     if (isPawnStepsEnd(state, cellCoord)) {
       setIsPromotionChoice(true)
-      newState && updateState(newState)
+      newState && updateGameState(newState)
       setCellCoordsToAddInsteadPawn(cellCoord)
       return
     }
     newState.isBlackTurn = !newState.isBlackTurn
-    updateState(newState)
+    updateGameState(newState)
 
     cleanBoard()
   }
@@ -274,6 +287,9 @@ export const Board = ({
           <button
             onClick={() => {
               console.log()
+              setGameState(null)
+              setChatState(null)
+              navigate('/')
             }}
           >
             Reset
@@ -281,35 +297,7 @@ export const Board = ({
         </>
       )}
       <div>
-        <table>
-          <tbody>
-            {gameState?.board.map((_tr, i) => (
-              <tr key={'tr' + i}>
-                {gameState.board[i].map((piece, j) => (
-                  <td
-                    key={i.toString() + j}
-                    id={`cell-${i}-${j}`}
-                    className={(i + j) % 2 === 0 ? 'white' : 'black'}
-                    style={{ cursor: piece && 'pointer' }}
-                    onDrop={(ev) => {
-                      ev.preventDefault()
-                      cellClicked(ev, i, j)
-                    }}
-                    onDragOver={(ev) => {
-                      ev.preventDefault()
-                    }}
-                    draggable="true"
-                    onMouseDown={(ev) => {
-                      cellClicked(ev, i, j)
-                    }}
-                  >
-                    {piece}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <ChessBoard state={gameState} cellClicked={cellClicked} />
       </div>
 
       {isPromotionChoice && gameState && (

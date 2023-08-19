@@ -55,13 +55,12 @@ export const Main = ({ onLoginAsGuest }: props) => {
     return savedChat
   }
 
-  const updateState = async (newState: GameState) => {
+  const updateGameState = async (newState: GameState) => {
     if (!newState.isOnline) {
       const updatedState = storageService.put('chess-game', newState)
       setGameState(updatedState)
       return updatedState
     }
-
     const savedState = await gameStateService.saveState(newState)
     socketService.emit('state-updated', savedState)
     return setGameState(savedState)
@@ -103,7 +102,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
         }
         stateToUpdate.players.black = userId
       }
-      updateState(stateToUpdate)
+      updateGameState(stateToUpdate)
       return stateToUpdate
     } else if (gameState?.players?.black && gameState?.players?.white === '') {
       const stateToUpdate = _.cloneDeep(gameState)
@@ -115,7 +114,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
         stateToUpdate.players.white = userId
       }
-      updateState(stateToUpdate)
+      updateGameState(stateToUpdate)
       return stateToUpdate
     }
   }, [chatState, gameState, authContextData?.loggedInUser?._id])
@@ -123,7 +122,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
   useEffect(() => {
     if (!gameState?.players?.black || !gameState?.players?.white) {
       const stateToUpdate = joinPlayerToTheGame()
-      if (stateToUpdate) updateState(stateToUpdate)
+      if (stateToUpdate) updateGameState(stateToUpdate)
     }
     if (gameState?.players?.black && gameState?.players?.white) {
       setIsTwoPlayerInTheGame(true)
@@ -194,9 +193,11 @@ export const Main = ({ onLoginAsGuest }: props) => {
           isTwoPlayerInTheGame={isTwoPlayerInTheGame}
           gameState={gameState}
           loggedInUser={authContextData?.loggedInUser || null}
-          updateState={updateState}
+          updateGameState={updateGameState}
           setSwitchTurn={setSwitchTurn}
           setSelectedCellCoord={setSelectedCellCoord}
+          setGameState={setGameState}
+          setChatState={setChatState}
         />
       )}
 

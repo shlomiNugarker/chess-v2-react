@@ -38,20 +38,6 @@ export const GameDetails = ({
     return num + '%'
   }
 
-  const getUsers = async () => {
-    if (!gameState) return
-    if (!gameState?.players) return
-
-    if (gameState?.players.white) {
-      const user = await userService.getUser(gameState?.players.white)
-      setWhitePlayer(user)
-    }
-    if (gameState?.players.black) {
-      const user = await userService.getUser(gameState?.players.black)
-      setBlackPlayer(user)
-    }
-  }
-
   function millisToMinutesAndSeconds(millis: number) {
     if (millis < 0) return '00:00'
     const minutes = Math.floor(millis / 60000)
@@ -62,9 +48,22 @@ export const GameDetails = ({
   }
 
   useEffect(() => {
-    getUsers()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    // get users:
+    // eslint-disable-next-line no-extra-semi
+    ;(async () => {
+      if (!gameState) return
+      if (!gameState?.players) return
+
+      if (gameState?.players.white && !whitePlayer) {
+        const user = await userService.getUser(gameState?.players.white)
+        setWhitePlayer(user)
+      }
+      if (gameState?.players.black && !blackPlayer) {
+        const user = await userService.getUser(gameState?.players.black)
+        setBlackPlayer(user)
+      }
+    })()
+  }, [blackPlayer, gameState, whitePlayer])
 
   const screenStyle =
     gameState?.players?.black === loggedInUser?._id

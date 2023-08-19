@@ -38,63 +38,6 @@
       font-size: $td-font-size;
     }
   }
-
-  table {
-    border-spacing: 0;
-    background-color: #646f40;
-    tbody {
-      tr {
-        display: flex;
-        td {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: $td-width;
-          height: $td-height;
-          font-size: $td-font-size;
-
-          &.white {
-            background-color: #f0d9b5;
-          }
-          &.black {
-            background-color: #b58863;
-          }
-          &.selected {
-            background-color: #646f40;
-          }
-          &.mark span {
-            pointer-events: none;
-            background-color: #646f40;
-            border-radius: 50%;
-            width: 15px;
-            height: 15px;
-            padding: 2px;
-          }
-
-          &.mark {
-            cursor: pointer;
-          }
-
-          &.eatable {
-            border-radius: 50%;
-            border: 0.5px solid;
-          }
-          &.eatable-cell-after-first-two-steps-pawn {
-            border-radius: 50%;
-            border: 0.5px solid;
-          }
-
-          &.castle {
-            border-radius: 50%;
-          }
-
-          &.red {
-            background-color: #9b2d2d !important;
-          }
-        }
-      }
-    }
-  }
 }
 
 @media (max-width: 660px) {

@@ -8,7 +8,7 @@ export function getAllPossibleCoordsPawn(
   isWhite: boolean
 ) {
   const { board } = state
-  let res: { i: number; j: number }[] = []
+  const res: { i: number; j: number }[] = []
 
   // Regular steps
   let diff = isWhite ? -1 : 1
