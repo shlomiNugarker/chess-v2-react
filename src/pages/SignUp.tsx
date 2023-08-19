@@ -5,7 +5,7 @@ import { useAuthContext } from '../context/AuthContext'
 export const SignUp = () => {
   const navigate = useNavigate()
 
-  const { signUp } = useAuthContext()
+  const authContextData = useAuthContext()
 
   const [cred, setCred] = useState({
     username: '',
@@ -28,7 +28,7 @@ export const SignUp = () => {
     if (!cred.username && !cred.fullname.length && cred.password.length < 4)
       return
 
-    signUp(cred)
+    authContextData?.signUp(cred)
 
     navigate('/')
 

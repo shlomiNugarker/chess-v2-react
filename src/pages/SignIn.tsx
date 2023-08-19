@@ -5,7 +5,7 @@ import { useAuthContext } from '../context/AuthContext'
 export const SignIn = () => {
   const navigate = useNavigate()
 
-  const { login } = useAuthContext()
+  const authContextData = useAuthContext()
 
   const [cred, setCred] = useState({
     username: '',
@@ -24,7 +24,7 @@ export const SignIn = () => {
   const submit = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault()
     if (!cred.username && cred.password.length < 4) return
-    await login(cred)
+    await authContextData?.login(cred)
     navigate('/')
     cleanFields()
   }

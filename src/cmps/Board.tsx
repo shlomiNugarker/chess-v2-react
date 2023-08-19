@@ -283,7 +283,7 @@ export const Board = ({
       <div>
         <table>
           <tbody>
-            {gameState?.board.map((tr, i) => (
+            {gameState?.board.map((_tr, i) => (
               <tr key={'tr' + i}>
                 {gameState.board[i].map((piece, j) => (
                   <td

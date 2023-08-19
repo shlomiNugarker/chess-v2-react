@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // MyContext.js
 import { createContext, useContext, useState } from 'react'
 import { Auth } from '../models/Auth'
@@ -6,25 +5,7 @@ import { User } from '../models/User'
 import { authService } from '../services/authService'
 import { socketService } from '../services/socketService'
 
-const defaultValue: Auth = {
-  loggedInUser: null,
-  connectedUsers: [],
-  login: (creds = { username: '', password: '' }) => {
-    return Promise.resolve(undefined)
-  },
-  LoginAsGuest: () => {
-    return Promise.resolve()
-  },
-  signUp: (creds = { username: '', password: '', fullname: '' }) => {
-    return Promise.resolve(undefined)
-  },
-  logout: () => {
-    return Promise.resolve()
-  },
-  setConnectedUsers: () => {},
-}
-
-const AuthContext = createContext<Auth>(defaultValue)
+const AuthContext = createContext<Auth | null>(null)
 
 export const useAuthContext = () => useContext(AuthContext)
 

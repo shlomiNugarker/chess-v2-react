@@ -8,10 +8,10 @@ interface props {
 }
 export const Home = ({ onLoginAsGuest }: props) => {
   const navigate = useNavigate()
-  const { loggedInUser } = useAuthContext()
+  const authContextData = useAuthContext()
 
   const onStartNewGame = async (isOnline: boolean) => {
-    const userId = loggedInUser?._id || 'Guest'
+    const userId = authContextData?.loggedInUser?._id || 'Guest'
     const newGame = gameStateService.getNewGame(userId, isOnline)
     const stateId = await gameStateService.setNewState(newGame)
 
@@ -28,7 +28,9 @@ export const Home = ({ onLoginAsGuest }: props) => {
           Play with a friend offline
         </button>
       </div>
-      {!loggedInUser && <ValidAuthModal onLoginAsGuest={onLoginAsGuest} />}
+      {!authContextData?.loggedInUser && (
+        <ValidAuthModal onLoginAsGuest={onLoginAsGuest} />
+      )}
     </div>
   )
 }

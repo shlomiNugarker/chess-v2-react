@@ -3,17 +3,17 @@ import { User } from './User'
 
 export interface Auth {
   loggedInUser: User | null
-  connectedUsers: any
-  login: (creds: {
+  connectedUsers: string[]
+  login: (userCred: {
     username: string
     password: string
   }) => Promise<User | undefined>
   LoginAsGuest: () => Promise<void>
-  signUp: (creds: {
+  signUp: (userCred: {
     username: string
     password: string
     fullname: string
-  }) => Promise<User | undefined>
+  }) => Promise<User>
   logout: () => Promise<void>
-  setConnectedUsers: any
+  setConnectedUsers: React.Dispatch<React.SetStateAction<string[]>>
 }

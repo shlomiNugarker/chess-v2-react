@@ -22,7 +22,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
   const [gameState, setGameState] = useState<GameState | null>(null)
   const [chatState, setChatState] = useState<ChatState | null>(null)
-  const { loggedInUser, connectedUsers, setConnectedUsers } = useAuthContext()
+  const authContextData = useAuthContext()
   const [isTwoPlayerInTheGame, setIsTwoPlayerInTheGame] = useState(false)
 
   const { id } = useParams()
@@ -91,7 +91,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
       const chatToUpdate = _.cloneDeep(chatState)
 
       if (stateToUpdate.players) {
-        const userId = loggedInUser?._id
+        const userId = authContextData?.loggedInUser?._id
         if (gameState.players.white === userId) return
         if (!userId) return
 
@@ -108,7 +108,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     } else if (gameState?.players?.black && gameState?.players?.white === '') {
       const stateToUpdate = _.cloneDeep(gameState)
       if (stateToUpdate.players) {
-        const userId = loggedInUser?._id
+        const userId = authContextData?.loggedInUser?._id
 
         if (gameState.players.black === userId) return
         if (!userId) return
@@ -118,7 +118,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
       updateState(stateToUpdate)
       return stateToUpdate
     }
-  }, [chatState, gameState, loggedInUser?._id])
+  }, [chatState, gameState, authContextData?.loggedInUser?._id])
 
   useEffect(() => {
     if (!gameState?.players?.black || !gameState?.players?.white) {
@@ -132,23 +132,24 @@ export const Main = ({ onLoginAsGuest }: props) => {
     gameState,
     gameState?.players?.black,
     gameState?.players?.white,
-    loggedInUser,
+    authContextData?.loggedInUser,
     gameState?.isOnline,
     chatState?._id,
     chatState?.userId,
     chatState?.userId2,
-    loggedInUser?._id,
+    authContextData?.loggedInUser?._id,
     isTwoPlayerInTheGame,
     joinPlayerToTheGame,
   ])
 
   // handle sockets:
   useEffect(() => {
-    if (loggedInUser) {
-      socketService.emit('setUserSocket', loggedInUser._id)
+    if (authContextData?.loggedInUser) {
+      socketService.emit('setUserSocket', authContextData?.loggedInUser._id)
     }
     socketService.on('set-connected-users', (connectedUsers: string[]) => {
-      if (setConnectedUsers) setConnectedUsers(connectedUsers)
+      if (authContextData?.setConnectedUsers)
+        authContextData?.setConnectedUsers(connectedUsers)
     })
     socketService.on('update-state', (updatedState: GameState) => {
       setGameState(updatedState)
@@ -161,7 +162,11 @@ export const Main = ({ onLoginAsGuest }: props) => {
       socketService.off('set-connected-users')
       socketService.off('update-state')
     }
-  }, [loggedInUser, setConnectedUsers])
+  }, [
+    authContextData,
+    authContextData?.loggedInUser,
+    authContextData?.setConnectedUsers,
+  ])
 
   return (
     <div className="main-page">
@@ -174,7 +179,9 @@ export const Main = ({ onLoginAsGuest }: props) => {
           <button
             className="share- btn "
             onClick={() =>
-              !!loggedInUser && !!id && onShareGameUrl(loggedInUser, id)
+              !!authContextData?.loggedInUser &&
+              !!id &&
+              onShareGameUrl(authContextData?.loggedInUser, id)
             }
           >
             Share
@@ -186,7 +193,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
         <Board
           isTwoPlayerInTheGame={isTwoPlayerInTheGame}
           gameState={gameState}
-          loggedInUser={loggedInUser}
+          loggedInUser={authContextData?.loggedInUser || null}
           updateState={updateState}
           setSwitchTurn={setSwitchTurn}
           setSelectedCellCoord={setSelectedCellCoord}
@@ -196,14 +203,14 @@ export const Main = ({ onLoginAsGuest }: props) => {
       {gameState && (
         <GameDetails
           gameState={gameState}
-          connectedUsers={connectedUsers}
-          loggedInUser={loggedInUser}
+          connectedUsers={authContextData?.connectedUsers}
+          loggedInUser={authContextData?.loggedInUser || null}
         />
       )}
 
       {gameState && (
         <Chat
-          loggedInUser={loggedInUser}
+          loggedInUser={authContextData?.loggedInUser || null}
           chatState={chatState}
           saveChat={saveChat}
           getChatById={getChatById}
@@ -218,7 +225,9 @@ export const Main = ({ onLoginAsGuest }: props) => {
         </div>
       )}
 
-      {!loggedInUser && <ValidAuthModal onLoginAsGuest={onLoginAsGuest} />}
+      {!authContextData?.loggedInUser && (
+        <ValidAuthModal onLoginAsGuest={onLoginAsGuest} />
+      )}
     </div>
   )
 }
