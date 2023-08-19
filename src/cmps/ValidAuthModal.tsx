@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 
 interface props {
-  onLoginAsGuest: () => Promise<void>
+  onLoginAsGuest: (() => Promise<void>) | null
 }
 
 export const ValidAuthModal = ({ onLoginAsGuest }: props) => {
@@ -12,7 +12,9 @@ export const ValidAuthModal = ({ onLoginAsGuest }: props) => {
       <div className="container">
         <h1>Please login</h1>
         <button onClick={() => navigate('/sign-in')}>login</button>
-        <button onClick={onLoginAsGuest}>login as a guest</button>
+        <button onClick={() => onLoginAsGuest && onLoginAsGuest()}>
+          login as a guest
+        </button>
       </div>
     </div>
   )

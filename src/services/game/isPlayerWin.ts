@@ -2,11 +2,11 @@ import { GameState } from '../../models/GameState'
 import { getPossibleCoords } from './getPossibleCoords'
 import { isBlackPiece } from './isBlackPiece'
 import { isNextStepLegal } from './isNextStepLegal'
-import _ from 'lodash'
+import * as _ from 'lodash'
 
 export function isPlayerWin(state: GameState) {
   const { board, isBlackTurn } = state
-  let color = isBlackTurn ? 'black' : 'white'
+  const color = isBlackTurn ? 'black' : 'white'
   let isWin = true
 
   for (let i = 0; i < board.length; i++) {

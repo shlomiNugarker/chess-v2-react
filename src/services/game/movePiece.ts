@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { GameState } from '../../models/GameState'
 import { isBlackPiece } from './isBlackPiece'
 import { updateKingPos } from './updateKingPos'

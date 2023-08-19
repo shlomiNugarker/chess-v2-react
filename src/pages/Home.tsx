@@ -4,7 +4,7 @@ import { useAuthContext } from '../context/AuthContext'
 import { gameStateService } from '../services/gameStateService'
 
 interface props {
-  onLoginAsGuest: () => Promise<void>
+  onLoginAsGuest: (() => Promise<void>) | null
 }
 export const Home = ({ onLoginAsGuest }: props) => {
   const navigate = useNavigate()

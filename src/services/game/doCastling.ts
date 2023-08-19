@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { GameState } from '../../models/GameState'
 import { getCellCoord } from './getCellCoord'
 import { isCastleThreatened } from './isCastleThreatened'
@@ -14,7 +14,7 @@ export function doCastling(state: GameState, elToCell: Element) {
   let rookCoords: { i: number; j: number }
   let isCastleLegal: boolean = true
 
-  let copiedState = _.cloneDeep(state)
+  const copiedState = _.cloneDeep(state)
 
   // WHITE KING:
   if (

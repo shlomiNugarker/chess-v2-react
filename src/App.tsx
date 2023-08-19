@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
-import './assets/scss/global.scss'
+
 import { Header } from './cmps/Header'
 import { useAuthContext } from './context/AuthContext'
 import { Home } from './pages/Home'
@@ -12,7 +12,7 @@ import { Puzzles } from './pages/Puzzles'
 import { About } from './pages/About'
 
 export const App = () => {
-  const { LoginAsGuest } = useAuthContext()
+  const authContextData = useAuthContext()
 
   return (
     <>
@@ -23,8 +23,22 @@ export const App = () => {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/puzzles" element={<Puzzles />} />
-        <Route path="/:id" element={<Main onLoginAsGuest={LoginAsGuest} />} />
-        <Route path="/" element={<Home onLoginAsGuest={LoginAsGuest} />} />
+        <Route
+          path="/:id"
+          element={
+            <Main
+              onLoginAsGuest={authContextData && authContextData.LoginAsGuest}
+            />
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <Home
+              onLoginAsGuest={authContextData && authContextData.LoginAsGuest}
+            />
+          }
+        />
       </Routes>
     </>
   )

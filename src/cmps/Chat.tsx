@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { useEffect, useState } from 'react'
 import { utilService } from '../services/utilService'
 import { ChatState } from '../models/ChatState'

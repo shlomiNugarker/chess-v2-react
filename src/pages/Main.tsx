@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Board } from '../cmps/Board'
@@ -15,7 +15,7 @@ import { GameDetails } from '../cmps/GameDetails'
 import { socketService } from '../services/socketService'
 
 interface props {
-  onLoginAsGuest: () => Promise<void>
+  onLoginAsGuest: (() => Promise<void>) | null
 }
 export const Main = ({ onLoginAsGuest }: props) => {
   const navigate = useNavigate()
@@ -203,7 +203,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
       {gameState && (
         <GameDetails
           gameState={gameState}
-          connectedUsers={authContextData?.connectedUsers}
+          connectedUsers={authContextData?.connectedUsers || null}
           loggedInUser={authContextData?.loggedInUser || null}
         />
       )}

@@ -5,7 +5,7 @@ import { useAuthContext } from '../context/AuthContext'
 export const Header = () => {
   const navigate = useNavigate()
   const [isMenuVisible, setIsMenuVisible] = useState(false)
-  const { loggedInUser, logout } = useAuthContext()
+  const authContextData = useAuthContext()
 
   return (
     <header className={'header-cmp'}>
@@ -45,16 +45,16 @@ export const Header = () => {
 
         <div className="sign-in-container">
           <div className="sign-in">
-            {!loggedInUser && (
+            {!authContextData?.loggedInUser && (
               <p onClick={() => navigate('/sign-in')}>Sign In</p>
             )}
-            {loggedInUser && (
+            {authContextData?.loggedInUser && (
               <span onClick={() => navigate('/profile')}>
-                Hello, {loggedInUser.fullname}
+                Hello, {authContextData?.loggedInUser.fullname}
               </span>
             )}
-            {loggedInUser && (
-              <button className="blue-btn" onClick={logout}>
+            {authContextData?.loggedInUser && (
+              <button className="blue-btn" onClick={authContextData?.logout}>
                 Logout
               </button>
             )}

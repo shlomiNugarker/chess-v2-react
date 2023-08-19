@@ -5,7 +5,7 @@ import { GameState } from '../models/GameState'
 
 interface Props {
   gameState: GameState
-  connectedUsers: string[]
+  connectedUsers: string[] | null
   loggedInUser: User | null
 }
 
@@ -21,15 +21,15 @@ export const GameDetails = ({
   const [isBlackPlayerConnected, setIsBlackPlayerConnected] = useState(false)
 
   useEffect(() => {
-    const isWhitePlayerConnected = connectedUsers.some(
+    const isWhitePlayerConnected = connectedUsers?.some(
       (userId) => userId === whitePlayer?._id
     )
-    setIsWhitePlayerConnected(isWhitePlayerConnected)
+    setIsWhitePlayerConnected(!!isWhitePlayerConnected)
 
-    const isBlackPlayerConnected = connectedUsers.some(
+    const isBlackPlayerConnected = connectedUsers?.some(
       (userId) => userId === blackPlayer?._id
     )
-    setIsBlackPlayerConnected(isBlackPlayerConnected)
+    setIsBlackPlayerConnected(!!isBlackPlayerConnected)
   }, [blackPlayer?._id, connectedUsers, whitePlayer?._id])
 
   function timeToPercents(remainigTime: number) {
