@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GameState } from '../models/GameState'
 
 export const storageService = {
@@ -12,7 +13,7 @@ export const storageService = {
 function query(entityType: string) {
   const entitiesToParse = localStorage.getItem(entityType)
   if (entitiesToParse) {
-    var entities: GameState[] = JSON.parse(entitiesToParse)
+    const entities: GameState[] = JSON.parse(entitiesToParse)
     return entities
   }
   return []
@@ -24,7 +25,7 @@ function get(entityType: string, entityId: string) {
 }
 
 function post(entityType: string, newEntity: GameState) {
-  newEntity._id = _makeId(14)
+  newEntity._id = _makeId(5)
   newEntity.createdAt = new Date().getTime()
   const entities = query(entityType)
   entities.push(newEntity)
@@ -61,10 +62,10 @@ function _save(entityType: string, entities: any) {
 }
 
 function _makeId(length = 8) {
-  var text = ''
-  var possible =
+  let text = ''
+  const possible =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length))
   }
   return text

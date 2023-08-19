@@ -4,6 +4,7 @@ import { httpService } from './httpService'
 export const userService = {
   getUser,
   saveUser,
+  setLocalUser,
 }
 
 async function getUser(userId: string): Promise<User> {
@@ -16,5 +17,9 @@ async function saveUser(userToSave: User): Promise<User> {
     ? await httpService.put(`user/` + userToSave._id, userToSave)
     : await httpService.post(`user`, userToSave)
 
+  return savedUser
+}
+async function setLocalUser(userToSave: User): Promise<User> {
+  const savedUser: User = await saveUser(userToSave)
   return savedUser
 }

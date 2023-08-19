@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 
 interface props {
-  onLoginAsGuest: any
+  onLoginAsGuest: () => Promise<void>
 }
 
 export const ValidAuthModal = ({ onLoginAsGuest }: props) => {

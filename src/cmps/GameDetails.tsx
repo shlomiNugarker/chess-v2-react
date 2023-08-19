@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react'
-import { RootState } from '../features'
-import { useAppSelector } from '../hooks/useTypedSelector'
 import { User } from '../models/User'
 import { userService } from '../services/userServise'
+import { GameState } from '../models/GameState'
 
-export const GameDetails = () => {
-  const gameState = useAppSelector((state: RootState) => state.game)
-  const authState = useAppSelector((state: RootState) => state.auth)
+interface Props {
+  gameState: GameState
+  connectedUsers: string[]
+  loggedInUser: User | null
+}
 
+export const GameDetails = ({
+  gameState,
+  connectedUsers,
+  loggedInUser,
+}: Props) => {
   const [whitePlayer, setWhitePlayer] = useState<User | null>(null)
   const [blackPlayer, setBlackPlayer] = useState<User | null>(null)
 
@@ -15,24 +21,16 @@ export const GameDetails = () => {
   const [isBlackPlayerConnected, setIsBlackPlayerConnected] = useState(false)
 
   useEffect(() => {
-    const isWhitePlayerConnected = authState.connectedUsers.some(
+    const isWhitePlayerConnected = connectedUsers.some(
       (userId) => userId === whitePlayer?._id
     )
     setIsWhitePlayerConnected(isWhitePlayerConnected)
 
-    const isBlackPlayerConnected = authState.connectedUsers.some(
+    const isBlackPlayerConnected = connectedUsers.some(
       (userId) => userId === blackPlayer?._id
     )
     setIsBlackPlayerConnected(isBlackPlayerConnected)
-  }, [
-    authState.connectedUsers,
-    authState.connectedUsers.length,
-    whitePlayer?._id,
-    blackPlayer?._id,
-    gameState?.players,
-    gameState?.players?.black,
-    gameState?.players?.white,
-  ])
+  }, [blackPlayer?._id, connectedUsers, whitePlayer?._id])
 
   function timeToPercents(remainigTime: number) {
     const fiveMinutes = 1000 * 60 * 5
@@ -56,24 +54,20 @@ export const GameDetails = () => {
 
   function millisToMinutesAndSeconds(millis: number) {
     if (millis < 0) return '00:00'
-    var minutes = Math.floor(millis / 60000)
+    const minutes = Math.floor(millis / 60000)
       .toFixed(0)
       .padStart(2, '0')
-    var seconds = ((millis % 60000) / 1000).toFixed(0)
+    const seconds = ((millis % 60000) / 1000).toFixed(0)
     return minutes + ':' + (+seconds < 10 ? '0' : '') + seconds
   }
 
   useEffect(() => {
     getUsers()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    gameState?.players?.black,
-    gameState?.players?.white,
-    authState.connectedUsers.length,
-  ])
+  }, [])
 
   const screenStyle =
-    gameState?.players?.black === authState?.loggedInUser?._id
+    gameState?.players?.black === loggedInUser?._id
       ? 'black-screen'
       : 'white-screen'
 

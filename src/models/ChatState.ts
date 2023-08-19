@@ -1,4 +1,4 @@
-export interface Chat {
+export interface ChatState {
   userId: string
   userId2: string | undefined
   messages: { fullname: string; txt: string; _id: string; userId: string }[]

@@ -1,25 +1,34 @@
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
-import { RootState } from '../features'
-import { getChatById, saveChat } from '../features/chat/asyncActions'
-import { useAppDispatch } from '../hooks/useAppDispatch'
-import { useAppSelector } from '../hooks/useTypedSelector'
 import { utilService } from '../services/utilService'
+import { ChatState } from '../models/ChatState'
+import { User } from '../models/User'
+import { GameState } from '../models/GameState'
 
-export const Chat = () => {
-  const dispatch = useAppDispatch()
-  const gameState = useAppSelector((state: RootState) => state.game)
-  const authState = useAppSelector((state: RootState) => state.auth)
-  const chatState = useAppSelector((state: RootState) => state.chat)
+interface Props {
+  gameState: GameState
+  loggedInUser: User | null
+  chatState: ChatState | null
+  saveChat: (chat: ChatState) => Promise<ChatState>
 
+  getChatById: (chatId: string) => Promise<ChatState>
+}
+
+export const Chat = ({
+  chatState,
+  loggedInUser,
+  saveChat,
+  getChatById,
+  gameState,
+}: Props) => {
   const [msg, setMsg] = useState('')
 
   const createMsg = (txt: string) => {
     return {
       _id: utilService.makeId(24),
-      userId: authState?.loggedInUser?._id || '',
+      userId: loggedInUser?._id || '',
       txt,
-      fullname: authState.loggedInUser?.fullname || 'Guest',
+      fullname: loggedInUser?.fullname || 'Guest',
     }
   }
 
@@ -31,8 +40,7 @@ export const Chat = () => {
       const newMsg = createMsg(msg)
       const chatToSave = _.cloneDeep(chatState)
       chatToSave?.messages.push(newMsg)
-      chatToSave && dispatch(saveChat(chatToSave))
-
+      chatToSave && saveChat(chatToSave)
       setMsg('')
     }
   }
@@ -41,7 +49,7 @@ export const Chat = () => {
     const newMsg = createMsg(msg)
     const chatToSave = _.cloneDeep(chatState)
     chatToSave?.messages.push(newMsg)
-    chatToSave && dispatch(saveChat(chatToSave))
+    chatToSave && saveChat(chatToSave)
   }
 
   useEffect(() => {
@@ -49,18 +57,13 @@ export const Chat = () => {
     if (chatState && !chatState.userId2 && gameState?.players?.black) {
       const chatToSave = _.cloneDeep(chatState)
       chatToSave.userId2 = gameState.players.black
-      chatToSave && dispatch(saveChat(chatToSave))
+      chatToSave && saveChat(chatToSave)
     }
-  }, [
-    chatState,
-    dispatch,
-    gameState?.players?.black,
-    gameState?.players?.white,
-  ])
+  }, [chatState, gameState, gameState?.players?.black, saveChat])
 
   useEffect(() => {
-    if (gameState?.chatId) dispatch(getChatById(gameState.chatId))
-  }, [dispatch, gameState?.chatId])
+    if (gameState?.chatId && !chatState) getChatById(gameState.chatId)
+  }, [chatState, gameState.chatId, getChatById])
 
   if (!gameState?.isOnline)
     return <div className="chat not-online">Have fun !</div>
@@ -72,7 +75,7 @@ export const Chat = () => {
           <h1>Chat room</h1>
         </header>
         <div className="body">
-          {chatState?.messages.map((msg: any) => (
+          {chatState?.messages.map((msg) => (
             <div key={msg._id}>
               <span>
                 {`${msg.fullname} ${

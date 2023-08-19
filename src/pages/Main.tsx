@@ -1,122 +1,182 @@
 import _ from 'lodash'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Board } from '../cmps/Board'
-import { GameDetails } from '../cmps/GameDetails'
 import { ValidAuthModal } from '../cmps/ValidAuthModal'
-import { RootState } from '../features'
-import { getState, updateState } from '../features/game/asyncActions'
-import { useAppDispatch } from '../hooks/useAppDispatch'
-import { useAppSelector } from '../hooks/useTypedSelector'
+import { GameState } from '../models/GameState'
+import { ChatState } from '../models/ChatState'
+import { useAuthContext } from '../context/AuthContext'
+import { chatService } from '../services/chatService'
+import { storageService } from '../services/storageService'
+import { gameStateService } from '../services/gameStateService'
+import { User } from '../models/User'
 import { Chat } from '../cmps/Chat'
-import { saveChat } from '../features/chat/asyncActions'
+import { GameDetails } from '../cmps/GameDetails'
+import { socketService } from '../services/socketService'
 
 interface props {
-  onLoginAsGuest: any
+  onLoginAsGuest: () => Promise<void>
 }
 export const Main = ({ onLoginAsGuest }: props) => {
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
-  const gameState = useAppSelector((state: RootState) => state.game)
-  const authState = useAppSelector((state: RootState) => state.auth)
-  const chatState = useAppSelector((state: RootState) => state.chat)
-
+  const [gameState, setGameState] = useState<GameState | null>(null)
+  const [chatState, setChatState] = useState<ChatState | null>(null)
+  const { loggedInUser, connectedUsers, setConnectedUsers } = useAuthContext()
   const [isTwoPlayerInTheGame, setIsTwoPlayerInTheGame] = useState(false)
+
   const { id } = useParams()
 
-  const onShareGameUrl = async () => {
-    const shareData = {
-      title: 'Chess game',
-      text: `${authState.loggedInUser?.fullname} invited you to play chess !`,
-      url: `https://chess-v2-backend-production.up.railway.app/#/${id}`,
-    }
-    try {
-      await navigator.share(shareData)
-    } catch (err) {
-      console.log(`Error: ${err}`)
-    }
+  const getState = useCallback(
+    async (gameId: string) => {
+      if (id && id.length > 10) {
+        const state = await gameStateService.getById(gameId)
+        setGameState(state)
+        return state
+      }
+
+      if (id && id.length < 10) {
+        const stateFromStorage = storageService.get('chess-game', gameId)
+        if (stateFromStorage) setGameState(stateFromStorage)
+      }
+    },
+    [id]
+  )
+
+  useEffect(() => {
+    if (id) getState(id)
+  }, [getState, id])
+
+  const saveChat = async (chat: ChatState) => {
+    const savedChat = await chatService.save(chat)
+    if (chat._id && chat.userId && chat.userId2)
+      socketService.emit('chat-updated', savedChat)
+    setChatState(savedChat)
+    return savedChat
   }
 
-  const joinPlayerToTheGame = () => {
-    // if no black player:
+  const updateState = async (newState: GameState) => {
+    if (!newState.isOnline) {
+      const updatedState = storageService.put('chess-game', newState)
+      setGameState(updatedState)
+      return updatedState
+    }
+
+    const savedState = await gameStateService.saveState(newState)
+    socketService.emit('state-updated', savedState)
+    return setGameState(savedState)
+  }
+  const getChatById = async (chatId: string) => {
+    const chat = await chatService.getById(chatId)
+    setChatState(chat)
+    return chat
+  }
+
+  const setSwitchTurn = () => {
+    if (!gameState) return
+    const game = { ...gameState }
+    game.isBlackTurn = !game.isBlackTurn
+    setGameState(game as GameState)
+  }
+  const setSelectedCellCoord = (cellCoord: GameState['selectedCellCoord']) => {
+    if (!gameState) return
+    const game = { ...gameState }
+    game.selectedCellCoord = cellCoord
+    setGameState(game as GameState)
+  }
+
+  const joinPlayerToTheGame = useCallback(() => {
     if (gameState?.players?.white && gameState?.players?.black === '') {
       const stateToUpdate = _.cloneDeep(gameState)
       const chatToUpdate = _.cloneDeep(chatState)
 
       if (stateToUpdate.players) {
-        const userId = authState.loggedInUser?._id
-        // if player exist: return
+        const userId = loggedInUser?._id
         if (gameState.players.white === userId) return
         if (!userId) return
 
         if (gameState.chatId && chatToUpdate && userId) {
           if (!chatToUpdate.userId2) chatToUpdate.userId2 = userId
           else if (!chatToUpdate.userId) chatToUpdate.userId = userId
-          dispatch(saveChat(chatToUpdate))
+
+          saveChat(chatToUpdate)
         }
         stateToUpdate.players.black = userId
       }
+      updateState(stateToUpdate)
       return stateToUpdate
-    }
-    // if no white player:
-    else if (gameState?.players?.black && gameState?.players?.white === '') {
+    } else if (gameState?.players?.black && gameState?.players?.white === '') {
       const stateToUpdate = _.cloneDeep(gameState)
       if (stateToUpdate.players) {
-        const userId = authState.loggedInUser?._id
-        // if player exist: return
+        const userId = loggedInUser?._id
+
         if (gameState.players.black === userId) return
         if (!userId) return
 
         stateToUpdate.players.white = userId
       }
+      updateState(stateToUpdate)
       return stateToUpdate
     }
-  }
+  }, [chatState, gameState, loggedInUser?._id])
 
   useEffect(() => {
     if (!gameState?.players?.black || !gameState?.players?.white) {
       const stateToUpdate = joinPlayerToTheGame()
-      stateToUpdate && dispatch(updateState(stateToUpdate))
+      if (stateToUpdate) updateState(stateToUpdate)
     }
     if (gameState?.players?.black && gameState?.players?.white) {
       setIsTwoPlayerInTheGame(true)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    dispatch,
     gameState,
     gameState?.players?.black,
     gameState?.players?.white,
-    authState.loggedInUser,
+    loggedInUser,
     gameState?.isOnline,
     chatState?._id,
     chatState?.userId,
     chatState?.userId2,
-    authState.loggedInUser?._id,
+    loggedInUser?._id,
+    isTwoPlayerInTheGame,
+    joinPlayerToTheGame,
   ])
 
+  // handle sockets:
   useEffect(() => {
-    if (id) dispatch(getState(id))
+    if (loggedInUser) {
+      socketService.emit('setUserSocket', loggedInUser._id)
+    }
+    socketService.on('set-connected-users', (connectedUsers: string[]) => {
+      if (setConnectedUsers) setConnectedUsers(connectedUsers)
+    })
+    socketService.on('update-state', (updatedState: GameState) => {
+      setGameState(updatedState)
+    })
+    socketService.on('update-chat', (updatedChat: ChatState) => {
+      setChatState(updatedChat)
+    })
 
-    return () => {}
-  }, [dispatch, id])
-
-  function copyToClipBoard() {
-    navigator.clipboard.writeText(
-      `https://chess-v2-backend-production.up.railway.app/#/${id}`
-    )
-  }
+    return () => {
+      socketService.off('set-connected-users')
+      socketService.off('update-state')
+    }
+  }, [loggedInUser, setConnectedUsers])
 
   return (
     <div className="main-page">
       {gameState?.isOnline && !isTwoPlayerInTheGame && (
         <div className="wait-container">
           <p className="is-waiting">Waiting for a player...</p>
-          <p className="is-waiting" onClick={copyToClipBoard}>
+          <p className="is-waiting" onClick={() => !!id && copyToClipBoard(id)}>
             Share this link for play <span>click to copy </span>
           </p>
-          <button className="share-btn " onClick={onShareGameUrl}>
+          <button
+            className="share- btn "
+            onClick={() =>
+              !!loggedInUser && !!id && onShareGameUrl(loggedInUser, id)
+            }
+          >
             Share
           </button>
         </div>
@@ -125,13 +185,31 @@ export const Main = ({ onLoginAsGuest }: props) => {
       {gameState && (
         <Board
           isTwoPlayerInTheGame={isTwoPlayerInTheGame}
-          setIsTwoPlayerInTheGame={setIsTwoPlayerInTheGame}
+          gameState={gameState}
+          loggedInUser={loggedInUser}
+          updateState={updateState}
+          setSwitchTurn={setSwitchTurn}
+          setSelectedCellCoord={setSelectedCellCoord}
         />
       )}
 
-      {gameState && <GameDetails />}
+      {gameState && (
+        <GameDetails
+          gameState={gameState}
+          connectedUsers={connectedUsers}
+          loggedInUser={loggedInUser}
+        />
+      )}
 
-      {gameState && <Chat />}
+      {gameState && (
+        <Chat
+          loggedInUser={loggedInUser}
+          chatState={chatState}
+          saveChat={saveChat}
+          getChatById={getChatById}
+          gameState={gameState}
+        />
+      )}
 
       {!gameState && (
         <div className="msg">
@@ -140,9 +218,27 @@ export const Main = ({ onLoginAsGuest }: props) => {
         </div>
       )}
 
-      {!authState.loggedInUser && (
-        <ValidAuthModal onLoginAsGuest={onLoginAsGuest} />
-      )}
+      {!loggedInUser && <ValidAuthModal onLoginAsGuest={onLoginAsGuest} />}
     </div>
   )
+}
+
+const onShareGameUrl = async (loggedInUser: User, id: string) => {
+  const shareData = {
+    title: 'Chess game',
+    text: `${loggedInUser?.fullname} invited you to play chess !`,
+    url: `https://chess-v2-backend-production.up.railway.app/#/${id}`,
+  }
+  try {
+    await navigator.share(shareData)
+  } catch (err) {
+    console.log(`Error: ${err}`)
+  }
+}
+
+function copyToClipBoard(
+  id: string,
+  baseUrl: string = 'https://chess-v2-backend-production.up.railway.app/#/'
+) {
+  navigator.clipboard.writeText(`${baseUrl}${id}`)
 }

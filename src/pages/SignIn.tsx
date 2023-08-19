@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { login } from '../features/auth/asyncActions'
-import { useAppDispatch } from '../hooks/useAppDispatch'
+import { useAuthContext } from '../context/AuthContext'
 
 export const SignIn = () => {
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
+
+  const { login } = useAuthContext()
 
   const [cred, setCred] = useState({
     username: '',
@@ -14,19 +14,18 @@ export const SignIn = () => {
 
   const handleChange = async (ev: React.ChangeEvent<HTMLInputElement>) => {
     const field = ev.target.name
-    let value =
+    const value =
       ev.target.type === 'number' ? +ev.target.value || '' : ev.target.value
     setCred((prevCred) => ({ ...prevCred, [field]: value }))
   }
 
   const cleanFields = () => setCred(() => ({ username: '', password: '' }))
 
-  const submit = (ev: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault()
     if (!cred.username && cred.password.length < 4) return
-    dispatch(login(cred)).then((res) => {
-      if (res.meta.requestStatus === 'fulfilled') navigate('/')
-    })
+    await login(cred)
+    navigate('/')
     cleanFields()
   }
   return (

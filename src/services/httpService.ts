@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Axios from 'axios'
 
 const BASE_URL =
@@ -23,6 +24,7 @@ export const httpService = {
 }
 
 async function ajax(endpoint: string, method = 'GET', data = null) {
+  // eslint-disable-next-line no-useless-catch
   try {
     const res = await axios({
       url: `${BASE_URL}${endpoint}`,
@@ -32,7 +34,7 @@ async function ajax(endpoint: string, method = 'GET', data = null) {
     })
     return res.data
   } catch (err: any) {
-    // console.log(err)
+    console.log(err)
     throw err
   }
 }

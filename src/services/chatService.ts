@@ -1,7 +1,6 @@
-import { Chat } from '../models/Chat'
+import { ChatState } from '../models/ChatState'
 import { authService } from './authService'
 import { httpService } from './httpService'
-import { utilService } from './utilService'
 
 export const chatService = {
   createChat,
@@ -9,23 +8,23 @@ export const chatService = {
   getById,
 }
 
-async function createChat(): Promise<Chat> {
+async function createChat(): Promise<string> {
   const loggedInUser = authService.getLoggedinUser()
-  const newChat: Chat = {
+  const newChat: ChatState = {
     userId: loggedInUser?._id || '',
     userId2: '',
     messages: [],
     createdAt: new Date().getTime(),
   }
-  const savedChat: Chat = await httpService.post('chat', newChat)
-  return savedChat
+  const id: string = await httpService.post('chat', newChat)
+  return id
 }
 
-async function getById(chatId: string): Promise<Chat> {
+async function getById(chatId: string): Promise<ChatState> {
   return await httpService.get('chat/' + chatId)
 }
 
-async function save(chat: Chat): Promise<Chat> {
+async function save(chat: ChatState): Promise<ChatState> {
   return chat._id
     ? await httpService.put(`chat/${chat._id}`, chat)
     : await httpService.post('chat/', chat)

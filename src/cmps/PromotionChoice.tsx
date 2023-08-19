@@ -1,21 +1,18 @@
-import React from 'react'
-import { RootState } from '../features'
-import { useAppSelector } from '../hooks/useTypedSelector'
+import { GameState } from '../models/GameState'
 
 interface props {
-  onChoosePieceToAdd: any
+  onChoosePieceToAdd: (piece: string) => void
+  gameState: GameState
 }
 
-export const PromotionChoice = ({ onChoosePieceToAdd }: props) => {
-  const gameState = useAppSelector((state: RootState) => state.game)
-
-  const blackPieces = [
+export const PromotionChoice = ({ onChoosePieceToAdd, gameState }: props) => {
+  const blackPieces: string[] = [
     gameState?.pieces.QUEEN_BLACK,
     gameState?.pieces.KNIGHT_BLACK,
     gameState?.pieces.BISHOP_BLACK,
     gameState?.pieces.ROOK_BLACK,
   ]
-  const whitePieces = [
+  const whitePieces: string[] = [
     gameState?.pieces.QUEEN_WHITE,
     gameState?.pieces.KNIGHT_WHITE,
     gameState?.pieces.BISHOP_WHITE,
@@ -27,7 +24,7 @@ export const PromotionChoice = ({ onChoosePieceToAdd }: props) => {
     <div className="promotion-choice">
       <div className="bg"></div>
       <div className={gameState?.isBlackTurn ? 'pieces black' : 'pieces white'}>
-        {piecesToShow.map((piece: any) => (
+        {piecesToShow.map((piece) => (
           <span
             key={piece}
             className="piece"

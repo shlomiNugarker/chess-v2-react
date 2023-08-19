@@ -1,21 +1,14 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { RootState } from '../features'
-import { logout } from '../features/auth/asyncActions'
+import { useAuthContext } from '../context/AuthContext'
 
-import { useAppDispatch } from '../hooks/useAppDispatch'
-import { useAppSelector } from '../hooks/useTypedSelector'
-
-export const Header = (props: any) => {
-  const dispatch = useAppDispatch()
+export const Header = () => {
   const navigate = useNavigate()
   const [isMenuVisible, setIsMenuVisible] = useState(false)
-
-  const { loggedInUser } = useAppSelector((state: RootState) => state.auth)
-  const onLogout = () => dispatch(logout())
+  const { loggedInUser, logout } = useAuthContext()
 
   return (
-    <header className="header-cmp">
+    <header className={'header-cmp'}>
       <div
         className={` ${!isMenuVisible ? 'container hide-menu' : 'container'}`}
       >
@@ -61,7 +54,7 @@ export const Header = (props: any) => {
               </span>
             )}
             {loggedInUser && (
-              <button className="blue-btn" onClick={onLogout}>
+              <button className="blue-btn" onClick={logout}>
                 Logout
               </button>
             )}

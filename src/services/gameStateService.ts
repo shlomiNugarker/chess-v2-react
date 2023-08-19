@@ -3,11 +3,13 @@ import { chatService } from './chatService'
 import { buildBoard } from './game/buildBoard'
 import { gPieces } from './game/gPieces'
 import { httpService } from './httpService'
+import { storageService } from './storageService'
 
 export const gameStateService = {
   getById,
   saveState,
   getNewGame,
+  setNewState,
 }
 
 async function saveState(state: GameState) {
@@ -16,8 +18,9 @@ async function saveState(state: GameState) {
   }
   if (!state._id) {
     try {
-      const newChat = await chatService.createChat() // create new chat for tha game
-      state.chatId = newChat._id
+      const chatId = await chatService.createChat() // create new chat for tha game
+
+      state.chatId = chatId
       const newState = await httpService.post('game', state)
       return newState
     } catch (err) {
@@ -28,6 +31,20 @@ async function saveState(state: GameState) {
 
 async function getById(id: string) {
   return await httpService.get(`game/${id}`)
+}
+
+async function setNewState(state: GameState) {
+  try {
+    if (!state.isOnline) {
+      const stateWithId: GameState = storageService.post('chess-game', state)
+      return stateWithId._id
+    }
+    // just save new state in DB and after the page navigate, load the game with the param id (getGame)
+    const stateId: string = await gameStateService.saveState(state)
+    return stateId
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 function getNewGame(firstPlayerId: string, isOnline: boolean): GameState {

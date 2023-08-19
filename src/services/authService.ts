@@ -18,10 +18,8 @@ async function login(userCred: { username: string; password: string }) {
   if (user) return _saveLocalUser(user)
 }
 
-async function signupAsGuest(fullname?: string) {
-  const userFromStorage: User | null = utilService.loadFromStorage(
-    STORAGE_KEY_LOGGEDIN_USER
-  )
+async function signupAsGuest(fullname?: string | null) {
+  const userFromStorage: User | null = getLoggedinUser()
   if (userFromStorage) return userFromStorage
 
   const newUser = {
@@ -30,7 +28,8 @@ async function signupAsGuest(fullname?: string) {
 
   const savedUser: User = await userService.saveUser(newUser)
 
-  utilService.saveToStorage(STORAGE_KEY_LOGGEDIN_USER, savedUser)
+  _saveLocalUser(savedUser)
+  // utilService.saveToStorage(STORAGE_KEY_LOGGEDIN_USER, savedUser)
   return savedUser
 }
 
@@ -40,6 +39,7 @@ async function signup(userCred: {
   fullname: string
 }) {
   const user = await httpService.post('auth/signup', userCred)
+
   return _saveLocalUser(user)
 }
 
@@ -48,7 +48,7 @@ async function logout() {
   return await httpService.post('auth/logout')
 }
 
-function _saveLocalUser(user: any) {
+function _saveLocalUser(user: User) {
   sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
   return user
 }

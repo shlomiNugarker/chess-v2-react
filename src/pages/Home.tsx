@@ -1,58 +1,34 @@
 import { useNavigate } from 'react-router-dom'
-import { useAppDispatch } from '../hooks/useAppDispatch'
-
-import { RootState } from '../features'
-import { useAppSelector } from '../hooks/useTypedSelector'
-import { gameStateService } from '../services/gameStateService'
-import { setNewState } from '../features/game/asyncActions'
 import { ValidAuthModal } from '../cmps/ValidAuthModal'
-import { GameState } from '../models/GameState'
+import { useAuthContext } from '../context/AuthContext'
+import { gameStateService } from '../services/gameStateService'
 
 interface props {
-  onLoginAsGuest: any
+  onLoginAsGuest: () => Promise<void>
 }
 export const Home = ({ onLoginAsGuest }: props) => {
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const { loggedInUser } = useAuthContext()
 
-  const authState = useAppSelector((state: RootState) => state.auth)
+  const onStartNewGame = async (isOnline: boolean) => {
+    const userId = loggedInUser?._id || 'Guest'
+    const newGame = gameStateService.getNewGame(userId, isOnline)
+    const stateId = await gameStateService.setNewState(newGame)
 
-  const onStartNewGameOnline = () => {
-    const userId = authState.loggedInUser?._id
-    if (!userId) {
-      alert('please login')
-      return
-    }
-    const newGame = gameStateService.getNewGame(userId, true)
-    dispatch(setNewState(newGame)).then((res) => {
-      const gameId = (res.payload as GameState)._id
-      navigate(`/${gameId}`)
-    })
-  }
-
-  const onStartNewGameOffline = () => {
-    const userId = authState.loggedInUser?._id || 'Guest'
-    const newGame = gameStateService.getNewGame(userId, false)
-    dispatch(setNewState(newGame)).then((res) => {
-      const gameId = (res.payload as GameState)._id
-      navigate(`/${gameId}`)
-    })
+    if (stateId) navigate(`/${stateId}`)
   }
 
   return (
     <div className="home-page">
       <div className="container">
-        <button className="blue-btn" onClick={onStartNewGameOnline}>
+        <button className="blue-btn" onClick={() => onStartNewGame(true)}>
           Play with a friend online
         </button>
-        {/* <button className="blue-btn">Play with the computer (soon) </button> */}
-        <button className="blue-btn" onClick={onStartNewGameOffline}>
+        <button className="blue-btn" onClick={() => onStartNewGame(false)}>
           Play with a friend offline
         </button>
       </div>
-      {!authState.loggedInUser && (
-        <ValidAuthModal onLoginAsGuest={onLoginAsGuest} />
-      )}
+      {!loggedInUser && <ValidAuthModal onLoginAsGuest={onLoginAsGuest} />}
     </div>
   )
 }
