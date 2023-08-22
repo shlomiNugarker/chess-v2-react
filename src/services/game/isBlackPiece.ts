@@ -4,6 +4,8 @@ export function isBlackPiece(
   state: GameState,
   piece: string
 ): boolean | undefined {
+  console.log('isBlackPiece()')
+
   switch (piece) {
     case state.pieces.KING_WHITE:
     case state.pieces.BISHOP_WHITE:

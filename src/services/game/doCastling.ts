@@ -4,6 +4,8 @@ import { getCellCoord } from './getCellCoord'
 import { isCastleThreatened } from './isCastleThreatened'
 
 export function doCastling(state: GameState, elToCell: Element) {
+  console.log('doCastling()')
+
   const fromCoord = state.selectedCellCoord
   const toCoord = getCellCoord(elToCell.id)
   if (!fromCoord) return

@@ -8,6 +8,8 @@ export function isNextStepLegal(
   state: GameState,
   elToCell: HTMLElement | Element
 ) {
+  console.log('isNextStepLegal()')
+
   const fromCoord = state.selectedCellCoord
   const toCoord = getCellCoord(elToCell.id)
 

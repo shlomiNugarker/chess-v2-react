@@ -8,6 +8,8 @@ export function isOptionToCastling(
     j: number
   }
 ) {
+  console.log('isOptionToCastling()')
+
   if (!state.selectedCellCoord) return false
 
   const currPiece = state.board[selectedPieceCoord.i][selectedPieceCoord.j]

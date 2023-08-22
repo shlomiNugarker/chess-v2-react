@@ -10,6 +10,8 @@ export function movePiece(
     j: number
   }
 ) {
+  console.log('movePiece()')
+
   const fromCoord = state.selectedCellCoord
   const toCoord = toCellCoord
 
@@ -33,6 +35,7 @@ export function movePiece(
 
   if (isCellWithPiece) {
     // Eat the piece!
+
     const eatenPiece = copiedState.board[toCoord.i][toCoord.j]
     const isEatenPieceBlack = isBlackPiece(copiedState, eatenPiece)
 

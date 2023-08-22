@@ -14,6 +14,8 @@ export function getPossibleCoords(
     j: number
   }
 ) {
+  console.log('getPossibleCoords()')
+
   if (!piece) return
 
   let possibleCoords: { i: number; j: number }[] = []

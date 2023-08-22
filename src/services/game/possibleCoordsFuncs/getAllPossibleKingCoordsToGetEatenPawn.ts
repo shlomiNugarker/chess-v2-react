@@ -7,7 +7,8 @@ export function getAllPossibleKingCoordsToGetEatenPawn(
     j: number
   }
 ) {
-  let res: { i: number; j: number }[] = []
+  console.log('getAllPossibleKingCoordsToGetEatenPawn()')
+  const res: { i: number; j: number }[] = []
   const { isBlackTurn } = state
 
   const possibleSteps = [

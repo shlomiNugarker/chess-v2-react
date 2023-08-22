@@ -71,6 +71,8 @@ export const Chat = ({
   if (!gameState?.isOnline)
     return <div className="chat not-online">Have fun !</div>
 
+  console.log('render Chat.tsx')
+
   return (
     <>
       <div className="chat">

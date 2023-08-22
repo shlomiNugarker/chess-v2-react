@@ -10,8 +10,9 @@ export function getAllPossibleCoordsQueen(
   },
   isAskForEatenCoords: boolean = false
 ) {
+  console.log('getAllPossibleCoordsQueen()')
   const { board } = state
-  let res: { i: number; j: number }[] = []
+  const res: { i: number; j: number }[] = []
 
   const possibleDir = [
     // Bishop:

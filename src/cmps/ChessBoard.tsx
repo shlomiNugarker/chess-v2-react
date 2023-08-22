@@ -10,6 +10,7 @@ interface Props {
 }
 
 export const ChessBoard = ({ state, cellClicked }: Props) => {
+  console.log('render ChessBoard.tsx')
   return (
     <table className={'chess-board'}>
       <tbody>

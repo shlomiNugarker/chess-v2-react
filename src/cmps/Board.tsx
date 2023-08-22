@@ -46,6 +46,7 @@ export const Board = ({
   setChatState,
 }: Props) => {
   const navigate = useNavigate()
+  const [hasGameStarted, sethasGameStarted] = useState(false)
   const [isWin, setIsWin] = useState(false)
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
   const [cellCoordsToAddInsteadPawn, setCellCoordsToAddInsteadPawn] = useState<{
@@ -83,9 +84,10 @@ export const Board = ({
     const newState = movePiece(gameState, cellCoord)
     audioStep.play()
 
-    newState && isPlayerWin(newState)
+    // if (newState) isPlayerWin(newState)
 
     if (!newState) return
+
     if (isPawnStepsEnd(state, cellCoord)) {
       setIsPromotionChoice(true)
       newState && updateGameState(newState)
@@ -154,18 +156,19 @@ export const Board = ({
     piece: string
   ) => {
     cleanBoard()
-    gameState.board[cellCoord.i][cellCoord.j] &&
+    if (gameState.board[cellCoord.i][cellCoord.j]) {
       target.classList.add('selected')
-    setSelectedCellCoord(cellCoord)
-    const possibleCoords = getPossibleCoords(gameState, piece, cellCoord)
-    possibleCoords && markCells(gameState, possibleCoords)
+      setSelectedCellCoord(cellCoord)
+      const possibleCoords = getPossibleCoords(gameState, piece, cellCoord)
+      if (possibleCoords) markCells(gameState, possibleCoords)
+    }
   }
   const isValidMove = (
     ev: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>
   ) => {
+    if (ev.target instanceof Element && gameState) return true
     if (gameState?.isOnline && !isTwoPlayerInTheGame) return false
     if (gameState?.isOnline && !isValidPlayerTurn()) return false
-    if (ev.target instanceof Element && gameState) return true
     return false
   }
   const isValidPlayerTurn = () => {
@@ -183,6 +186,7 @@ export const Board = ({
     j: number
   ) => {
     if (!isValidMove(ev)) return
+    if (!hasGameStarted) sethasGameStarted(true)
 
     if (ev.target instanceof Element && gameState) {
       const cellCoord = { i, j }
@@ -202,7 +206,11 @@ export const Board = ({
         return
       }
 
-      if (!isColorPieceWorthCurrPlayerColor(gameState, piece) && piece !== '')
+      if (
+        piece &&
+        piece !== '' &&
+        !isColorPieceWorthCurrPlayerColor(gameState, piece)
+      )
         return
 
       // unselect:
@@ -222,13 +230,14 @@ export const Board = ({
   }
 
   useEffect(() => {
-    if (gameState && !isWin && isPlayerWin(gameState)) {
+    if (hasGameStarted && gameState && !isWin && isPlayerWin(gameState)) {
       setIsWin(true)
     }
-  }, [gameState, gameState?.isBlackTurn, isWin])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState?.isBlackTurn, isWin])
 
   useEffect(() => {
-    if (gameState) {
+    if (gameState && hasGameStarted) {
       checkIfKingThreatened(gameState)
 
       // handle case if both kings threatened one after one
@@ -278,6 +287,8 @@ export const Board = ({
     gameState?.players?.black === loggedInUser?._id
       ? 'blackScreen'
       : 'whiteScreen'
+
+  console.log('rebder Board.tsx')
 
   return (
     <section className={'board-cmp ' + screenStyle}>

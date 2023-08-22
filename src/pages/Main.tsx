@@ -167,6 +167,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     authContextData?.setConnectedUsers,
   ])
 
+  console.log('rebder Main.tsx')
   return (
     <div className="main-page">
       {gameState?.isOnline && !isTwoPlayerInTheGame && (

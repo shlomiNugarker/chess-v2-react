@@ -70,6 +70,7 @@ export const GameDetails = ({
       ? 'black-screen'
       : 'white-screen'
 
+  console.log('render GameDetails.tsx')
   return (
     <section className="game-details">
       <div className={'container ' + screenStyle}>

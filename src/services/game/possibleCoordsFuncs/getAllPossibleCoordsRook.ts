@@ -7,8 +7,9 @@ export function getAllPossibleCoordsRook(
   state: GameState,
   pieceCoord: { i: number; j: number }
 ) {
+  console.log('getAllPossibleCoordsRook()')
   const { board } = state
-  let res: { i: number; j: number }[] = []
+  const res: { i: number; j: number }[] = []
 
   const possibleDir = [
     { i: -1, j: 0 }, //to top

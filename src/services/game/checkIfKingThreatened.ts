@@ -13,6 +13,7 @@ export function checkIfKingThreatened(
   isFakeCheck = false,
   coordToCheck?: { i: number; j: number }
 ) {
+  console.log('checkIfKingThreateneds()')
   const { board } = state
   let isFoundThreatenPiece = false
 

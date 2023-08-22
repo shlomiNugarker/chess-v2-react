@@ -4,6 +4,8 @@ export function isPawnStepsEnd(
   state: GameState,
   coord: { i: number; j: number }
 ) {
+  console.log('isPawnStepsEnd()')
+
   const piece = state.board[coord.i][coord.j]
   if (piece === state.pieces.PAWN_BLACK && state.isBlackTurn && coord.i === 7) {
     return true

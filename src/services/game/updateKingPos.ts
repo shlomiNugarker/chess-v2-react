@@ -5,6 +5,8 @@ export function updateKingPos(
   toCoord: { i: number; j: number },
   piece: string
 ) {
+  console.log('updateKingPos()')
+
   if (piece === '♔') {
     state.kingPos.white = { i: toCoord.i, j: toCoord.j }
   }

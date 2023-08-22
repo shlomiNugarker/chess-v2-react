@@ -7,7 +7,7 @@ export function markCells(
 ) {
   for (let i = 0; i < coords.length; i++) {
     const coord = coords[i]
-    let elCell = document.querySelector(`#cell-${coord.i}-${coord.j}`)
+    const elCell = document.querySelector(`#cell-${coord.i}-${coord.j}`)
     if (!elCell) return
 
     const piece = state.board[coord.i][coord.j]

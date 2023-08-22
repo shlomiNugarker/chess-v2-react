@@ -9,8 +9,9 @@ export function getAllPossibleCoordsKnight(
     j: number
   }
 ) {
+  console.log('getAllPossibleCoordsKnight')
   const { board } = state
-  let res: { i: number; j: number }[] = []
+  const res: { i: number; j: number }[] = []
   const possibleSteps = [
     { i: -2, j: -1 },
     { i: -2, j: 1 },

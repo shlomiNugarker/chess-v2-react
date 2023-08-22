@@ -7,12 +7,16 @@ export function getAllPossibleCoordsPawn(
   pieceCoord: { i: number; j: number },
   isWhite: boolean
 ) {
+  console.log('getAllPossibleCoordsPawn()')
+  console.log({ state, pieceCoord, isWhite })
+
   const { board } = state
   const res: { i: number; j: number }[] = []
 
   // Regular steps
   let diff = isWhite ? -1 : 1
   let nextCoord = { i: pieceCoord.i + diff, j: pieceCoord.j }
+
   if (isEmptyCell(board, nextCoord)) {
     res.push(nextCoord)
 
