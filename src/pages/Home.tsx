@@ -18,6 +18,7 @@ export const Home = ({ onLoginAsGuest }: props) => {
     if (stateId) navigate(`/${stateId}`)
   }
 
+  // console.log('render Home()')
   return (
     <div className="home-page">
       <div className="container">

@@ -9,7 +9,7 @@ export function addPieceInsteadPawn(
   },
   pieceToAdd: string
 ) {
-  console.log('addPieceInsteadPawn()')
+  // console.log('addPieceInsteadPawn()')
   const copiedState = _.cloneDeep(state)
   copiedState.board[coordsToFill.i][coordsToFill.j] = pieceToAdd
   return { newState: copiedState }

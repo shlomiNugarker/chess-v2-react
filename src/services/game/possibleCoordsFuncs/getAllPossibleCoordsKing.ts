@@ -6,7 +6,7 @@ export function getAllPossibleCoordsKing(
   state: GameState,
   pieceCoord: { i: number; j: number }
 ) {
-  console.log('getAllPossibleCoordsKing()')
+  // console.log('getAllPossibleCoordsKing()')
   const { board, isBlackTurn, isCastlingLegal } = state
   const { i: pieceI, j: pieceJ } = pieceCoord
   const possibleSteps = [

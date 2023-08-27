@@ -35,6 +35,7 @@ export const SignUp = () => {
     cleanFields()
   }
 
+  // console.log('render SignUp()')
   return (
     <div className="sign-up-page">
       <div className="container">

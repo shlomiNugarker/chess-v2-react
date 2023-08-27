@@ -6,7 +6,7 @@ export function getAllPossibleCoordsBishop(
   state: GameState,
   pieceCoord: { i: number; j: number }
 ) {
-  console.log('getAllPossibleCoordsBishop()')
+  // console.log('getAllPossibleCoordsBishop()')
   const { board } = state
 
   const possibleDirections = [

@@ -10,7 +10,7 @@ export function movePiece(
     j: number
   }
 ) {
-  console.log('movePiece()')
+  // console.log('movePiece()')
 
   const fromCoord = state.selectedCellCoord
   const toCoord = toCellCoord

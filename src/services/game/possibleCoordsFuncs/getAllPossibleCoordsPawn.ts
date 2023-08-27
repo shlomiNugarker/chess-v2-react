@@ -7,8 +7,7 @@ export function getAllPossibleCoordsPawn(
   pieceCoord: { i: number; j: number },
   isWhite: boolean
 ) {
-  console.log('getAllPossibleCoordsPawn()')
-  console.log({ state, pieceCoord, isWhite })
+  // console.log('getAllPossibleCoordsPawn()')
 
   const { board } = state
   const res: { i: number; j: number }[] = []

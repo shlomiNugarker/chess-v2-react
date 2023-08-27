@@ -7,8 +7,7 @@ export const Header = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false)
   const authContextData = useAuthContext()
 
-  console.log('render Header.tsx')
-
+  // console.log('render Header.tsx')
   return (
     <header className={'header-cmp'}>
       <div

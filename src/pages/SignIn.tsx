@@ -28,6 +28,7 @@ export const SignIn = () => {
     navigate('/')
     cleanFields()
   }
+  // console.log('render SignIn()')ss
   return (
     <div className="sign-in-page">
       <div className="container">

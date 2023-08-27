@@ -5,7 +5,7 @@ import { isNextStepLegal } from './isNextStepLegal'
 import * as _ from 'lodash'
 
 export function isPlayerWin(state: GameState) {
-  console.log('isPlayerWin()')
+  // console.log('isPlayerWin()')
 
   const { board, isBlackTurn } = state
   const color = isBlackTurn ? 'black' : 'white'

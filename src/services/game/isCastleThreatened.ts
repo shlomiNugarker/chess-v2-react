@@ -6,7 +6,7 @@ export function isCastleThreatened(
   fromCoord: { i: number; j: number },
   toCoord: { i: number; j: number }
 ) {
-  console.log('isCastleThreatened()')
+  // console.log('isCastleThreatened()')
 
   let isCastleLegal: boolean = true
 

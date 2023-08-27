@@ -20,8 +20,7 @@ export const PromotionChoice = ({ onChoosePieceToAdd, gameState }: props) => {
   ]
 
   const piecesToShow = gameState?.isBlackTurn ? blackPieces : whitePieces
-  console.log('render PromotionChoice.tsx')
-
+  // console.log('render PromotionChoice.tsx')
   return (
     <div className="promotion-choice">
       <div className="bg"></div>

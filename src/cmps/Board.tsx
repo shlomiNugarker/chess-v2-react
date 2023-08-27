@@ -288,8 +288,7 @@ export const Board = ({
       ? 'blackScreen'
       : 'whiteScreen'
 
-  console.log('rebder Board.tsx')
-
+  // console.log('rebder Board.tsx')
   return (
     <section className={'board-cmp ' + screenStyle}>
       {isWin && (

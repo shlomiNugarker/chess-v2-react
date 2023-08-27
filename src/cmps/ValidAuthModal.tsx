@@ -6,8 +6,7 @@ interface props {
 
 export const ValidAuthModal = ({ onLoginAsGuest }: props) => {
   const navigate = useNavigate()
-
-  console.log('render ValidAuthModal.tsx')
+  // console.log('render ValidAuthModal.tsx')
   return (
     <div className="valid-auth-modal">
       <div className="bg"></div>

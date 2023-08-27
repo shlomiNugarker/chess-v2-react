@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function buildBoard(pieces: any): string[][] {
-  console.log('buildBoard()')
+  // console.log('buildBoard()')
   const board: string[][] = []
   for (let i = 0; i < 8; i++) {
     board[i] = []

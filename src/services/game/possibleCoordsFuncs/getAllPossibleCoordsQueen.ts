@@ -10,7 +10,7 @@ export function getAllPossibleCoordsQueen(
   },
   isAskForEatenCoords: boolean = false
 ) {
-  console.log('getAllPossibleCoordsQueen()')
+  // console.log('getAllPossibleCoordsQueen()')
   const { board } = state
   const res: { i: number; j: number }[] = []
 

@@ -7,7 +7,7 @@ export function getAllPossibleCoordsRook(
   state: GameState,
   pieceCoord: { i: number; j: number }
 ) {
-  console.log('getAllPossibleCoordsRook()')
+  // console.log('getAllPossibleCoordsRook()')
   const { board } = state
   const res: { i: number; j: number }[] = []
 
