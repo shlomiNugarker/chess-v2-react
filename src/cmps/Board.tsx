@@ -20,7 +20,6 @@ interface Props {
   gameState: GameState | null
   loggedInUser: User | null
   updateGameState: (newState: GameState) => Promise<void | GameState>
-  setSwitchTurn: () => void
   setSelectedCellCoord: (cellCoord: GameState['selectedCellCoord']) => void
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
   setChatState: React.Dispatch<React.SetStateAction<ChatState | null>>
@@ -40,7 +39,7 @@ export const Board = ({
   gameState,
   loggedInUser,
   updateGameState,
-  setSwitchTurn,
+
   setSelectedCellCoord,
   setGameState,
   setChatState,
@@ -54,7 +53,7 @@ export const Board = ({
     j: number
   } | null>(null)
 
-  const onChoosePieceToAdd = (piece: string) => {
+  const onChoosePieceToAdd = async (piece: string) => {
     if (!cellCoordsToAddInsteadPawn || !gameState) return
     const { newState } = addPieceInsteadPawn(
       gameState,
@@ -62,11 +61,11 @@ export const Board = ({
       piece
     )
     newState.isBlackTurn = !newState.isBlackTurn
-    updateGameState(newState)
+    await updateGameState(newState)
     cleanBoard()
     setIsPromotionChoice(false)
   }
-  const handleEatableMove = (
+  const handleEatableMove = async (
     target: Element,
     gameState: GameState,
     cellCoord: { i: number; j: number }
@@ -90,15 +89,15 @@ export const Board = ({
 
     if (isPawnStepsEnd(state, cellCoord)) {
       setIsPromotionChoice(true)
-      newState && updateGameState(newState)
+      newState && (await updateGameState(newState))
       setCellCoordsToAddInsteadPawn(cellCoord)
       return
     }
     newState.isBlackTurn = !newState.isBlackTurn
-    updateGameState(newState)
+    await updateGameState(newState)
     cleanBoard()
   }
-  const handleCastlingMove = (target: Element, gameState: GameState) => {
+  const handleCastlingMove = async (target: Element, gameState: GameState) => {
     const { isMoveLegal } = isNextStepLegal(gameState, target)
     if (!isMoveLegal) return
 
@@ -113,16 +112,13 @@ export const Board = ({
       isCastleLegals.newState &&
       isCastleLegals.isCastleLegal
     ) {
-      console.log('update')
-      console.table(isCastleLegals.newState.board)
-
-      updateGameState(isCastleLegals.newState)
+      await updateGameState(isCastleLegals.newState)
     }
     if (isCastleLegals && !isCastleLegals.isCastleLegal) return
-    setSwitchTurn()
     cleanBoard()
   }
-  const handleStepMove = (
+
+  const handleStepMove = async (
     target: Element,
     gameState: GameState,
     cellCoord: { i: number; j: number }
@@ -140,12 +136,12 @@ export const Board = ({
     if (!newState) return
     if (isPawnStepsEnd(state, cellCoord)) {
       setIsPromotionChoice(true)
-      newState && updateGameState(newState)
+      newState && (await updateGameState(newState))
       setCellCoordsToAddInsteadPawn(cellCoord)
       return
     }
     newState.isBlackTurn = !newState.isBlackTurn
-    updateGameState(newState)
+    await updateGameState(newState)
 
     cleanBoard()
   }
