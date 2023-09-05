@@ -57,13 +57,17 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
   const updateGameState = async (newState: GameState) => {
     if (!newState.isOnline) {
-      const updatedState = storageService.put('chess-game', newState)
-      setGameState(updatedState)
-      return updatedState
+      storageService.put('chess-game', newState)
+
+      setGameState(newState)
+    } else {
+      const savedState = await gameStateService.saveState(newState)
+      socketService.emit('state-updated', savedState)
+      setGameState((prev) => ({
+        ...prev,
+        ...savedState,
+      }))
     }
-    const savedState = await gameStateService.saveState(newState)
-    socketService.emit('state-updated', savedState)
-    return setGameState(savedState)
   }
   const getChatById = async (chatId: string) => {
     const chat = await chatService.getById(chatId)
@@ -71,12 +75,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
     return chat
   }
 
-  const setSwitchTurn = () => {
-    if (!gameState) return
-    const game = { ...gameState }
-    game.isBlackTurn = !game.isBlackTurn
-    setGameState(game as GameState)
-  }
   const setSelectedCellCoord = (cellCoord: GameState['selectedCellCoord']) => {
     if (!gameState) return
     const game = { ...gameState }
@@ -195,7 +193,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
           gameState={gameState}
           loggedInUser={authContextData?.loggedInUser || null}
           updateGameState={updateGameState}
-          setSwitchTurn={setSwitchTurn}
           setSelectedCellCoord={setSelectedCellCoord}
           setGameState={setGameState}
           setChatState={setChatState}
