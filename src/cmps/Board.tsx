@@ -45,7 +45,9 @@ export const Board = ({
   setChatState,
 }: Props) => {
   const navigate = useNavigate()
-  const [hasGameStarted, sethasGameStarted] = useState(false)
+  const [hasGameStarted, sethasGameStarted] = useState(
+    !!gameState?.isGameStarted
+  )
   const [isWin, setIsWin] = useState(false)
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
   const [cellCoordsToAddInsteadPawn, setCellCoordsToAddInsteadPawn] = useState<{
@@ -292,7 +294,6 @@ export const Board = ({
           <span style={{ color: 'white' }}>We have a winner here !'😁</span>
           <button
             onClick={() => {
-              console.log()
               setGameState(null)
               setChatState(null)
               navigate('/')

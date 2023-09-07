@@ -56,15 +56,12 @@ export const Main = ({ onLoginAsGuest }: props) => {
   }
 
   const updateGameState = async (newState: GameState) => {
-    const copiedState = _.cloneDeep(newState)
-    copiedState.stateHistory.push(newState)
+    if (!newState.isOnline) {
+      storageService.put('chess-game', newState)
 
-    if (!copiedState.isOnline) {
-      storageService.put('chess-game', copiedState)
-
-      setGameState(copiedState)
+      setGameState(newState)
     } else {
-      const savedState = await gameStateService.saveState(copiedState)
+      const savedState = await gameStateService.saveState(newState)
       socketService.emit('state-updated', savedState)
       setGameState((prev) => ({
         ...prev,
@@ -119,6 +116,10 @@ export const Main = ({ onLoginAsGuest }: props) => {
       return stateToUpdate
     }
   }, [chatState, gameState, authContextData?.loggedInUser?._id])
+
+  const moveInStateHistory = (num: 1 | -1) => {
+    console.log(num)
+  }
 
   useEffect(() => {
     if (!gameState?.players?.black || !gameState?.players?.white) {
@@ -207,6 +208,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
           gameState={gameState}
           connectedUsers={authContextData?.connectedUsers || null}
           loggedInUser={authContextData?.loggedInUser || null}
+          moveInStateHistory={moveInStateHistory}
         />
       )}
 
