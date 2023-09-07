@@ -2,6 +2,7 @@ import * as _ from 'lodash'
 import { GameState } from '../../models/GameState'
 import { isBlackPiece } from './isBlackPiece'
 import { updateKingPos } from './updateKingPos'
+import { gPieces } from './gPieces'
 
 export function movePiece(
   state: GameState,
@@ -33,9 +34,57 @@ export function movePiece(
 
   let copiedState = _.cloneDeep(state)
 
-  if (isCellWithPiece) {
-    // Eat the piece!
+  if (
+    !copiedState.isBlackTurn &&
+    copiedState.eatableCellAfterTwoStepsPawnBlack &&
+    copiedState.eatableCellAfterTwoStepsPawnBlack.i === toCoord.i + 1 &&
+    copiedState.eatableCellAfterTwoStepsPawnBlack.j === toCoord.j
+  ) {
+    const piece =
+      copiedState.board[copiedState.eatableCellAfterTwoStepsPawnBlack.i][
+        copiedState.eatableCellAfterTwoStepsPawnBlack.j
+      ]
+    copiedState.board[copiedState.eatableCellAfterTwoStepsPawnBlack.i][
+      copiedState.eatableCellAfterTwoStepsPawnBlack.j
+    ] = ''
+    copiedState.eatenPieces.white.push(piece)
+  }
+  if (
+    copiedState.isBlackTurn &&
+    copiedState.eatableCellAfterTwoStepsPawnWhite &&
+    copiedState.eatableCellAfterTwoStepsPawnWhite.i === toCoord.i - 1 &&
+    copiedState.eatableCellAfterTwoStepsPawnWhite.j === toCoord.j
+  ) {
+    const piece =
+      copiedState.board[copiedState.eatableCellAfterTwoStepsPawnWhite.i][
+        copiedState.eatableCellAfterTwoStepsPawnWhite.j
+      ]
+    copiedState.board[copiedState.eatableCellAfterTwoStepsPawnWhite.i][
+      copiedState.eatableCellAfterTwoStepsPawnWhite.j
+    ] = ''
+    copiedState.eatenPieces.black.push(piece)
+  }
 
+  if (
+    copiedState.board[fromCoord.i][fromCoord.j] === gPieces.PAWN_WHITE &&
+    fromCoord.i === 6 &&
+    toCoord.i === 4
+  ) {
+    copiedState.eatableCellAfterTwoStepsPawnWhite = toCoord
+  } else if (
+    copiedState.board[fromCoord.i][fromCoord.j] === gPieces.PAWN_BLACK &&
+    fromCoord.i === 1 &&
+    toCoord.i === 3
+  ) {
+    copiedState.eatableCellAfterTwoStepsPawnBlack = toCoord
+  } else {
+    if (copiedState.eatableCellAfterTwoStepsPawnBlack)
+      copiedState.eatableCellAfterTwoStepsPawnBlack = null
+    if (copiedState.eatableCellAfterTwoStepsPawnWhite)
+      copiedState.eatableCellAfterTwoStepsPawnWhite = null
+  }
+
+  if (isCellWithPiece) {
     const eatenPiece = copiedState.board[toCoord.i][toCoord.j]
     const isEatenPieceBlack = isBlackPiece(copiedState, eatenPiece)
 
