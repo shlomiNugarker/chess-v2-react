@@ -166,7 +166,6 @@ export const Board = ({
   ) => {
     if (ev.target instanceof Element && gameState) return true
     if (gameState?.isOnline && !isTwoPlayerInTheGame) return false
-    if (gameState?.isOnline && !isValidPlayerTurn()) return false
     return false
   }
   const isValidPlayerTurn = () => {
@@ -183,6 +182,7 @@ export const Board = ({
     i: number,
     j: number
   ) => {
+    if (!isValidPlayerTurn()) return
     if (!isValidMove(ev)) return
     if (!hasGameStarted) sethasGameStarted(true)
 
