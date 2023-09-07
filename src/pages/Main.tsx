@@ -56,12 +56,15 @@ export const Main = ({ onLoginAsGuest }: props) => {
   }
 
   const updateGameState = async (newState: GameState) => {
-    if (!newState.isOnline) {
-      storageService.put('chess-game', newState)
+    const copiedState = _.cloneDeep(newState)
+    copiedState.stateHistory.push(newState)
 
-      setGameState(newState)
+    if (!copiedState.isOnline) {
+      storageService.put('chess-game', copiedState)
+
+      setGameState(copiedState)
     } else {
-      const savedState = await gameStateService.saveState(newState)
+      const savedState = await gameStateService.saveState(copiedState)
       socketService.emit('state-updated', savedState)
       setGameState((prev) => ({
         ...prev,
