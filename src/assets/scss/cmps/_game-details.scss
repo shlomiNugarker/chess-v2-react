@@ -90,6 +90,29 @@
 
     .moves {
       min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      div {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+        span {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          &:hover {
+            background-color: #384722;
+          }
+          svg {
+            cursor: pointer;
+            font-size: 50px;
+          }
+        }
+      }
     }
   }
 }
