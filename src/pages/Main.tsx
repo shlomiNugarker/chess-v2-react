@@ -55,20 +55,30 @@ export const Main = ({ onLoginAsGuest }: props) => {
     return savedChat
   }
 
-  const updateGameState = async (newState: GameState) => {
-    if (!newState.isOnline) {
-      storageService.put('chess-game', newState)
+  const updateGameState = useCallback(
+    async (newState: GameState) => {
+      const stateWithBoardHistory = _.cloneDeep(newState)
 
-      setGameState(newState)
-    } else {
-      const savedState = await gameStateService.saveState(newState)
-      socketService.emit('state-updated', savedState)
-      setGameState((prev) => ({
-        ...prev,
-        ...savedState,
-      }))
-    }
-  }
+      if (gameState?.board)
+        stateWithBoardHistory.boardHistory.push(gameState.board)
+
+      if (!stateWithBoardHistory.isOnline) {
+        storageService.put('chess-game', stateWithBoardHistory)
+
+        setGameState(stateWithBoardHistory)
+      } else {
+        const savedState = await gameStateService.saveState(
+          stateWithBoardHistory
+        )
+        socketService.emit('state-updated', savedState)
+        setGameState((prev) => ({
+          ...prev,
+          ...savedState,
+        }))
+      }
+    },
+    [gameState?.board]
+  )
   const getChatById = async (chatId: string) => {
     const chat = await chatService.getById(chatId)
     setChatState(chat)
@@ -115,7 +125,12 @@ export const Main = ({ onLoginAsGuest }: props) => {
       updateGameState(stateToUpdate)
       return stateToUpdate
     }
-  }, [chatState, gameState, authContextData?.loggedInUser?._id])
+  }, [
+    gameState,
+    chatState,
+    updateGameState,
+    authContextData?.loggedInUser?._id,
+  ])
 
   const moveInStateHistory = (num: 1 | -1) => {
     console.log(num)
@@ -141,6 +156,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     authContextData?.loggedInUser?._id,
     isTwoPlayerInTheGame,
     joinPlayerToTheGame,
+    updateGameState,
   ])
 
   // handle sockets:
