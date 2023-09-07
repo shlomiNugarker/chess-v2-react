@@ -48,13 +48,14 @@ async function setNewState(state: GameState) {
 }
 
 function getNewGame(firstPlayerId: string, isOnline: boolean): GameState {
+  const board = buildBoard(gPieces)
   return {
     isOnline,
     isGameStarted: false,
     players: { white: firstPlayerId, black: '' },
     stateHistory: [],
-    boardHistory: [],
-    board: buildBoard(gPieces),
+    boardHistory: [board],
+    board,
     pieces: gPieces,
     selectedCellCoord: null,
     isWhiteKingThreatened: false,
