@@ -161,20 +161,25 @@ export const Board = ({
       if (possibleCoords) markCells(gameState, possibleCoords)
     }
   }
-  const isValidMove = (
-    ev: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>
-  ) => {
-    if (ev.target instanceof Element && gameState) return true
-    if (gameState?.isOnline && !isTwoPlayerInTheGame) return false
-    return false
-  }
-  const isValidPlayerTurn = () => {
-    const loggedInUserId = loggedInUser?._id
-    const isBlackTurn = gameState?.isBlackTurn
-    const isBlackPlayer = loggedInUserId === gameState?.players?.black
-    const isWhitePlayer = loggedInUserId === gameState?.players?.white
 
-    return (isBlackTurn && isBlackPlayer) || (!isBlackTurn && isWhitePlayer)
+  const isValidPlayerTurn = () => {
+    if (!gameState?.isOnline) return true
+    if (gameState?.isOnline && isTwoPlayerInTheGame) {
+      if (
+        gameState.isBlackTurn &&
+        loggedInUser?._id === gameState.players?.black
+      ) {
+        console.log('valid b plarer')
+        return true
+      } else if (
+        !gameState.isBlackTurn &&
+        loggedInUser?._id === gameState.players?.white
+      ) {
+        console.log('valid w plarer')
+        return true
+      }
+    }
+    return false
   }
 
   const cellClicked = (
@@ -182,9 +187,8 @@ export const Board = ({
     i: number,
     j: number
   ) => {
-    if (!isValidPlayerTurn()) return
-    if (!isValidMove(ev)) return
     if (!hasGameStarted) sethasGameStarted(true)
+    if (!isValidPlayerTurn()) return
 
     if (ev.target instanceof Element && gameState) {
       const cellCoord = { i, j }
