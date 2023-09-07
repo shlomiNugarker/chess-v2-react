@@ -3,16 +3,20 @@ import { User } from '../models/User'
 import { userService } from '../services/userServise'
 import { GameState } from '../models/GameState'
 
+import { AiFillCaretLeft, AiFillCaretRight } from 'react-icons/ai'
+
 interface Props {
   gameState: GameState
   connectedUsers: string[] | null
   loggedInUser: User | null
+  moveInStateHistory: (num: 1 | -1) => void
 }
 
 export const GameDetails = ({
   gameState,
   connectedUsers,
   loggedInUser,
+  moveInStateHistory,
 }: Props) => {
   const [whitePlayer, setWhitePlayer] = useState<User | null>(null)
   const [blackPlayer, setBlackPlayer] = useState<User | null>(null)
@@ -107,8 +111,17 @@ export const GameDetails = ({
             <p>{blackPlayer?.fullname}</p>
           </div>
         </div>
-        <div className="moves"></div>
-        <div className="actions"></div>
+        <div className="moves">
+          <div>
+            <span onClick={() => moveInStateHistory(-1)}>
+              <AiFillCaretLeft />
+            </span>
+            <span onClick={() => moveInStateHistory(1)}>
+              <AiFillCaretRight />
+            </span>
+          </div>
+        </div>
+        {/* <div className="actions"></div> */}
         <div className={'white-player ' + screenStyle}>
           <div className="player-name">
             <span
