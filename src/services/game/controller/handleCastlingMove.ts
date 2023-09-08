@@ -1,4 +1,5 @@
 import { GameState } from '../../../models/GameState'
+import { UpdateGameState } from '../../../models/UpdateGameState'
 import { doCastling } from '../service/doCastling'
 import { isNextStepLegal } from '../service/isNextStepLegal'
 import { cleanBoard } from './cleanBoard'
@@ -6,7 +7,8 @@ import { cleanBoard } from './cleanBoard'
 export const handleCastlingMove = async (
   target: Element,
   gameState: GameState,
-  updateGameState: (newState: GameState) => Promise<void | GameState>
+  updateGameState: UpdateGameState,
+  setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
 ) => {
   const { isMoveLegal } = isNextStepLegal(gameState, target)
   if (!isMoveLegal) return
@@ -22,7 +24,7 @@ export const handleCastlingMove = async (
     isCastleLegals.newState &&
     isCastleLegals.isCastleLegal
   ) {
-    await updateGameState(isCastleLegals.newState)
+    await updateGameState(isCastleLegals.newState, setGameState)
   }
   if (isCastleLegals && !isCastleLegals.isCastleLegal) return
   cleanBoard()

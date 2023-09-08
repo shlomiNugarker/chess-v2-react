@@ -1,11 +1,30 @@
 import { GameState } from '../models/GameState'
+import { OnChoosePieceToAdd } from '../models/OnChoosePieceToAdd'
+import { UpdateGameState } from '../models/UpdateGameState'
 
 interface props {
-  onChoosePieceToAdd: (piece: string) => void
+  onChoosePieceToAdd: OnChoosePieceToAdd
+  //
+  updateGameState: UpdateGameState
+  //
   gameState: GameState
+  cellCoordsToAddInsteadPawn: {
+    i: number
+    j: number
+  } | null
+
+  setIsPromotionChoice: React.Dispatch<React.SetStateAction<boolean>>
+  setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
 }
 
-export const PromotionChoice = ({ onChoosePieceToAdd, gameState }: props) => {
+export const PromotionChoice = ({
+  onChoosePieceToAdd,
+  gameState,
+  cellCoordsToAddInsteadPawn,
+  updateGameState,
+  setIsPromotionChoice,
+  setGameState,
+}: props) => {
   const blackPieces: string[] = [
     gameState?.pieces.QUEEN_BLACK,
     gameState?.pieces.KNIGHT_BLACK,
@@ -29,7 +48,16 @@ export const PromotionChoice = ({ onChoosePieceToAdd, gameState }: props) => {
           <span
             key={piece}
             className="piece"
-            onClick={() => onChoosePieceToAdd(piece)}
+            onClick={() =>
+              onChoosePieceToAdd(
+                piece,
+                cellCoordsToAddInsteadPawn,
+                updateGameState,
+                gameState,
+                setIsPromotionChoice,
+                setGameState
+              )
+            }
           >
             {piece}
           </span>

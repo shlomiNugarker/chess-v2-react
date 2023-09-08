@@ -2,9 +2,6 @@ import { isColorPieceWorthCurrPlayerColor } from '../service/isColorPieceWorthCu
 
 import { cleanBoard } from './cleanBoard'
 
-// import audioStepUrl from '../assets/sound/step.mp3'
-// import castleStepUrl from '../assets/sound/castle.mp3'
-
 import { CellClicked } from '../../../models/CellClicked'
 import { handleEatableMove } from './handleEatableMove'
 import { handleCastlingMove } from './handleCastlingMove'
@@ -12,6 +9,8 @@ import { handleStepMove } from './handleStepMove'
 import { isValidPlayerTurn } from './isValidPlayerTurn'
 import { handlePieceSelection } from './handlePieceSelection'
 
+// import audioStepUrl from '../assets/sound/step.mp3'
+// import castleStepUrl from '../assets/sound/castle.mp3'
 // const audioStep = new Audio(audioStepUrl)
 // const castleStep = new Audio(castleStepUrl)
 
@@ -25,7 +24,8 @@ export const cellClicked: CellClicked = (
   setIsPromotionChoice,
   updateGameState,
   setCellCoordsToAddInsteadPawn,
-  setSelectedCellCoord
+  setSelectedCellCoord,
+  setGameState
 ) => {
   //   if (!hasGameStarted) sethasGameStarted(true)
   if (!isValidPlayerTurn(gameState, isTwoPlayerInTheGame, loggedInUser)) return
@@ -45,13 +45,14 @@ export const cellClicked: CellClicked = (
         cellCoord,
         setIsPromotionChoice,
         updateGameState,
-        setCellCoordsToAddInsteadPawn
+        setCellCoordsToAddInsteadPawn,
+        setGameState
       )
       return
     }
 
     if (isSquareCastling && gameState.selectedCellCoord) {
-      handleCastlingMove(ev.target, gameState, updateGameState)
+      handleCastlingMove(ev.target, gameState, updateGameState, setGameState)
       return
     }
 
@@ -76,7 +77,8 @@ export const cellClicked: CellClicked = (
         cellCoord,
         setIsPromotionChoice,
         updateGameState,
-        setCellCoordsToAddInsteadPawn
+        setCellCoordsToAddInsteadPawn,
+        setGameState
       )
       return
     }

@@ -13,12 +13,12 @@ import { gameStateService } from '../services/gameStateService'
 import { Chat } from '../cmps/Chat'
 import { GameDetails } from '../cmps/GameDetails'
 import { socketService } from '../services/socketService'
-import { addPieceInsteadPawn } from '../services/game/service/addPieceInsteadPawn'
-import { cleanBoard } from '../services/game/controller/cleanBoard'
 import { isPlayerWin } from '../services/game/service/isPlayerWin'
 import { checkIfKingThreatened } from '../services/game/service/checkIfKingThreatened'
 import { onShareGameUrl } from '../services/game/controller/onShareGameUrl'
 import { copyToClipBoard } from '../services/game/controller/copyToClipBoard'
+import { onChoosePieceToAdd } from '../services/game/controller/onChoosePieceToAdd'
+import { updateGameState } from '../services/game/controller/updateGameState'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -33,6 +33,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
   const [isTwoPlayerInTheGame, setIsTwoPlayerInTheGame] = useState(false)
   const [isWin, setIsWin] = useState(false)
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [hasGameStarted, sethasGameStarted] = useState(
     true || !!gameState?.isGameStarted
   )
@@ -40,19 +41,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
     i: number
     j: number
   } | null>(null)
-
-  const onChoosePieceToAdd = async (piece: string) => {
-    if (!cellCoordsToAddInsteadPawn || !gameState) return
-    const { newState } = addPieceInsteadPawn(
-      gameState,
-      cellCoordsToAddInsteadPawn,
-      piece
-    )
-    newState.isBlackTurn = !newState.isBlackTurn
-    await updateGameState(newState)
-    cleanBoard()
-    setIsPromotionChoice(false)
-  }
 
   const getState = useCallback(
     async (gameId: string) => {
@@ -82,30 +70,30 @@ export const Main = ({ onLoginAsGuest }: props) => {
     return savedChat
   }
 
-  const updateGameState = useCallback(
-    async (newState: GameState) => {
-      const stateWithBoardHistory = _.cloneDeep(newState)
+  // const updateGameState = useCallback(
+  //   async (newState: GameState) => {
+  //     const stateWithBoardHistory = _.cloneDeep(newState)
 
-      if (gameState?.board)
-        stateWithBoardHistory.boardHistory.push(gameState.board)
+  //     if (gameState?.board)
+  //       stateWithBoardHistory.boardHistory.push(gameState.board)
 
-      if (!stateWithBoardHistory.isOnline) {
-        storageService.put('chess-game', stateWithBoardHistory)
+  //     if (!stateWithBoardHistory.isOnline) {
+  //       storageService.put('chess-game', stateWithBoardHistory)
 
-        setGameState(stateWithBoardHistory)
-      } else {
-        const savedState = await gameStateService.saveState(
-          stateWithBoardHistory
-        )
-        socketService.emit('state-updated', savedState)
-        setGameState((prev) => ({
-          ...prev,
-          ...savedState,
-        }))
-      }
-    },
-    [gameState?.board]
-  )
+  //       setGameState(stateWithBoardHistory)
+  //     } else {
+  //       const savedState = await gameStateService.saveState(
+  //         stateWithBoardHistory
+  //       )
+  //       socketService.emit('state-updated', savedState)
+  //       setGameState((prev) => ({
+  //         ...prev,
+  //         ...savedState,
+  //       }))
+  //     }
+  //   },
+  //   [gameState?.board]
+  // )
 
   const getChatById = async (chatId: string) => {
     const chat = await chatService.getById(chatId)
@@ -117,7 +105,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     if (!gameState) return
     const game = { ...gameState }
     game.selectedCellCoord = cellCoord
-    updateGameState(game as GameState)
+    updateGameState(game as GameState, setGameState)
   }
 
   const joinPlayerToTheGame = useCallback(() => {
@@ -138,7 +126,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
         }
         stateToUpdate.players.black = userId
       }
-      updateGameState(stateToUpdate)
+      updateGameState(stateToUpdate, setGameState)
       return stateToUpdate
     } else if (gameState?.players?.black && gameState?.players?.white === '') {
       const stateToUpdate = _.cloneDeep(gameState)
@@ -150,15 +138,10 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
         stateToUpdate.players.white = userId
       }
-      updateGameState(stateToUpdate)
+      updateGameState(stateToUpdate, setGameState)
       return stateToUpdate
     }
-  }, [
-    gameState,
-    chatState,
-    updateGameState,
-    authContextData?.loggedInUser?._id,
-  ])
+  }, [gameState, chatState, authContextData?.loggedInUser?._id])
 
   const moveInStateHistory = (num: 1 | -1) => {
     console.log(num)
@@ -174,7 +157,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
   useEffect(() => {
     if (!gameState?.players?.black || !gameState?.players?.white) {
       const stateToUpdate = joinPlayerToTheGame()
-      if (stateToUpdate) updateGameState(stateToUpdate)
+      if (stateToUpdate) updateGameState(stateToUpdate, setGameState)
     }
     if (gameState?.players?.black && gameState?.players?.white) {
       setIsTwoPlayerInTheGame(true)
@@ -191,7 +174,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
     authContextData?.loggedInUser?._id,
     isTwoPlayerInTheGame,
     joinPlayerToTheGame,
-    updateGameState,
   ])
 
   // handle sockets:
@@ -303,6 +285,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
           setIsPromotionChoice={setIsPromotionChoice}
           setCellCoordsToAddInsteadPawn={setCellCoordsToAddInsteadPawn}
           onChoosePieceToAdd={onChoosePieceToAdd}
+          cellCoordsToAddInsteadPawn={cellCoordsToAddInsteadPawn}
         />
       )}
 

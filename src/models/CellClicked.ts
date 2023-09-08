@@ -1,4 +1,5 @@
 import { GameState } from './GameState'
+import { UpdateGameState } from './UpdateGameState'
 import { User } from './User'
 
 export type CellClicked = (
@@ -9,12 +10,13 @@ export type CellClicked = (
   isTwoPlayerInTheGame: boolean,
   loggedInUser: User | null | undefined,
   setIsPromotionChoice: React.Dispatch<React.SetStateAction<boolean>>,
-  updateGameState: (newState: GameState) => Promise<void | GameState>,
+  updateGameState: UpdateGameState,
   setCellCoordsToAddInsteadPawn: React.Dispatch<
     React.SetStateAction<{
       i: number
       j: number
     } | null>
   >,
-  setSelectedCellCoord: (cellCoord: GameState['selectedCellCoord']) => void
+  setSelectedCellCoord: (cellCoord: GameState['selectedCellCoord']) => void,
+  setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
 ) => void

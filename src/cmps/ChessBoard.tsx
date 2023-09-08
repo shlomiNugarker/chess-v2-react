@@ -1,12 +1,13 @@
 import { useAuthContext } from '../context/AuthContext'
 import { CellClicked } from '../models/CellClicked'
 import { GameState } from '../models/GameState'
+import { UpdateGameState } from '../models/UpdateGameState'
 
 interface Props {
   state: GameState | null
   isTwoPlayerInTheGame: boolean
   setIsPromotionChoice: React.Dispatch<React.SetStateAction<boolean>>
-  updateGameState: (newState: GameState) => Promise<void | GameState>
+  updateGameState: UpdateGameState
   setCellCoordsToAddInsteadPawn: React.Dispatch<
     React.SetStateAction<{
       i: number
@@ -15,6 +16,7 @@ interface Props {
   >
   cellClicked: CellClicked
   setSelectedCellCoord: (cellCoord: GameState['selectedCellCoord']) => void
+  setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
 }
 
 export const ChessBoard = ({
@@ -25,6 +27,7 @@ export const ChessBoard = ({
   setIsPromotionChoice,
   setCellCoordsToAddInsteadPawn,
   setSelectedCellCoord,
+  setGameState,
 }: Props) => {
   const authContextData = useAuthContext()
   // console.log('render ChessBoard.tsx')
@@ -51,7 +54,8 @@ export const ChessBoard = ({
                     setIsPromotionChoice,
                     updateGameState,
                     setCellCoordsToAddInsteadPawn,
-                    setSelectedCellCoord
+                    setSelectedCellCoord,
+                    setGameState
                   )
                 }}
                 onDragOver={(ev) => {
@@ -69,7 +73,8 @@ export const ChessBoard = ({
                     setIsPromotionChoice,
                     updateGameState,
                     setCellCoordsToAddInsteadPawn,
-                    setSelectedCellCoord
+                    setSelectedCellCoord,
+                    setGameState
                   )
                 }}
               >

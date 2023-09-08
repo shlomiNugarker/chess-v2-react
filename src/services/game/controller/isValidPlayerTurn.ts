@@ -12,13 +12,11 @@ export const isValidPlayerTurn = (
       gameState.isBlackTurn &&
       loggedInUser?._id === gameState.players?.black
     ) {
-      //   console.log('valid b plarer')
       return true
     } else if (
       !gameState.isBlackTurn &&
       loggedInUser?._id === gameState.players?.white
     ) {
-      //   console.log('valid w plarer')
       return true
     }
   }

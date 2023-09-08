@@ -7,26 +7,36 @@ interface Props {
   isTwoPlayerInTheGame: boolean
   gameState: GameState | null
   loggedInUser: User | null
-  updateGameState: (newState: GameState) => Promise<void | GameState>
+  updateGameState: UpdateGameState
   setSelectedCellCoord: (cellCoord: GameState['selectedCellCoord']) => void
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
   setChatState: React.Dispatch<React.SetStateAction<ChatState | null>>
   isWin: boolean
   isPromotionChoice: boolean
   setIsPromotionChoice: React.Dispatch<React.SetStateAction<boolean>>
+  //
   setCellCoordsToAddInsteadPawn: React.Dispatch<
     React.SetStateAction<{
       i: number
       j: number
     } | null>
   >
-  onChoosePieceToAdd: (piece: string) => Promise<void>
+  //
+  cellCoordsToAddInsteadPawn: {
+    i: number
+    j: number
+  } | null
+  //
+  onChoosePieceToAdd: OnChoosePieceToAdd
 }
 
 import { ChatState } from '../models/ChatState'
 import { useNavigate } from 'react-router-dom'
 import { ChessBoard } from './ChessBoard'
 import { cellClicked } from '../services/game/controller/cellClicked'
+// import { UpdateGameState } from '../models/UpdateGameState'
+import { OnChoosePieceToAdd } from '../models/OnChoosePieceToAdd'
+import { UpdateGameState } from '../models/UpdateGameState'
 
 export const Board = ({
   isTwoPlayerInTheGame,
@@ -41,6 +51,7 @@ export const Board = ({
   setIsPromotionChoice,
   setCellCoordsToAddInsteadPawn,
   onChoosePieceToAdd,
+  cellCoordsToAddInsteadPawn,
 }: Props) => {
   const navigate = useNavigate()
 
@@ -75,6 +86,7 @@ export const Board = ({
           updateGameState={updateGameState}
           setIsPromotionChoice={setIsPromotionChoice}
           setSelectedCellCoord={setSelectedCellCoord}
+          setGameState={setGameState}
         />
       </div>
 
@@ -82,6 +94,10 @@ export const Board = ({
         <PromotionChoice
           onChoosePieceToAdd={onChoosePieceToAdd}
           gameState={gameState}
+          cellCoordsToAddInsteadPawn={cellCoordsToAddInsteadPawn}
+          updateGameState={updateGameState}
+          setIsPromotionChoice={setIsPromotionChoice}
+          setGameState={setGameState}
         />
       )}
     </section>
