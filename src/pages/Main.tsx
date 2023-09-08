@@ -2,7 +2,7 @@
 import * as _ from 'lodash'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Board } from '../cmps/Board'
+import { MainBoard } from '../cmps/MainBoard'
 import { ValidAuthModal } from '../cmps/ValidAuthModal'
 import { GameState } from '../models/GameState'
 import { ChatState } from '../models/ChatState'
@@ -47,13 +47,12 @@ export const Main = ({ onLoginAsGuest }: props) => {
     j: number
   } | null>(null)
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [hasGameStarted, setHasGameStarted] = useState(
     true || !!gameState?.isGameStarted
   )
 
   useEffect(() => {
-    console.log(setHasGameStarted)
-
     if (id) getState(id, setGameState)
   }, [id])
 
@@ -61,6 +60,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     console.log(num)
   }
 
+  // Check if player win:
   useEffect(() => {
     if (hasGameStarted && gameState && !isWin && isPlayerWin(gameState)) {
       setIsWin(true)
@@ -68,6 +68,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState?.isBlackTurn, isWin])
 
+  // Handle case when user enter the game:
   useEffect(() => {
     if (!gameState?.players?.black || !gameState?.players?.white) {
       const stateToUpdate = joinPlayerToTheGame({
@@ -145,8 +146,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState?.isBlackTurn])
 
+  // Get users:
   useEffect(() => {
-    // get users:
     // eslint-disable-next-line no-extra-semi
     ;(async () => {
       if (!gameState) return
@@ -163,6 +164,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     })()
   }, [blackPlayer, gameState, setBlackPlayer, setWhitePlayer, whitePlayer])
 
+  // Handle connected players:
   useEffect(() => {
     const isWhitePlayerConnected = authContextData?.connectedUsers?.some(
       (userId) => userId === whitePlayer?._id
@@ -181,8 +183,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
     whitePlayer?._id,
   ])
 
+  // Handle time:
   // useEffect(() => {
-  //   // handle time:
   //   const intervalId = setInterval(() => {
   //     if (gameState && gameState.isBlackTurn && gameState.isGameStarted) {
   //       dispatch(
@@ -230,7 +232,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
       )}
 
       {gameState && (
-        <Board
+        <MainBoard
           isTwoPlayerInTheGame={isTwoPlayerInTheGame}
           gameState={gameState}
           loggedInUser={authContextData?.loggedInUser || null}

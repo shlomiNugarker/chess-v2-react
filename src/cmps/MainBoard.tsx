@@ -36,7 +36,7 @@ interface Props {
   onChoosePieceToAdd: OnChoosePieceToAdd
 }
 
-export const Board = ({
+export const MainBoard = ({
   isTwoPlayerInTheGame,
   gameState,
   loggedInUser,
