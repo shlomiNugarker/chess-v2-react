@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as _ from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -19,6 +20,7 @@ import { onShareGameUrl } from '../services/game/controller/onShareGameUrl'
 import { copyToClipBoard } from '../services/game/controller/copyToClipBoard'
 import { onChoosePieceToAdd } from '../services/game/controller/onChoosePieceToAdd'
 import { updateGameState } from '../services/game/controller/updateGameState'
+import { joinPlayerToTheGame } from '../services/game/controller/joinPlayerToTheGame'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -70,31 +72,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
     return savedChat
   }
 
-  // const updateGameState = useCallback(
-  //   async (newState: GameState) => {
-  //     const stateWithBoardHistory = _.cloneDeep(newState)
-
-  //     if (gameState?.board)
-  //       stateWithBoardHistory.boardHistory.push(gameState.board)
-
-  //     if (!stateWithBoardHistory.isOnline) {
-  //       storageService.put('chess-game', stateWithBoardHistory)
-
-  //       setGameState(stateWithBoardHistory)
-  //     } else {
-  //       const savedState = await gameStateService.saveState(
-  //         stateWithBoardHistory
-  //       )
-  //       socketService.emit('state-updated', savedState)
-  //       setGameState((prev) => ({
-  //         ...prev,
-  //         ...savedState,
-  //       }))
-  //     }
-  //   },
-  //   [gameState?.board]
-  // )
-
   const getChatById = async (chatId: string) => {
     const chat = await chatService.getById(chatId)
     setChatState(chat)
@@ -107,41 +84,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
     game.selectedCellCoord = cellCoord
     updateGameState(game as GameState, setGameState)
   }
-
-  const joinPlayerToTheGame = useCallback(() => {
-    if (gameState?.players?.white && gameState?.players?.black === '') {
-      const stateToUpdate = _.cloneDeep(gameState)
-      const chatToUpdate = _.cloneDeep(chatState)
-
-      if (stateToUpdate.players) {
-        const userId = authContextData?.loggedInUser?._id
-        if (gameState.players.white === userId) return
-        if (!userId) return
-
-        if (gameState.chatId && chatToUpdate && userId) {
-          if (!chatToUpdate.userId2) chatToUpdate.userId2 = userId
-          else if (!chatToUpdate.userId) chatToUpdate.userId = userId
-
-          saveChat(chatToUpdate)
-        }
-        stateToUpdate.players.black = userId
-      }
-      updateGameState(stateToUpdate, setGameState)
-      return stateToUpdate
-    } else if (gameState?.players?.black && gameState?.players?.white === '') {
-      const stateToUpdate = _.cloneDeep(gameState)
-      if (stateToUpdate.players) {
-        const userId = authContextData?.loggedInUser?._id
-
-        if (gameState.players.black === userId) return
-        if (!userId) return
-
-        stateToUpdate.players.white = userId
-      }
-      updateGameState(stateToUpdate, setGameState)
-      return stateToUpdate
-    }
-  }, [gameState, chatState, authContextData?.loggedInUser?._id])
 
   const moveInStateHistory = (num: 1 | -1) => {
     console.log(num)
@@ -156,7 +98,14 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
   useEffect(() => {
     if (!gameState?.players?.black || !gameState?.players?.white) {
-      const stateToUpdate = joinPlayerToTheGame()
+      const stateToUpdate = joinPlayerToTheGame({
+        gameState,
+        chatState,
+        loggedInUser: authContextData?.loggedInUser,
+        updateGameState,
+        setGameState,
+        saveChat,
+      })
       if (stateToUpdate) updateGameState(stateToUpdate, setGameState)
     }
     if (gameState?.players?.black && gameState?.players?.white) {
@@ -173,7 +122,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     chatState?.userId2,
     authContextData?.loggedInUser?._id,
     isTwoPlayerInTheGame,
-    joinPlayerToTheGame,
+    chatState,
   ])
 
   // handle sockets:
