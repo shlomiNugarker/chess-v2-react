@@ -1,4 +1,3 @@
-// import { GameState } from '../../../models/GameState'
 import { OnChoosePieceToAdd } from '../../../models/OnChoosePieceToAdd'
 import { addPieceInsteadPawn } from '../service/addPieceInsteadPawn'
 import { cleanBoard } from './cleanBoard'

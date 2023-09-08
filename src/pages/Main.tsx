@@ -22,6 +22,7 @@ import { joinPlayerToTheGame } from '../services/game/controller/joinPlayerToThe
 import { getState } from '../services/game/controller/getState'
 import { User } from '../models/User'
 import { userService } from '../services/userServise'
+import { setSelectedCellCoord } from '../services/game/controller/setSelectedCellCoord'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -67,13 +68,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
     const chat = await chatService.getById(chatId)
     setChatState(chat)
     return chat
-  }
-
-  const setSelectedCellCoord = (cellCoord: GameState['selectedCellCoord']) => {
-    if (!gameState) return
-    const game = { ...gameState }
-    game.selectedCellCoord = cellCoord
-    updateGameState(game as GameState, setGameState)
   }
 
   const moveInStateHistory = (num: 1 | -1) => {

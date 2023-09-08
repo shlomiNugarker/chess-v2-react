@@ -1,6 +1,7 @@
 import { useAuthContext } from '../context/AuthContext'
 import { CellClicked } from '../models/CellClicked'
 import { GameState } from '../models/GameState'
+import { SetSelectedCellCoord } from '../models/SetSelectedCellCoord'
 import { UpdateGameState } from '../models/UpdateGameState'
 
 interface Props {
@@ -15,7 +16,7 @@ interface Props {
     } | null>
   >
   cellClicked: CellClicked
-  setSelectedCellCoord: (cellCoord: GameState['selectedCellCoord']) => void
+  setSelectedCellCoord: SetSelectedCellCoord
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
 }
 

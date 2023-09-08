@@ -88,6 +88,8 @@ export const cellClicked: CellClicked = ({
       gameState,
       cellCoord,
       piece,
+      setGameState,
+      updateGameState,
       setSelectedCellCoord,
     })
   }

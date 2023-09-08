@@ -7,13 +7,14 @@ import { ChessBoard } from './ChessBoard'
 import { cellClicked } from '../services/game/controller/cellClicked'
 import { OnChoosePieceToAdd } from '../models/OnChoosePieceToAdd'
 import { UpdateGameState } from '../models/UpdateGameState'
+import { SetSelectedCellCoord } from '../models/SetSelectedCellCoord'
 
 interface Props {
   isTwoPlayerInTheGame: boolean
   gameState: GameState | null
   loggedInUser: User | null
   updateGameState: UpdateGameState
-  setSelectedCellCoord: (cellCoord: GameState['selectedCellCoord']) => void
+  setSelectedCellCoord: SetSelectedCellCoord
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
   setChatState: React.Dispatch<React.SetStateAction<ChatState | null>>
   isWin: boolean
