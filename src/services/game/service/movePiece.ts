@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import { GameState } from '../../models/GameState'
+import { GameState } from '../../../models/GameState'
 import { isBlackPiece } from './isBlackPiece'
 import { updateKingPos } from './updateKingPos'
 import { gPieces } from './gPieces'

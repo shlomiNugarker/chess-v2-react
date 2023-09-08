@@ -1,4 +1,4 @@
-import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
+import { isColorPieceWorthCurrPlayerColor } from '../service/isColorPieceWorthCurrPlayerColor'
 
 import { cleanBoard } from './cleanBoard'
 

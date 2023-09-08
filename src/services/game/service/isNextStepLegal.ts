@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import { GameState } from '../../models/GameState'
+import { GameState } from '../../../models/GameState'
 
 import { checkIfKingThreatened } from './checkIfKingThreatened'
 import { getCellCoord } from './getCellCoord'

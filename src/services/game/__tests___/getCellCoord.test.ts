@@ -1,4 +1,4 @@
-import { getCellCoord } from '../getCellCoord'
+import { getCellCoord } from '../service/getCellCoord'
 
 describe('getCellCoord', () => {
   test('returns correct cell coordinates', () => {

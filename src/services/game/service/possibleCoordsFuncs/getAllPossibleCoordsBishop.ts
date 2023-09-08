@@ -1,4 +1,4 @@
-import { GameState } from '../../../models/GameState'
+import { GameState } from '../../../../models/GameState'
 import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
 import { isEmptyCell } from '../isEmptyCell'
 

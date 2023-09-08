@@ -1,5 +1,5 @@
-import { getAllPossibleCoordsBishop } from '../../possibleCoordsFuncs/getAllPossibleCoordsBishop'
-import { gPieces } from '../../gPieces'
+import { getAllPossibleCoordsBishop } from '../../service/possibleCoordsFuncs/getAllPossibleCoordsBishop'
+import { gPieces } from '../../service/gPieces'
 import { GameState } from '../../../../models/GameState'
 
 describe('getAllPossibleCoordsBishop', () => {

@@ -1,5 +1,5 @@
-import { movePiece } from '../movePiece'
-import { gPieces } from '../gPieces'
+import { movePiece } from '../service/movePiece'
+import { gPieces } from '../service/gPieces'
 import { GameState } from '../../../models/GameState'
 
 describe('movePiece', () => {

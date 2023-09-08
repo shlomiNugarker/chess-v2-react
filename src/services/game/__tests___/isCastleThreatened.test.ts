@@ -1,5 +1,5 @@
-import { isCastleThreatened } from '../isCastleThreatened' // Update this with the correct file path
-import { gPieces } from '../gPieces'
+import { isCastleThreatened } from '../service/isCastleThreatened' // Update this with the correct file path
+import { gPieces } from '../service/gPieces'
 import { GameState } from '../../../models/GameState'
 
 describe('isCastleThreatened', () => {

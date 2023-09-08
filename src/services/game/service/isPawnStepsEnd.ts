@@ -1,4 +1,4 @@
-import { GameState } from '../../models/GameState'
+import { GameState } from '../../../models/GameState'
 
 export function isPawnStepsEnd(
   state: GameState,

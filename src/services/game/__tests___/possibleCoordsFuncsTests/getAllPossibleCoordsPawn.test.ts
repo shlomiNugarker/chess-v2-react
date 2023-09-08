@@ -1,5 +1,5 @@
-import { getAllPossibleCoordsPawn } from '../../possibleCoordsFuncs/getAllPossibleCoordsPawn'
-import { gPieces } from '../../gPieces'
+import { getAllPossibleCoordsPawn } from '../../service/possibleCoordsFuncs/getAllPossibleCoordsPawn'
+import { gPieces } from '../../service/gPieces'
 import { GameState } from '../../../../models/GameState'
 
 describe('getAllPossibleCoordsPawn', () => {

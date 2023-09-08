@@ -1,5 +1,5 @@
-import { getAllPossibleCoordsKing } from '../../possibleCoordsFuncs/getAllPossibleCoordsKing'
-import { gPieces } from '../../gPieces'
+import { getAllPossibleCoordsKing } from '../../service/possibleCoordsFuncs/getAllPossibleCoordsKing'
+import { gPieces } from '../../service/gPieces'
 import { GameState } from '../../../../models/GameState'
 
 describe('getAllPossibleCoordsKing', () => {

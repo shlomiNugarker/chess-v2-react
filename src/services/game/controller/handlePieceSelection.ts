@@ -1,5 +1,5 @@
 import { GameState } from '../../../models/GameState'
-import { getPossibleCoords } from '../getPossibleCoords'
+import { getPossibleCoords } from '../service/getPossibleCoords'
 import { cleanBoard } from './cleanBoard'
 import { markCells } from './markCells'
 

@@ -1,7 +1,7 @@
 import { GameState } from '../models/GameState'
 import { chatService } from './chatService'
-import { buildBoard } from './game/buildBoard'
-import { gPieces } from './game/gPieces'
+import { buildBoard } from './game/service/buildBoard'
+import { gPieces } from './game/service/gPieces'
 import { httpService } from './httpService'
 import { storageService } from './storageService'
 

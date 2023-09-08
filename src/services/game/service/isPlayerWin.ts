@@ -1,4 +1,4 @@
-import { GameState } from '../../models/GameState'
+import { GameState } from '../../../models/GameState'
 import { getPossibleCoords } from './getPossibleCoords'
 import { isBlackPiece } from './isBlackPiece'
 import { isNextStepLegal } from './isNextStepLegal'

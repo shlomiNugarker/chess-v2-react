@@ -1,5 +1,5 @@
-import { isPawnStepsEnd } from '../isPawnStepsEnd'
-import { gPieces } from '../gPieces'
+import { isPawnStepsEnd } from '../service/isPawnStepsEnd'
+import { gPieces } from '../service/gPieces'
 import { GameState } from '../../../models/GameState'
 
 describe('isPawnStepsEnd', () => {

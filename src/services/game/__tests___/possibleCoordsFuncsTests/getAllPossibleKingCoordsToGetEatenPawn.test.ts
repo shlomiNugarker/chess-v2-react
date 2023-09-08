@@ -1,7 +1,7 @@
-import { gPieces } from '../../gPieces'
+import { gPieces } from '../../service/gPieces'
 import { GameState } from '../../../../models/GameState'
 
-import { getAllPossibleKingCoordsToGetEatenPawn } from '../../possibleCoordsFuncs/getAllPossibleKingCoordsToGetEatenPawn'
+import { getAllPossibleKingCoordsToGetEatenPawn } from '../../service/possibleCoordsFuncs/getAllPossibleKingCoordsToGetEatenPawn'
 
 describe('getAllPossibleKingCoordsToGetEatenPawn', () => {
   test('returns possible coordinates for a black king to capture an advancing white pawn', () => {

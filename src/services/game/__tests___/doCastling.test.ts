@@ -1,5 +1,5 @@
-import { doCastling } from '../doCastling'
-import { gPieces } from '../gPieces'
+import { doCastling } from '../service/doCastling'
+import { gPieces } from '../service/gPieces'
 import { GameState } from '../../../models/GameState'
 
 describe('doCastling', () => {

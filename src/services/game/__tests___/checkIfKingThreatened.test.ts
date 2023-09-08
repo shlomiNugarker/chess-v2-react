@@ -1,5 +1,5 @@
-import { checkIfKingThreatened } from '../checkIfKingThreatened'
-import { gPieces } from '../gPieces'
+import { checkIfKingThreatened } from '../service/checkIfKingThreatened'
+import { gPieces } from '../service/gPieces'
 import { GameState } from '../../../models/GameState'
 
 describe('checkIfKingThreatened', () => {

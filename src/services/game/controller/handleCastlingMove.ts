@@ -1,6 +1,6 @@
 import { GameState } from '../../../models/GameState'
-import { doCastling } from '../doCastling'
-import { isNextStepLegal } from '../isNextStepLegal'
+import { doCastling } from '../service/doCastling'
+import { isNextStepLegal } from '../service/isNextStepLegal'
 import { cleanBoard } from './cleanBoard'
 
 export const handleCastlingMove = async (

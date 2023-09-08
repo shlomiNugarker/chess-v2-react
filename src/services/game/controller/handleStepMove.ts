@@ -1,7 +1,7 @@
 import { GameState } from '../../../models/GameState'
-import { isNextStepLegal } from '../isNextStepLegal'
-import { isPawnStepsEnd } from '../isPawnStepsEnd'
-import { movePiece } from '../movePiece'
+import { isNextStepLegal } from '../service/isNextStepLegal'
+import { isPawnStepsEnd } from '../service/isPawnStepsEnd'
+import { movePiece } from '../service/movePiece'
 import { cleanBoard } from './cleanBoard'
 
 export const handleStepMove = async (

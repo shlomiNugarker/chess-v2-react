@@ -1,5 +1,5 @@
-import { isNextStepLegal } from '../isNextStepLegal'
-import { gPieces } from '../gPieces'
+import { isNextStepLegal } from '../service/isNextStepLegal'
+import { gPieces } from '../service/gPieces'
 import { GameState } from '../../../models/GameState'
 
 describe('isNextStepLegal', () => {

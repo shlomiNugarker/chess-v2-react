@@ -1,5 +1,5 @@
-import { buildBoard } from '../buildBoard'
-import { gPieces } from '../gPieces'
+import { buildBoard } from '../service/buildBoard'
+import { gPieces } from '../service/gPieces'
 
 describe('buildBoard', () => {
   test('builds the initial chess board correctly', () => {
