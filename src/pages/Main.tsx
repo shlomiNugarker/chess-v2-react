@@ -20,6 +20,8 @@ import { onChoosePieceToAdd } from '../services/game/controller/onChoosePieceToA
 import { updateGameState } from '../services/game/controller/updateGameState'
 import { joinPlayerToTheGame } from '../services/game/controller/joinPlayerToTheGame'
 import { getState } from '../services/game/controller/getState'
+import { User } from '../models/User'
+import { userService } from '../services/userServise'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -34,8 +36,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
   const [isTwoPlayerInTheGame, setIsTwoPlayerInTheGame] = useState(false)
   const [isWin, setIsWin] = useState(false)
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [hasGameStarted, sethasGameStarted] = useState(
+  const [hasGameStarted, setHasGameStarted] = useState(
     true || !!gameState?.isGameStarted
   )
   const [cellCoordsToAddInsteadPawn, setCellCoordsToAddInsteadPawn] = useState<{
@@ -43,7 +44,14 @@ export const Main = ({ onLoginAsGuest }: props) => {
     j: number
   } | null>(null)
 
+  const [whitePlayer, setWhitePlayer] = useState<User | null>(null)
+  const [blackPlayer, setBlackPlayer] = useState<User | null>(null)
+  const [isWhitePlayerConnected, setIsWhitePlayerConnected] = useState(false)
+  const [isBlackPlayerConnected, setIsBlackPlayerConnected] = useState(false)
+
   useEffect(() => {
+    console.log(setHasGameStarted)
+
     if (id) getState(id, setGameState)
   }, [id])
 
@@ -155,6 +163,42 @@ export const Main = ({ onLoginAsGuest }: props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState?.isBlackTurn])
 
+  useEffect(() => {
+    // get users:
+    // eslint-disable-next-line no-extra-semi
+    ;(async () => {
+      if (!gameState) return
+      if (!gameState?.players) return
+
+      if (gameState?.players.white && !whitePlayer) {
+        const user = await userService.getUser(gameState?.players.white)
+        setWhitePlayer(user)
+      }
+      if (gameState?.players.black && !blackPlayer) {
+        const user = await userService.getUser(gameState?.players.black)
+        setBlackPlayer(user)
+      }
+    })()
+  }, [blackPlayer, gameState, setBlackPlayer, setWhitePlayer, whitePlayer])
+
+  useEffect(() => {
+    const isWhitePlayerConnected = authContextData?.connectedUsers?.some(
+      (userId) => userId === whitePlayer?._id
+    )
+    setIsWhitePlayerConnected(!!isWhitePlayerConnected)
+
+    const isBlackPlayerConnected = authContextData?.connectedUsers?.some(
+      (userId) => userId === blackPlayer?._id
+    )
+    setIsBlackPlayerConnected(!!isBlackPlayerConnected)
+  }, [
+    authContextData?.connectedUsers,
+    blackPlayer?._id,
+    setIsBlackPlayerConnected,
+    setIsWhitePlayerConnected,
+    whitePlayer?._id,
+  ])
+
   // useEffect(() => {
   //   // handle time:
   //   const intervalId = setInterval(() => {
@@ -224,9 +268,12 @@ export const Main = ({ onLoginAsGuest }: props) => {
       {gameState && (
         <GameDetails
           gameState={gameState}
-          connectedUsers={authContextData?.connectedUsers || null}
           loggedInUser={authContextData?.loggedInUser || null}
           moveInStateHistory={moveInStateHistory}
+          whitePlayer={whitePlayer}
+          blackPlayer={blackPlayer}
+          isWhitePlayerConnected={isWhitePlayerConnected}
+          isBlackPlayerConnected={isBlackPlayerConnected}
         />
       )}
 

@@ -1,74 +1,30 @@
-import { useEffect, useState } from 'react'
 import { User } from '../models/User'
-import { userService } from '../services/userServise'
+
 import { GameState } from '../models/GameState'
 
 import { AiFillCaretLeft, AiFillCaretRight } from 'react-icons/ai'
+import { utilService } from '../services/utilService'
 
 interface Props {
   gameState: GameState
-  connectedUsers: string[] | null
+
   loggedInUser: User | null
   moveInStateHistory: (num: 1 | -1) => void
+  whitePlayer: User | null
+  blackPlayer: User | null
+  isWhitePlayerConnected: boolean
+  isBlackPlayerConnected: boolean
 }
 
 export const GameDetails = ({
   gameState,
-  connectedUsers,
   loggedInUser,
   moveInStateHistory,
+  whitePlayer,
+  blackPlayer,
+  isWhitePlayerConnected,
+  isBlackPlayerConnected,
 }: Props) => {
-  const [whitePlayer, setWhitePlayer] = useState<User | null>(null)
-  const [blackPlayer, setBlackPlayer] = useState<User | null>(null)
-
-  const [isWhitePlayerConnected, setIsWhitePlayerConnected] = useState(false)
-  const [isBlackPlayerConnected, setIsBlackPlayerConnected] = useState(false)
-
-  useEffect(() => {
-    const isWhitePlayerConnected = connectedUsers?.some(
-      (userId) => userId === whitePlayer?._id
-    )
-    setIsWhitePlayerConnected(!!isWhitePlayerConnected)
-
-    const isBlackPlayerConnected = connectedUsers?.some(
-      (userId) => userId === blackPlayer?._id
-    )
-    setIsBlackPlayerConnected(!!isBlackPlayerConnected)
-  }, [blackPlayer?._id, connectedUsers, whitePlayer?._id])
-
-  function timeToPercents(remainigTime: number) {
-    const fiveMinutes = 1000 * 60 * 5
-    const num = (remainigTime / fiveMinutes) * 100
-    return num + '%'
-  }
-
-  function millisToMinutesAndSeconds(millis: number) {
-    if (millis < 0) return '00:00'
-    const minutes = Math.floor(millis / 60000)
-      .toFixed(0)
-      .padStart(2, '0')
-    const seconds = ((millis % 60000) / 1000).toFixed(0)
-    return minutes + ':' + (+seconds < 10 ? '0' : '') + seconds
-  }
-
-  useEffect(() => {
-    // get users:
-    // eslint-disable-next-line no-extra-semi
-    ;(async () => {
-      if (!gameState) return
-      if (!gameState?.players) return
-
-      if (gameState?.players.white && !whitePlayer) {
-        const user = await userService.getUser(gameState?.players.white)
-        setWhitePlayer(user)
-      }
-      if (gameState?.players.black && !blackPlayer) {
-        const user = await userService.getUser(gameState?.players.black)
-        setBlackPlayer(user)
-      }
-    })()
-  }, [blackPlayer, gameState, whitePlayer])
-
   const screenStyle =
     gameState?.players?.black === loggedInUser?._id
       ? 'black-screen'
@@ -90,14 +46,16 @@ export const GameDetails = ({
             }`}
           >
             {gameState?.remainingTime?.black &&
-              millisToMinutesAndSeconds(gameState.remainingTime.black)}
+              utilService.millisToMinutesAndSeconds(
+                gameState.remainingTime.black
+              )}
           </div>
           <div
             className="bar"
             style={{
               width:
                 gameState?.remainingTime?.black &&
-                timeToPercents(gameState.remainingTime.black),
+                utilService.timeToPercents(gameState.remainingTime.black),
             }}
           ></div>
           <div className="player-name">
@@ -138,7 +96,7 @@ export const GameDetails = ({
             style={{
               width:
                 gameState?.remainingTime?.white &&
-                timeToPercents(gameState.remainingTime.white),
+                utilService.timeToPercents(gameState.remainingTime.white),
             }}
           ></div>
           <div
@@ -147,7 +105,9 @@ export const GameDetails = ({
             }`}
           >
             {gameState?.remainingTime?.white &&
-              millisToMinutesAndSeconds(gameState.remainingTime.white)}
+              utilService.millisToMinutesAndSeconds(
+                gameState.remainingTime.white
+              )}
           </div>
           <div className="eaten-pieces">
             {gameState?.eatenPieces.white.map((piece, idx) => (
