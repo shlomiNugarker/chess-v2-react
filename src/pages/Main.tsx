@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as _ from 'lodash'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Board } from '../cmps/Board'
 import { ValidAuthModal } from '../cmps/ValidAuthModal'
@@ -8,8 +8,6 @@ import { GameState } from '../models/GameState'
 import { ChatState } from '../models/ChatState'
 import { useAuthContext } from '../context/AuthContext'
 import { chatService } from '../services/chatService'
-import { storageService } from '../services/storageService'
-import { gameStateService } from '../services/gameStateService'
 
 import { Chat } from '../cmps/Chat'
 import { GameDetails } from '../cmps/GameDetails'
@@ -21,6 +19,7 @@ import { copyToClipBoard } from '../services/game/controller/copyToClipBoard'
 import { onChoosePieceToAdd } from '../services/game/controller/onChoosePieceToAdd'
 import { updateGameState } from '../services/game/controller/updateGameState'
 import { joinPlayerToTheGame } from '../services/game/controller/joinPlayerToTheGame'
+import { getState } from '../services/game/controller/getState'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -44,25 +43,9 @@ export const Main = ({ onLoginAsGuest }: props) => {
     j: number
   } | null>(null)
 
-  const getState = useCallback(
-    async (gameId: string) => {
-      if (id && id.length > 10) {
-        const state = await gameStateService.getById(gameId)
-        setGameState(state)
-        return state
-      }
-
-      if (id && id.length < 10) {
-        const stateFromStorage = storageService.get('chess-game', gameId)
-        if (stateFromStorage) setGameState(stateFromStorage)
-      }
-    },
-    [id]
-  )
-
   useEffect(() => {
-    if (id) getState(id)
-  }, [getState, id])
+    if (id) getState(id, setGameState)
+  }, [id])
 
   const saveChat = async (chat: ChatState) => {
     const savedChat = await chatService.save(chat)

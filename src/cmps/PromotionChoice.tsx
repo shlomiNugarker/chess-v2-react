@@ -49,14 +49,14 @@ export const PromotionChoice = ({
             key={piece}
             className="piece"
             onClick={() =>
-              onChoosePieceToAdd(
+              onChoosePieceToAdd({
                 piece,
                 cellCoordsToAddInsteadPawn,
                 updateGameState,
                 gameState,
                 setIsPromotionChoice,
-                setGameState
-              )
+                setGameState,
+              })
             }
           >
             {piece}

@@ -44,38 +44,38 @@ export const ChessBoard = ({
                 style={{ cursor: piece && 'pointer' }}
                 onDrop={(ev) => {
                   ev.preventDefault()
-                  cellClicked(
+                  cellClicked({
                     ev,
                     i,
                     j,
-                    state,
+                    gameState: state,
                     isTwoPlayerInTheGame,
-                    authContextData?.loggedInUser,
+                    loggedInUser: authContextData?.loggedInUser,
                     setIsPromotionChoice,
                     updateGameState,
                     setCellCoordsToAddInsteadPawn,
                     setSelectedCellCoord,
-                    setGameState
-                  )
+                    setGameState,
+                  })
                 }}
                 onDragOver={(ev) => {
                   ev.preventDefault()
                 }}
                 draggable="true"
                 onMouseDown={(ev) => {
-                  cellClicked(
+                  cellClicked({
                     ev,
                     i,
                     j,
-                    state,
+                    gameState: state,
                     isTwoPlayerInTheGame,
-                    authContextData?.loggedInUser,
+                    loggedInUser: authContextData?.loggedInUser,
                     setIsPromotionChoice,
                     updateGameState,
                     setCellCoordsToAddInsteadPawn,
                     setSelectedCellCoord,
-                    setGameState
-                  )
+                    setGameState,
+                  })
                 }}
               >
                 {piece}

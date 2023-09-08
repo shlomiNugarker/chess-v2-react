@@ -14,7 +14,7 @@ import { handlePieceSelection } from './handlePieceSelection'
 // const audioStep = new Audio(audioStepUrl)
 // const castleStep = new Audio(castleStepUrl)
 
-export const cellClicked: CellClicked = (
+export const cellClicked: CellClicked = ({
   ev,
   i,
   j,
@@ -25,8 +25,8 @@ export const cellClicked: CellClicked = (
   updateGameState,
   setCellCoordsToAddInsteadPawn,
   setSelectedCellCoord,
-  setGameState
-) => {
+  setGameState,
+}) => {
   //   if (!hasGameStarted) sethasGameStarted(true)
   if (!isValidPlayerTurn(gameState, isTwoPlayerInTheGame, loggedInUser)) return
 
@@ -39,15 +39,15 @@ export const cellClicked: CellClicked = (
     const isSquareCastling = ev.target.classList.contains('castle')
 
     if (isSquareEatable && gameState.selectedCellCoord) {
-      handleEatableMove(
-        ev.target,
+      handleEatableMove({
+        target: ev.target,
         gameState,
         cellCoord,
         setIsPromotionChoice,
         updateGameState,
         setCellCoordsToAddInsteadPawn,
-        setGameState
-      )
+        setGameState,
+      })
       return
     }
 
@@ -71,24 +71,24 @@ export const cellClicked: CellClicked = (
     }
 
     if (isSquareMarked && gameState.selectedCellCoord) {
-      handleStepMove(
-        ev.target,
+      handleStepMove({
+        target: ev.target,
         gameState,
         cellCoord,
         setIsPromotionChoice,
         updateGameState,
         setCellCoordsToAddInsteadPawn,
-        setGameState
-      )
+        setGameState,
+      })
       return
     }
 
-    handlePieceSelection(
-      ev.target,
+    handlePieceSelection({
+      target: ev.target,
       gameState,
       cellCoord,
       piece,
-      setSelectedCellCoord
-    )
+      setSelectedCellCoord,
+    })
   }
 }

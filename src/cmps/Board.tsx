@@ -3,6 +3,13 @@ import { PromotionChoice } from './PromotionChoice'
 import { GameState } from '../models/GameState'
 import { User } from '../models/User'
 
+import { ChatState } from '../models/ChatState'
+import { useNavigate } from 'react-router-dom'
+import { ChessBoard } from './ChessBoard'
+import { cellClicked } from '../services/game/controller/cellClicked'
+import { OnChoosePieceToAdd } from '../models/OnChoosePieceToAdd'
+import { UpdateGameState } from '../models/UpdateGameState'
+
 interface Props {
   isTwoPlayerInTheGame: boolean
   gameState: GameState | null
@@ -29,14 +36,6 @@ interface Props {
   //
   onChoosePieceToAdd: OnChoosePieceToAdd
 }
-
-import { ChatState } from '../models/ChatState'
-import { useNavigate } from 'react-router-dom'
-import { ChessBoard } from './ChessBoard'
-import { cellClicked } from '../services/game/controller/cellClicked'
-// import { UpdateGameState } from '../models/UpdateGameState'
-import { OnChoosePieceToAdd } from '../models/OnChoosePieceToAdd'
-import { UpdateGameState } from '../models/UpdateGameState'
 
 export const Board = ({
   isTwoPlayerInTheGame,

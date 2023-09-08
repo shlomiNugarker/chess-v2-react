@@ -5,20 +5,30 @@ import { isPawnStepsEnd } from '../service/isPawnStepsEnd'
 import { movePiece } from '../service/movePiece'
 import { cleanBoard } from './cleanBoard'
 
-export const handleStepMove = async (
-  target: Element,
-  gameState: GameState,
-  cellCoord: { i: number; j: number },
-  setIsPromotionChoice: React.Dispatch<React.SetStateAction<boolean>>,
-  updateGameState: UpdateGameState,
+type Props = {
+  target: Element
+  gameState: GameState
+  cellCoord: { i: number; j: number }
+  setIsPromotionChoice: React.Dispatch<React.SetStateAction<boolean>>
+  updateGameState: UpdateGameState
   setCellCoordsToAddInsteadPawn: React.Dispatch<
     React.SetStateAction<{
       i: number
       j: number
     } | null>
-  >,
+  >
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
-) => {
+}
+
+export const handleStepMove = async ({
+  target,
+  gameState,
+  cellCoord,
+  setIsPromotionChoice,
+  updateGameState,
+  setCellCoordsToAddInsteadPawn,
+  setGameState,
+}: Props) => {
   const { isMoveLegal, state } = isNextStepLegal(gameState, target)
   if (!isMoveLegal) return
 
