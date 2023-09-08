@@ -9,23 +9,50 @@ import { useAuthContext } from '../context/AuthContext'
 import { chatService } from '../services/chatService'
 import { storageService } from '../services/storageService'
 import { gameStateService } from '../services/gameStateService'
-import { User } from '../models/User'
+
 import { Chat } from '../cmps/Chat'
 import { GameDetails } from '../cmps/GameDetails'
 import { socketService } from '../services/socketService'
+import { addPieceInsteadPawn } from '../services/game/addPieceInsteadPawn'
+import { cleanBoard } from '../services/game/controller/cleanBoard'
+import { isPlayerWin } from '../services/game/isPlayerWin'
+import { checkIfKingThreatened } from '../services/game/checkIfKingThreatened'
+import { onShareGameUrl } from '../services/game/controller/onShareGameUrl'
+import { copyToClipBoard } from '../services/game/controller/copyToClipBoard'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
 }
 export const Main = ({ onLoginAsGuest }: props) => {
   const navigate = useNavigate()
+  const { id } = useParams()
 
   const [gameState, setGameState] = useState<GameState | null>(null)
   const [chatState, setChatState] = useState<ChatState | null>(null)
   const authContextData = useAuthContext()
   const [isTwoPlayerInTheGame, setIsTwoPlayerInTheGame] = useState(false)
+  const [isWin, setIsWin] = useState(false)
+  const [isPromotionChoice, setIsPromotionChoice] = useState(false)
+  const [hasGameStarted, sethasGameStarted] = useState(
+    true || !!gameState?.isGameStarted
+  )
+  const [cellCoordsToAddInsteadPawn, setCellCoordsToAddInsteadPawn] = useState<{
+    i: number
+    j: number
+  } | null>(null)
 
-  const { id } = useParams()
+  const onChoosePieceToAdd = async (piece: string) => {
+    if (!cellCoordsToAddInsteadPawn || !gameState) return
+    const { newState } = addPieceInsteadPawn(
+      gameState,
+      cellCoordsToAddInsteadPawn,
+      piece
+    )
+    newState.isBlackTurn = !newState.isBlackTurn
+    await updateGameState(newState)
+    cleanBoard()
+    setIsPromotionChoice(false)
+  }
 
   const getState = useCallback(
     async (gameId: string) => {
@@ -79,6 +106,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     },
     [gameState?.board]
   )
+
   const getChatById = async (chatId: string) => {
     const chat = await chatService.getById(chatId)
     setChatState(chat)
@@ -89,7 +117,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     if (!gameState) return
     const game = { ...gameState }
     game.selectedCellCoord = cellCoord
-    setGameState(game as GameState)
+    updateGameState(game as GameState)
   }
 
   const joinPlayerToTheGame = useCallback(() => {
@@ -135,6 +163,13 @@ export const Main = ({ onLoginAsGuest }: props) => {
   const moveInStateHistory = (num: 1 | -1) => {
     console.log(num)
   }
+
+  useEffect(() => {
+    if (hasGameStarted && gameState && !isWin && isPlayerWin(gameState)) {
+      setIsWin(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState?.isBlackTurn, isWin])
 
   useEffect(() => {
     if (!gameState?.players?.black || !gameState?.players?.white) {
@@ -185,6 +220,53 @@ export const Main = ({ onLoginAsGuest }: props) => {
     authContextData?.setConnectedUsers,
   ])
 
+  useEffect(() => {
+    if (gameState && hasGameStarted) {
+      checkIfKingThreatened(gameState)
+
+      // handle case if both kings threatened one after one
+      const lastKingThreatened = gameState.isBlackTurn
+        ? gameState.kingPos.white
+        : gameState.kingPos.black
+
+      if (lastKingThreatened) {
+        const kingEl = document.querySelector(
+          `#cell-${lastKingThreatened.i}-${lastKingThreatened.j}`
+        )
+
+        if (kingEl && kingEl.classList.contains('red'))
+          kingEl.classList.remove('red')
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState?.isBlackTurn])
+
+  // useEffect(() => {
+  //   // handle time:
+  //   const intervalId = setInterval(() => {
+  //     if (gameState && gameState.isBlackTurn && gameState.isGameStarted) {
+  //       dispatch(
+  //         updateTime({
+  //           white: gameState?.remainingTime.white,
+  //           black: gameState?.remainingTime.black - 1000,
+  //         })
+  //       )
+  //     }
+  //     if (gameState && !gameState.isBlackTurn && gameState.isGameStarted) {
+  //       dispatch(
+  //         updateTime({
+  //           white: gameState?.remainingTime.white - 1000,
+  //           black: gameState?.remainingTime.black,
+  //         })
+  //       )
+  //     }
+  //   }, 1000)
+
+  //   return () => {
+  //     clearInterval(intervalId)
+  //   }
+  // }, [gameState, gameState?.isGameStarted])
+
   // console.log('rebder Main.tsx')
   return (
     <div className="main-page">
@@ -216,6 +298,11 @@ export const Main = ({ onLoginAsGuest }: props) => {
           setSelectedCellCoord={setSelectedCellCoord}
           setGameState={setGameState}
           setChatState={setChatState}
+          isWin={isWin}
+          isPromotionChoice={isPromotionChoice}
+          setIsPromotionChoice={setIsPromotionChoice}
+          setCellCoordsToAddInsteadPawn={setCellCoordsToAddInsteadPawn}
+          onChoosePieceToAdd={onChoosePieceToAdd}
         />
       )}
 
@@ -250,24 +337,4 @@ export const Main = ({ onLoginAsGuest }: props) => {
       )}
     </div>
   )
-}
-
-const onShareGameUrl = async (loggedInUser: User, id: string) => {
-  const shareData = {
-    title: 'Chess game',
-    text: `${loggedInUser?.fullname} invited you to play chess !`,
-    url: `https://chess-v2-backend-production.up.railway.app/#/${id}`,
-  }
-  try {
-    await navigator.share(shareData)
-  } catch (err) {
-    console.log(`Error: ${err}`)
-  }
-}
-
-function copyToClipBoard(
-  id: string,
-  baseUrl: string = 'https://chess-v2-backend-production.up.railway.app/#/'
-) {
-  navigator.clipboard.writeText(`${baseUrl}${id}`)
 }

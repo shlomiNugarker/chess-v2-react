@@ -1,15 +1,32 @@
+import { useAuthContext } from '../context/AuthContext'
+import { CellClicked } from '../models/CellClicked'
 import { GameState } from '../models/GameState'
 
 interface Props {
   state: GameState | null
-  cellClicked: (
-    ev: React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
-    i: number,
-    j: number
-  ) => void
+  isTwoPlayerInTheGame: boolean
+  setIsPromotionChoice: React.Dispatch<React.SetStateAction<boolean>>
+  updateGameState: (newState: GameState) => Promise<void | GameState>
+  setCellCoordsToAddInsteadPawn: React.Dispatch<
+    React.SetStateAction<{
+      i: number
+      j: number
+    } | null>
+  >
+  cellClicked: CellClicked
+  setSelectedCellCoord: (cellCoord: GameState['selectedCellCoord']) => void
 }
 
-export const ChessBoard = ({ state, cellClicked }: Props) => {
+export const ChessBoard = ({
+  state,
+  cellClicked,
+  isTwoPlayerInTheGame,
+  updateGameState,
+  setIsPromotionChoice,
+  setCellCoordsToAddInsteadPawn,
+  setSelectedCellCoord,
+}: Props) => {
+  const authContextData = useAuthContext()
   // console.log('render ChessBoard.tsx')
   return (
     <table className={'chess-board'}>
@@ -24,14 +41,36 @@ export const ChessBoard = ({ state, cellClicked }: Props) => {
                 style={{ cursor: piece && 'pointer' }}
                 onDrop={(ev) => {
                   ev.preventDefault()
-                  cellClicked(ev, i, j)
+                  cellClicked(
+                    ev,
+                    i,
+                    j,
+                    state,
+                    isTwoPlayerInTheGame,
+                    authContextData?.loggedInUser,
+                    setIsPromotionChoice,
+                    updateGameState,
+                    setCellCoordsToAddInsteadPawn,
+                    setSelectedCellCoord
+                  )
                 }}
                 onDragOver={(ev) => {
                   ev.preventDefault()
                 }}
                 draggable="true"
                 onMouseDown={(ev) => {
-                  cellClicked(ev, i, j)
+                  cellClicked(
+                    ev,
+                    i,
+                    j,
+                    state,
+                    isTwoPlayerInTheGame,
+                    authContextData?.loggedInUser,
+                    setIsPromotionChoice,
+                    updateGameState,
+                    setCellCoordsToAddInsteadPawn,
+                    setSelectedCellCoord
+                  )
                 }}
               >
                 {piece}
