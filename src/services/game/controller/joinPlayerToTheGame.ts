@@ -3,6 +3,7 @@ import { ChatState } from '../../../models/ChatState'
 import { GameState } from '../../../models/GameState'
 import { UpdateGameState } from '../../../models/UpdateGameState'
 import { User } from '../../../models/User'
+import { SaveChat } from '../../../models/SaveChat'
 
 type Props = {
   gameState: GameState | null
@@ -10,7 +11,8 @@ type Props = {
   loggedInUser: User | null | undefined
   updateGameState: UpdateGameState
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
-  saveChat: (chat: ChatState) => Promise<ChatState>
+  saveChat: SaveChat
+  setChatState: React.Dispatch<React.SetStateAction<ChatState | null>>
 }
 
 export const joinPlayerToTheGame = ({
@@ -20,6 +22,7 @@ export const joinPlayerToTheGame = ({
   updateGameState,
   setGameState,
   saveChat,
+  setChatState,
 }: Props) => {
   if (gameState?.players?.white && gameState?.players?.black === '') {
     const stateToUpdate = _.cloneDeep(gameState)
@@ -34,7 +37,7 @@ export const joinPlayerToTheGame = ({
         if (!chatToUpdate.userId2) chatToUpdate.userId2 = userId
         else if (!chatToUpdate.userId) chatToUpdate.userId = userId
 
-        saveChat(chatToUpdate)
+        saveChat(chatToUpdate, setChatState)
       }
       stateToUpdate.players.black = userId
     }

@@ -4,14 +4,18 @@ import { utilService } from '../services/utilService'
 import { ChatState } from '../models/ChatState'
 import { User } from '../models/User'
 import { GameState } from '../models/GameState'
+import { SaveChat } from '../models/SaveChat'
 
 interface Props {
   gameState: GameState
   loggedInUser: User | null
   chatState: ChatState | null
-  saveChat: (chat: ChatState) => Promise<ChatState>
-
-  getChatById: (chatId: string) => Promise<ChatState>
+  saveChat: SaveChat
+  getChatById: (
+    chatId: string,
+    setChatState: React.Dispatch<React.SetStateAction<ChatState | null>>
+  ) => Promise<ChatState>
+  setChatState: React.Dispatch<React.SetStateAction<ChatState | null>>
 }
 
 export const Chat = ({
@@ -20,6 +24,7 @@ export const Chat = ({
   saveChat,
   getChatById,
   gameState,
+  setChatState,
 }: Props) => {
   const [msg, setMsg] = useState('')
 
@@ -40,7 +45,7 @@ export const Chat = ({
       const newMsg = createMsg(msg)
       const chatToSave = _.cloneDeep(chatState)
       chatToSave?.messages.push(newMsg)
-      chatToSave && saveChat(chatToSave)
+      chatToSave && saveChat(chatToSave, setChatState)
       setMsg('')
     }
   }
@@ -49,7 +54,7 @@ export const Chat = ({
     const newMsg = createMsg(msg)
     const chatToSave = _.cloneDeep(chatState)
     chatToSave?.messages.push(newMsg)
-    chatToSave && saveChat(chatToSave)
+    chatToSave && saveChat(chatToSave, setChatState)
   }
 
   useEffect(() => {
@@ -57,13 +62,13 @@ export const Chat = ({
     if (chatState && !chatState.userId2 && gameState?.players?.black) {
       const chatToSave = _.cloneDeep(chatState)
       chatToSave.userId2 = gameState.players.black
-      chatToSave && saveChat(chatToSave)
+      chatToSave && saveChat(chatToSave, setChatState)
     }
-  }, [chatState, gameState, gameState?.players?.black, saveChat])
+  }, [chatState, gameState, gameState?.players?.black, saveChat, setChatState])
 
   useEffect(() => {
     if (gameState.chatId) {
-      getChatById(gameState.chatId)
+      getChatById(gameState.chatId, setChatState)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

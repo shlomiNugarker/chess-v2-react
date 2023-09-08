@@ -7,8 +7,6 @@ import { ValidAuthModal } from '../cmps/ValidAuthModal'
 import { GameState } from '../models/GameState'
 import { ChatState } from '../models/ChatState'
 import { useAuthContext } from '../context/AuthContext'
-import { chatService } from '../services/chatService'
-
 import { Chat } from '../cmps/Chat'
 import { GameDetails } from '../cmps/GameDetails'
 import { socketService } from '../services/socketService'
@@ -23,6 +21,8 @@ import { getState } from '../services/game/controller/getState'
 import { User } from '../models/User'
 import { userService } from '../services/userServise'
 import { setSelectedCellCoord } from '../services/game/controller/setSelectedCellCoord'
+import { saveChat } from '../services/game/controller/saveChat'
+import { getChatById } from '../services/game/controller/getChatById'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -37,38 +37,25 @@ export const Main = ({ onLoginAsGuest }: props) => {
   const [isTwoPlayerInTheGame, setIsTwoPlayerInTheGame] = useState(false)
   const [isWin, setIsWin] = useState(false)
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
-  const [hasGameStarted, setHasGameStarted] = useState(
-    true || !!gameState?.isGameStarted
-  )
+  const [whitePlayer, setWhitePlayer] = useState<User | null>(null)
+  const [blackPlayer, setBlackPlayer] = useState<User | null>(null)
+  const [isWhitePlayerConnected, setIsWhitePlayerConnected] = useState(false)
+  const [isBlackPlayerConnected, setIsBlackPlayerConnected] = useState(false)
+
   const [cellCoordsToAddInsteadPawn, setCellCoordsToAddInsteadPawn] = useState<{
     i: number
     j: number
   } | null>(null)
 
-  const [whitePlayer, setWhitePlayer] = useState<User | null>(null)
-  const [blackPlayer, setBlackPlayer] = useState<User | null>(null)
-  const [isWhitePlayerConnected, setIsWhitePlayerConnected] = useState(false)
-  const [isBlackPlayerConnected, setIsBlackPlayerConnected] = useState(false)
+  const [hasGameStarted, setHasGameStarted] = useState(
+    true || !!gameState?.isGameStarted
+  )
 
   useEffect(() => {
     console.log(setHasGameStarted)
 
     if (id) getState(id, setGameState)
   }, [id])
-
-  const saveChat = async (chat: ChatState) => {
-    const savedChat = await chatService.save(chat)
-    if (chat._id && chat.userId && chat.userId2)
-      socketService.emit('chat-updated', savedChat)
-    setChatState(savedChat)
-    return savedChat
-  }
-
-  const getChatById = async (chatId: string) => {
-    const chat = await chatService.getById(chatId)
-    setChatState(chat)
-    return chat
-  }
 
   const moveInStateHistory = (num: 1 | -1) => {
     console.log(num)
@@ -90,6 +77,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
         updateGameState,
         setGameState,
         saveChat,
+        setChatState,
       })
       if (stateToUpdate) updateGameState(stateToUpdate, setGameState)
     }
@@ -278,6 +266,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
           saveChat={saveChat}
           getChatById={getChatById}
           gameState={gameState}
+          setChatState={setChatState}
         />
       )}
 
