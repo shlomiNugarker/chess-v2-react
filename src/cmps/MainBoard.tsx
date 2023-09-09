@@ -8,6 +8,7 @@ import { cellClicked } from '../services/game/controller/cellClicked'
 import { OnChoosePieceToAdd } from '../models/OnChoosePieceToAdd'
 import { UpdateGameState } from '../models/UpdateGameState'
 import { SetSelectedCellCoordType } from '../models/SetSelectedCellCoord'
+import { useAuthContext } from '../context/AuthContext'
 
 interface Props {
   isTwoPlayerInTheGame: boolean
@@ -52,6 +53,32 @@ export const MainBoard = ({
   cellCoordsToAddInsteadPawn,
 }: Props) => {
   const navigate = useNavigate()
+  const authContextData = useAuthContext()
+
+  const handleBoardClick = (
+    ev:
+      | React.DragEvent<HTMLTableDataCellElement>
+      | React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
+    i: number,
+    j: number
+  ) => {
+    console.log('handleBoardClick')
+    if (!gameState) return
+
+    cellClicked({
+      ev,
+      i,
+      j,
+      gameState,
+      isTwoPlayerInTheGame,
+      loggedInUser: authContextData?.loggedInUser,
+      setIsPromotionChoice,
+      updateGameState,
+      setCellCoordsToAddInsteadPawn,
+      setSelectedCellCoord,
+      setGameState,
+    })
+  }
 
   const screenStyle =
     gameState?.players?.black === loggedInUser?._id
@@ -77,14 +104,8 @@ export const MainBoard = ({
       )}
       <div>
         <ChessBoard
-          isTwoPlayerInTheGame={isTwoPlayerInTheGame}
-          state={gameState}
-          cellClicked={cellClicked}
-          setCellCoordsToAddInsteadPawn={setCellCoordsToAddInsteadPawn}
-          updateGameState={updateGameState}
-          setIsPromotionChoice={setIsPromotionChoice}
-          setSelectedCellCoord={setSelectedCellCoord}
-          setGameState={setGameState}
+          handleBoardClick={handleBoardClick}
+          board={gameState?.board}
         />
       </div>
 
