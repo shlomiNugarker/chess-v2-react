@@ -11,6 +11,7 @@
         width: $td-width;
         height: $td-height;
         font-size: $td-font-size;
+        transition: all 0.1s ease-in-out;
 
         &.white {
           background-color: #f0d9b5;
