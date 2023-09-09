@@ -1,5 +1,5 @@
-import { SetSelectedCellCoord } from '../services/game/controller/setSelectedCellCoord'
 import { GameState } from './GameState'
+import { SetSelectedCellCoordType } from './SetSelectedCellCoord'
 import { UpdateGameState } from './UpdateGameState'
 import { User } from './User'
 
@@ -30,6 +30,6 @@ export type CellClicked = ({
       j: number
     } | null>
   >
-  setSelectedCellCoord: SetSelectedCellCoord
+  setSelectedCellCoord: SetSelectedCellCoordType
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
 }) => void

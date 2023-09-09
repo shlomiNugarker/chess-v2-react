@@ -1,5 +1,5 @@
 import { GameState } from '../../../models/GameState'
-import { SetSelectedCellCoord } from '../../../models/SetSelectedCellCoord'
+import { SetSelectedCellCoordType } from '../../../models/SetSelectedCellCoord'
 import { UpdateGameState } from '../../../models/UpdateGameState'
 import { getPossibleCoords } from '../service/getPossibleCoords'
 import { cleanBoard } from './cleanBoard'
@@ -12,7 +12,7 @@ type Props = {
   piece: string
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
   updateGameState: UpdateGameState
-  setSelectedCellCoord: SetSelectedCellCoord
+  setSelectedCellCoord: SetSelectedCellCoordType
 }
 export const handlePieceSelection = ({
   target,

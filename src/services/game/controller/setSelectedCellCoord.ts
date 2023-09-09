@@ -1,7 +1,7 @@
 import { GameState } from '../../../models/GameState'
-import { SetSelectedCellCoord } from '../../../models/SetSelectedCellCoord'
+import { SetSelectedCellCoordType } from '../../../models/SetSelectedCellCoord'
 
-export const setSelectedCellCoord: SetSelectedCellCoord = ({
+export const setSelectedCellCoord: SetSelectedCellCoordType = ({
   cellCoord,
   gameState,
   updateGameState,

@@ -14,6 +14,8 @@ export const getState = async (
 
   if (gameId && gameId.length < 10) {
     const stateFromStorage = storageService.get('chess-game', gameId)
-    if (stateFromStorage) setGameState(stateFromStorage)
+    if (stateFromStorage) {
+      setGameState(stateFromStorage)
+    }
   }
 }

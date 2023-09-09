@@ -53,6 +53,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
   )
 
   useEffect(() => {
+    console.log(setHasGameStarted)
+
     if (id) getState(id, setGameState)
   }, [id])
 
@@ -68,7 +70,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState?.isBlackTurn, isWin])
 
-  // Handle case when user enter the game:
+  // Handle cases when user enter the game:
   useEffect(() => {
     if (!gameState?.players?.black || !gameState?.players?.white) {
       const stateToUpdate = joinPlayerToTheGame({
@@ -118,6 +120,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     return () => {
       socketService.off('set-connected-users')
       socketService.off('update-state')
+      socketService.off('update-chat')
     }
   }, [
     authContextData,
@@ -125,11 +128,11 @@ export const Main = ({ onLoginAsGuest }: props) => {
     authContextData?.setConnectedUsers,
   ])
 
+  // Handle case if both kings are threatened one after one
   useEffect(() => {
     if (gameState && hasGameStarted) {
       checkIfKingThreatened(gameState)
 
-      // handle case if both kings threatened one after one
       const lastKingThreatened = gameState.isBlackTurn
         ? gameState.kingPos.white
         : gameState.kingPos.black

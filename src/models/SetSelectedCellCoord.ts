@@ -1,7 +1,7 @@
 import { GameState } from './GameState'
 import { UpdateGameState } from './UpdateGameState'
 
-export type SetSelectedCellCoord = ({
+export type SetSelectedCellCoordType = ({
   cellCoord,
   gameState,
   updateGameState,
