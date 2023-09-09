@@ -1,4 +1,4 @@
-slow)import { GameState } from '../../../models/GameState'
+import { GameState } from '../../../models/GameState'
 import { gameStateService } from '../../gameStateService'
 import { socketService } from '../../socketService'
 import { storageService } from '../../storageService'
