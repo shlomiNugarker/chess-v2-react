@@ -16,7 +16,7 @@ export const Puzzles = () => {
   }
 
   return (
-    <section>
+    <section className="puzzles-page">
       <PuzzleBoard handleBoardClick={handleBoardClick} board={puzzles[0]} />
     </section>
   )
