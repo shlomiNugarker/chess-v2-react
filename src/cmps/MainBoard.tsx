@@ -62,7 +62,6 @@ export const MainBoard = ({
     i: number,
     j: number
   ) => {
-    console.log('handleBoardClick')
     if (!gameState) return
 
     cellClicked({

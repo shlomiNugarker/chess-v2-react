@@ -48,29 +48,19 @@ export const cellClicked: CellClicked = ({
         setCellCoordsToAddInsteadPawn,
         setGameState,
       })
-      return
-    }
-
-    if (isSquareCastling && gameState.selectedCellCoord) {
+    } else if (isSquareCastling && gameState.selectedCellCoord) {
       handleCastlingMove(ev.target, gameState, updateGameState, setGameState)
-      return
-    }
-
-    if (
+    } else if (
       piece &&
       piece !== '' &&
       !isColorPieceWorthCurrPlayerColor(gameState, piece)
-    )
+    ) {
       return
-
-    // unselect:
-    if (isSquareSelected) {
+    } else if (isSquareSelected) {
+      // unselect:
       ev.target.classList.remove('selected')
       cleanBoard()
-      return
-    }
-
-    if (isSquareMarked && gameState.selectedCellCoord) {
+    } else if (isSquareMarked && gameState.selectedCellCoord) {
       handleStepMove({
         target: ev.target,
         gameState,
@@ -80,17 +70,16 @@ export const cellClicked: CellClicked = ({
         setCellCoordsToAddInsteadPawn,
         setGameState,
       })
-      return
+    } else {
+      handlePieceSelection({
+        target: ev.target,
+        gameState,
+        cellCoord,
+        piece,
+        setGameState,
+        updateGameState,
+        setSelectedCellCoord,
+      })
     }
-
-    handlePieceSelection({
-      target: ev.target,
-      gameState,
-      cellCoord,
-      piece,
-      setGameState,
-      updateGameState,
-      setSelectedCellCoord,
-    })
   }
 }

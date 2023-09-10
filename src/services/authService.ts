@@ -27,9 +27,7 @@ async function signupAsGuest(fullname?: string | null) {
   }
 
   const savedUser: User = await userService.saveUser(newUser)
-
   _saveLocalUser(savedUser)
-  // utilService.saveToStorage(STORAGE_KEY_LOGGEDIN_USER, savedUser)
   return savedUser
 }
 
@@ -39,7 +37,6 @@ async function signup(userCred: {
   fullname: string
 }) {
   const user = await httpService.post('auth/signup', userCred)
-
   return _saveLocalUser(user)
 }
 
