@@ -187,30 +187,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
   ])
 
   // Handle time:
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     if (gameState && gameState.isBlackTurn && gameState.isGameStarted) {
-  //       dispatch(
-  //         updateTime({
-  //           white: gameState?.remainingTime.white,
-  //           black: gameState?.remainingTime.black - 1000,
-  //         })
-  //       )
-  //     }
-  //     if (gameState && !gameState.isBlackTurn && gameState.isGameStarted) {
-  //       dispatch(
-  //         updateTime({
-  //           white: gameState?.remainingTime.white - 1000,
-  //           black: gameState?.remainingTime.black,
-  //         })
-  //       )
-  //     }
-  //   }, 1000)
-
-  //   return () => {
-  //     clearInterval(intervalId)
-  //   }
-  // }, [gameState, gameState?.isGameStarted])
+  useEffect(() => {}, [gameState, gameState?.isGameStarted])
 
   // console.log('rebder Main.tsx')
   return (
