@@ -4,6 +4,8 @@ import { chatService } from '../../chatService'
 import { socketService } from '../../socketService'
 
 export const saveChat: SaveChat = async (chat: ChatState, setChatState) => {
+  console.log('saveChat()')
+
   const savedChat = await chatService.save(chat)
   if (chat._id && chat.userId && chat.userId2)
     socketService.emit('chat-updated', savedChat)

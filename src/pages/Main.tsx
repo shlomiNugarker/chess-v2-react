@@ -53,8 +53,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
   )
 
   useEffect(() => {
-    console.log(setHasGameStarted)
-
     if (id) getState(id, setGameState)
   }, [id])
 

@@ -10,6 +10,7 @@ export const handleCastlingMove = async (
   updateGameState: UpdateGameState,
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
 ) => {
+  console.log('handleCastlingMove()')
   const { isMoveLegal } = isNextStepLegal(gameState, target)
   if (!isMoveLegal) return
 

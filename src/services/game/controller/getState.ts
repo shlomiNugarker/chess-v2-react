@@ -6,6 +6,7 @@ export const getState = async (
   gameId: string,
   setGameState: (value: React.SetStateAction<GameState | null>) => void
 ) => {
+  console.log('getState')
   if (gameId && gameId.length > 10) {
     const state = await gameStateService.getById(gameId)
     setGameState(state)

@@ -6,6 +6,8 @@ export const isValidPlayerTurn = (
   isTwoPlayerInTheGame: boolean,
   loggedInUser: User | null | undefined
 ) => {
+  console.log('isValidPlayerTurn()')
+
   if (!gameState?.isOnline) return true
   if (gameState?.isOnline && isTwoPlayerInTheGame) {
     if (

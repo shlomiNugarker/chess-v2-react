@@ -5,6 +5,7 @@ export const getChatById = async (
   chatId: string,
   setChatState: React.Dispatch<React.SetStateAction<ChatState | null>>
 ) => {
+  console.log('getChatById()')
   const chat = await chatService.getById(chatId)
   setChatState(chat)
   return chat

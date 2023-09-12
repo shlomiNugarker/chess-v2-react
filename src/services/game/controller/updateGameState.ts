@@ -8,6 +8,7 @@ export const updateGameState: UpdateGameState = async (
   newState: GameState,
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
 ) => {
+  console.log('updateGameState()')
   if (!newState.isOnline) {
     storageService.put('chess-game', newState)
     setGameState(newState)

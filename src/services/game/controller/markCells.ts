@@ -5,6 +5,8 @@ export function markCells(
   state: GameState,
   coords: { i: number; j: number }[]
 ) {
+  console.log('markCells()')
+
   for (let i = 0; i < coords.length; i++) {
     const coord = coords[i]
     const elCell = document.querySelector(`#cell-${coord.i}-${coord.j}`)

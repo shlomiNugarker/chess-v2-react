@@ -27,6 +27,8 @@ export const cellClicked: CellClicked = ({
   setSelectedCellCoord,
   setGameState,
 }) => {
+  console.log('cellClicked()')
+
   //   if (!hasGameStarted) sethasGameStarted(true)
   if (!isValidPlayerTurn(gameState, isTwoPlayerInTheGame, loggedInUser)) return
 

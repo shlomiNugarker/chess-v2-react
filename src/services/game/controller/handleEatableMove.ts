@@ -29,6 +29,7 @@ export const handleEatableMove = async ({
   setCellCoordsToAddInsteadPawn,
   setGameState,
 }: Props) => {
+  console.log('handleEatableMove()')
   const { isMoveLegal, state } = isNextStepLegal(gameState, target)
 
   if (

@@ -29,6 +29,8 @@ export const handleStepMove = async ({
   setCellCoordsToAddInsteadPawn,
   setGameState,
 }: Props) => {
+  console.log('handleStepMove()')
+
   const { isMoveLegal, state } = isNextStepLegal(gameState, target)
   if (!isMoveLegal) return
 

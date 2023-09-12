@@ -10,6 +10,7 @@ export const onChoosePieceToAdd: OnChoosePieceToAdd = async ({
   setIsPromotionChoice,
   setGameState,
 }) => {
+  console.log('onChoosePieceToAdd()')
   if (!cellCoordsToAddInsteadPawn || !gameState) return
   const { newState } = addPieceInsteadPawn(
     gameState,

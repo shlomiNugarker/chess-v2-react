@@ -24,6 +24,8 @@ export const joinPlayerToTheGame = ({
   saveChat,
   setChatState,
 }: Props) => {
+  console.log('joinPlayerToTheGame()')
+
   if (gameState?.players?.white && gameState?.players?.black === '') {
     const stateToUpdate = _.cloneDeep(gameState)
     const chatToUpdate = _.cloneDeep(chatState)

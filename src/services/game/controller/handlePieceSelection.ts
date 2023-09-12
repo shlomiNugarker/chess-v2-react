@@ -24,6 +24,7 @@ export const handlePieceSelection = ({
   setSelectedCellCoord,
 }: Props) => {
   cleanBoard()
+  console.log('handlePieceSelection()')
   if (gameState.board[cellCoord.i][cellCoord.j]) {
     target.classList.add('selected')
     setSelectedCellCoord({
