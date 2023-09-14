@@ -5,13 +5,12 @@ import { ChatState } from '../models/ChatState'
 import { useNavigate } from 'react-router-dom'
 import { ChessBoard } from './ChessBoard'
 import { OnChoosePieceToAdd } from '../models/OnChoosePieceToAdd'
-import { UpdateGameState } from '../models/UpdateGameState'
 
 interface Props {
   isTwoPlayerInTheGame: boolean
   gameState: GameState | null
   loggedInUser: User | null
-  updateGameState: UpdateGameState
+  updateGameState: (newState: GameState) => Promise<void>
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
   setChatState: React.Dispatch<React.SetStateAction<ChatState | null>>
   isWin: boolean
