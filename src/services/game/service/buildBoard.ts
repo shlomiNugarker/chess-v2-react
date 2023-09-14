@@ -5,7 +5,7 @@ export function buildBoard(pieces: any): string[][] {
   for (let i = 0; i < 8; i++) {
     board[i] = []
     for (let j = 0; j < 8; j++) {
-      let piece = ''
+      let piece = pieces.EMPTY
       if (i === 1) piece = pieces.PAWN_BLACK
       if (i === 6) piece = pieces.PAWN_WHITE
       board[i][j] = piece

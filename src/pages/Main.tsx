@@ -16,10 +16,16 @@ import { User } from '../models/User'
 import { userService } from '../services/userServise'
 import { storageService } from '../services/storageService'
 import { gameStateService } from '../services/gameStateService'
-import { cleanBoard } from '../services/game/controller/cleanBoard'
 import { addPieceInsteadPawn } from '../services/game/service/addPieceInsteadPawn'
 import { chatService } from '../services/chatService'
 import { SetSelectedCellCoordType } from '../models/SetSelectedCellCoord'
+import { cleanBoard } from '../services/game/controller/cleanBoard'
+import { isColorPieceWorthCurrPlayerColor } from '../services/game/service/isColorPieceWorthCurrPlayerColor'
+import { getPossibleCoords } from '../services/game/service/getPossibleCoords'
+import { isNextStepLegal } from '../services/game/service/isNextStepLegal'
+import { isPawnStepsEnd } from '../services/game/service/isPawnStepsEnd'
+import { movePiece } from '../services/game/service/movePiece'
+import { doCastling } from '../services/game/service/doCastling'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -51,13 +57,162 @@ export const Main = ({ onLoginAsGuest }: props) => {
     true || !!gameState?.isGameStarted
   )
 
-  // function paintKingCellToRed(kingPos: { i: number; j: number }) {
-  //   console.log('paintKingCellToRed()')
+  const handleBoardClick = async (
+    ev:
+      | React.DragEvent<HTMLTableDataCellElement>
+      | React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
+    i: number,
+    j: number
+  ) => {
+    if (!gameState) return
+    console.log('cellClicked()')
 
-  //   document
-  //     .querySelector(`#cell-${kingPos.i}-${kingPos.j}`)
-  //     ?.classList.add('red')
-  // }
+    if (!isValidPlayerTurn()) return
+
+    if (ev.target instanceof Element && gameState) {
+      const cellCoord = { i, j }
+      const piece = gameState.board[i][j]
+      const isSquareSelected = ev.target.classList.contains('selected')
+      const isSquareMarked = ev.target.classList.contains('mark')
+      const isSquareEatable = ev.target.classList.contains('eatable')
+      const isSquareCastling = ev.target.classList.contains('castle')
+      const target = ev.target
+
+      if (isSquareEatable && gameState.selectedCellCoord) {
+        console.log('handleEatableMove()')
+        const { isMoveLegal, state } = isNextStepLegal(gameState, target)
+
+        if (
+          (state.isBlackTurn && state.isBlackKingThreatened) ||
+          (!state.isBlackTurn && state.isWhiteKingThreatened) ||
+          !isMoveLegal
+        ) {
+          return
+        }
+
+        const newState = movePiece(gameState, cellCoord)
+
+        if (!newState) return
+
+        if (isPawnStepsEnd(state, cellCoord)) {
+          setIsPromotionChoice(true)
+          newState && (await updateGameState(newState))
+          setCellCoordsToAddInsteadPawn(cellCoord)
+          return
+        }
+        newState.isBlackTurn = !newState.isBlackTurn
+        await updateGameState(newState)
+        cleanBoard()
+      } else if (isSquareCastling && gameState.selectedCellCoord) {
+        console.log('handleCastlingMove()')
+        const { isMoveLegal } = isNextStepLegal(gameState, target)
+        if (!isMoveLegal) return
+
+        const isCastleLegals = doCastling(gameState, target)
+        if (isCastleLegals?.newState) {
+          isCastleLegals.newState.isBlackTurn =
+            !isCastleLegals.newState.isBlackTurn
+        }
+
+        if (
+          isCastleLegals &&
+          isCastleLegals.newState &&
+          isCastleLegals.isCastleLegal
+        ) {
+          await updateGameState(isCastleLegals.newState)
+        }
+        if (isCastleLegals && !isCastleLegals.isCastleLegal) return
+        cleanBoard()
+      } else if (
+        piece &&
+        piece !== '' &&
+        !isColorPieceWorthCurrPlayerColor(gameState, piece)
+      ) {
+        return
+      } else if (isSquareSelected) {
+        // unselect:
+        ev.target.classList.remove('selected')
+        cleanBoard()
+      } else if (isSquareMarked && gameState.selectedCellCoord) {
+        console.log('handleStepMove()')
+        const { isMoveLegal, state } = isNextStepLegal(gameState, target)
+        if (!isMoveLegal) return
+
+        const newState = movePiece(gameState, cellCoord)
+
+        if (newState && !newState?.isGameStarted && !newState?.isGameStarted)
+          newState.isGameStarted = true
+
+        if (!newState) return
+        if (isPawnStepsEnd(state, cellCoord)) {
+          setIsPromotionChoice(true)
+          newState && (await updateGameState(newState))
+          setCellCoordsToAddInsteadPawn(cellCoord)
+          return
+        }
+        newState.isBlackTurn = !newState.isBlackTurn
+        await updateGameState(newState)
+
+        cleanBoard()
+      } else {
+        cleanBoard()
+        console.log('handlePieceSelection()')
+        if (gameState.board[cellCoord.i][cellCoord.j]) {
+          target.classList.add('selected')
+          setSelectedCellCoord({
+            cellCoord,
+          })
+          const possibleCoords = getPossibleCoords(gameState, piece, cellCoord)
+          if (possibleCoords) markCells(gameState, possibleCoords)
+        }
+      }
+    }
+  }
+
+  function markCells(state: GameState, coords: { i: number; j: number }[]) {
+    console.log('markCells()')
+
+    for (let i = 0; i < coords.length; i++) {
+      const coord = coords[i]
+      const elCell = document.querySelector(`#cell-${coord.i}-${coord.j}`)
+      if (!elCell) return
+
+      const piece = state.board[coord.i][coord.j]
+
+      if (isColorPieceWorthCurrPlayerColor(state, piece)) {
+        elCell.classList.add('castle')
+      }
+      //
+      else if (state.board[coord.i][coord.j]) {
+        elCell.classList.add('eatable')
+      }
+      //
+      else {
+        elCell.innerHTML = '<span class="span"></span>'
+        elCell.classList.add('mark')
+      }
+    }
+  }
+
+  const isValidPlayerTurn = () => {
+    console.log('isValidPlayerTurn()')
+
+    if (!gameState?.isOnline) return true
+    if (gameState?.isOnline && isTwoPlayerInTheGame) {
+      if (
+        gameState.isBlackTurn &&
+        authContextData?.loggedInUser?._id === gameState.players?.black
+      ) {
+        return true
+      } else if (
+        !gameState.isBlackTurn &&
+        authContextData?.loggedInUser?._id === gameState.players?.white
+      ) {
+        return true
+      }
+    }
+    return false
+  }
 
   function copyToClipBoard(
     id: string,
@@ -349,15 +504,14 @@ export const Main = ({ onLoginAsGuest }: props) => {
           gameState={gameState}
           loggedInUser={authContextData?.loggedInUser || null}
           updateGameState={updateGameState}
-          setSelectedCellCoord={setSelectedCellCoord}
           setGameState={setGameState}
           setChatState={setChatState}
           isWin={isWin}
           isPromotionChoice={isPromotionChoice}
           setIsPromotionChoice={setIsPromotionChoice}
-          setCellCoordsToAddInsteadPawn={setCellCoordsToAddInsteadPawn}
           onChoosePieceToAdd={onChoosePieceToAdd}
           cellCoordsToAddInsteadPawn={cellCoordsToAddInsteadPawn}
+          handleBoardClick={handleBoardClick}
         />
       )}
 

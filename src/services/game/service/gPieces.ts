@@ -11,6 +11,7 @@ export const gPieces = {
   ROOK_BLACK: 'r',
   KNIGHT_WHITE: 'N',
   KNIGHT_BLACK: 'n',
+  EMPTY: '',
 }
 // export const gPieces = {
 //   KING_WHITE: '♔',
