@@ -1,5 +1,5 @@
 interface Props {
-  board: string[][] | undefined
+  board: string[][]
   handleBoardClick: (
     ev:
       | React.DragEvent<HTMLTableDataCellElement>
@@ -14,7 +14,7 @@ export const ChessBoard = ({ board, handleBoardClick }: Props) => {
   return (
     <table className={'chess-board'}>
       <tbody>
-        {board?.map((_tr, i) => (
+        {board.map((_tr, i) => (
           <tr key={'tr' + i}>
             {board[i].map((piece, j) => (
               <td

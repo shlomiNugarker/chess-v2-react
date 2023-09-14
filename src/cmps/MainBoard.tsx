@@ -71,10 +71,12 @@ export const MainBoard = ({
         </>
       )}
       <div>
-        <ChessBoard
-          handleBoardClick={handleBoardClick}
-          board={gameState?.board}
-        />
+        {gameState?.board && (
+          <ChessBoard
+            handleBoardClick={handleBoardClick}
+            board={gameState.board}
+          />
+        )}
       </div>
 
       {isPromotionChoice && gameState && (
