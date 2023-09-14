@@ -27,6 +27,7 @@ import { isPawnStepsEnd } from '../services/game/service/isPawnStepsEnd'
 import { movePiece } from '../services/game/service/movePiece'
 import { doCastling } from '../services/game/service/doCastling'
 import { isValidPlayerTurn } from '../services/game/controller/isValidPlayerTurn'
+import { copyToClipBoard } from '../services/game/controller/copyToClipBoard'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -202,14 +203,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
         elCell.classList.add('mark')
       }
     }
-  }
-
-  function copyToClipBoard(
-    id: string,
-    baseUrl: string = 'https://chess-v2-backend-production.up.railway.app/#/'
-  ) {
-    console.log('copyToClipBoard')
-    navigator.clipboard.writeText(`${baseUrl}${id}`)
   }
 
   const getChatById = async (chatId: string) => {
