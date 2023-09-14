@@ -18,7 +18,6 @@ import { storageService } from '../services/storageService'
 import { gameStateService } from '../services/gameStateService'
 import { addPieceInsteadPawn } from '../services/game/service/addPieceInsteadPawn'
 import { chatService } from '../services/chatService'
-import { SetSelectedCellCoordType } from '../models/SetSelectedCellCoord'
 import { cleanBoard } from '../services/game/controller/cleanBoard'
 import { isColorPieceWorthCurrPlayerColor } from '../services/game/service/isColorPieceWorthCurrPlayerColor'
 import { getPossibleCoords } from '../services/game/service/getPossibleCoords'
@@ -29,6 +28,8 @@ import { doCastling } from '../services/game/service/doCastling'
 import { isValidPlayerTurn } from '../services/game/controller/isValidPlayerTurn'
 import { copyToClipBoard } from '../services/game/controller/copyToClipBoard'
 import { markCells } from '../services/game/controller/markCells'
+import { setSelectedCellCoord } from '../services/game/controller/setSelectedCellCoord'
+import { onShareGameUrl } from '../services/game/controller/onShareGameUrl'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -172,9 +173,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
         console.log('handlePieceSelection()')
         if (gameState.board[cellCoord.i][cellCoord.j]) {
           target.classList.add('selected')
-          setSelectedCellCoord({
-            cellCoord,
-          })
+          const newState = setSelectedCellCoord(cellCoord, gameState)
+          setGameState(newState)
           const possibleCoords = getPossibleCoords(gameState, piece, cellCoord)
           if (possibleCoords) markCells(gameState, possibleCoords)
         }
@@ -204,38 +204,13 @@ export const Main = ({ onLoginAsGuest }: props) => {
     }
   }
 
-  const setSelectedCellCoord: SetSelectedCellCoordType = ({ cellCoord }) => {
-    console.log('setSelectedCellCoord()')
-    if (!gameState) return
-    const game = { ...gameState }
-    game.selectedCellCoord = cellCoord
-    setGameState(game)
-    // updateGameState(game as GameState, setGameState)
-  }
-
   const saveChat = async (chatToUpdate: ChatState) => {
     console.log('saveChat()')
-
     const savedChat = await chatService.save(chatToUpdate)
     if (savedChat?._id && savedChat?.userId && savedChat?.userId2)
       socketService.emit('chat-updated', savedChat)
     setChatState(savedChat)
     return savedChat
-  }
-
-  const onShareGameUrl = async (loggedInUser: User, id: string) => {
-    const shareData = {
-      title: 'Chess game',
-      text: `${loggedInUser?.fullname} invited you to play chess !`,
-      url: `https://chess-v2-backend-production.up.railway.app/#/${id}`,
-    }
-    try {
-      console.log('onShareGameUrl()')
-
-      await navigator.share(shareData)
-    } catch (err) {
-      console.log(`Error: ${err}`)
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -450,7 +425,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
             onClick={() =>
               !!authContextData?.loggedInUser &&
               !!id &&
-              onShareGameUrl(authContextData?.loggedInUser, id)
+              onShareGameUrl(authContextData.loggedInUser, id)
             }
           >
             Share
