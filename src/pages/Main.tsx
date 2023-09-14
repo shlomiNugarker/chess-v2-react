@@ -26,6 +26,7 @@ import { isNextStepLegal } from '../services/game/service/isNextStepLegal'
 import { isPawnStepsEnd } from '../services/game/service/isPawnStepsEnd'
 import { movePiece } from '../services/game/service/movePiece'
 import { doCastling } from '../services/game/service/doCastling'
+import { isValidPlayerTurn } from '../services/game/controller/isValidPlayerTurn'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -66,8 +67,18 @@ export const Main = ({ onLoginAsGuest }: props) => {
   ) => {
     if (!gameState) return
     console.log('cellClicked()')
-
-    if (!isValidPlayerTurn()) return
+    if (
+      gameState &&
+      !isValidPlayerTurn({
+        isOnlineGame: gameState.isOnline,
+        isBlackTurn: gameState.isBlackTurn,
+        isTwoPlayerInTheGame,
+        loggedInUser: authContextData?.loggedInUser,
+        blackPlayerID: gameState.players?.black,
+        whitePlayerID: gameState.players?.white,
+      })
+    )
+      return
 
     if (ev.target instanceof Element && gameState) {
       const cellCoord = { i, j }
@@ -171,7 +182,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
   function markCells(state: GameState, coords: { i: number; j: number }[]) {
     console.log('markCells()')
-
     for (let i = 0; i < coords.length; i++) {
       const coord = coords[i]
       const elCell = document.querySelector(`#cell-${coord.i}-${coord.j}`)
@@ -192,26 +202,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
         elCell.classList.add('mark')
       }
     }
-  }
-
-  const isValidPlayerTurn = () => {
-    console.log('isValidPlayerTurn()')
-
-    if (!gameState?.isOnline) return true
-    if (gameState?.isOnline && isTwoPlayerInTheGame) {
-      if (
-        gameState.isBlackTurn &&
-        authContextData?.loggedInUser?._id === gameState.players?.black
-      ) {
-        return true
-      } else if (
-        !gameState.isBlackTurn &&
-        authContextData?.loggedInUser?._id === gameState.players?.white
-      ) {
-        return true
-      }
-    }
-    return false
   }
 
   function copyToClipBoard(
