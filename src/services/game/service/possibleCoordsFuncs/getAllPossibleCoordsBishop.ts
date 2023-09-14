@@ -37,7 +37,7 @@ export function getAllPossibleCoordsBishop(
         break
       }
 
-      if (isEmptyCell(board, nextCoord)) {
+      if (isEmptyCell(board, nextCoord, state.pieces)) {
         possibleCoords.push(nextCoord)
       } else {
         const piece = board[nextCoord.i][nextCoord.j]

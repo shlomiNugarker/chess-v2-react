@@ -6,6 +6,5 @@ export function isColorPieceWorthCurrPlayerColor(
   piece: string
 ) {
   // console.log('isColorPieceWorthCurrPlayerColor()')
-
   return state.isBlackTurn === isBlackPiece(state, piece)
 }

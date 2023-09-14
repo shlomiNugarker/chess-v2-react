@@ -22,6 +22,7 @@ export interface GameState {
     ROOK_BLACK: any
     KNIGHT_WHITE: any
     KNIGHT_BLACK: any
+    EMPTY: any
   }
   selectedCellCoord: { i: number; j: number } | null
   isWhiteKingThreatened: boolean

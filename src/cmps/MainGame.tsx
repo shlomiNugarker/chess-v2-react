@@ -32,7 +32,7 @@ interface Props {
   ) => Promise<void>
 }
 
-export const MainBoard = ({
+export const MainGame = ({
   gameState,
   loggedInUser,
   updateGameState,

@@ -22,7 +22,7 @@ export function isNextStepLegal(
     copiedState.board[fromCoord.i][fromCoord.j] === state.pieces.KING_BLACK
 
   const piece = copiedState.board[fromCoord.i][fromCoord.j]
-  copiedState.board[fromCoord.i][fromCoord.j] = ''
+  copiedState.board[fromCoord.i][fromCoord.j] = state.pieces.EMPTY
   copiedState.board[toCoord.i][toCoord.j] = piece
 
   if (isKingMoved) {

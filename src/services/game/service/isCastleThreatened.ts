@@ -7,9 +7,7 @@ export function isCastleThreatened(
   toCoord: { i: number; j: number }
 ) {
   // console.log('isCastleThreatened()')
-
   let isCastleLegal: boolean = true
-
   let coordsToCheck: {
     i: number
     j: number

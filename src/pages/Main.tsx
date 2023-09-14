@@ -2,7 +2,7 @@
 import * as _ from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { MainBoard } from '../cmps/MainBoard'
+import { MainGame } from '../cmps/MainGame'
 import { ValidAuthModal } from '../cmps/ValidAuthModal'
 import { GameState } from '../models/GameState'
 import { ChatState } from '../models/ChatState'
@@ -94,7 +94,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
       const isSquareCastling = ev.target.classList.contains('castle')
       const target = ev.target
 
-      // HANDLE EATAABLE MOVE:
+      // HANDLE EATABLE MOVE:
       if (isSquareEatable && gameState.selectedCellCoord) {
         console.log('handleEatableMove()')
         const { isMoveLegal, state } = isNextStepLegal(gameState, target)
@@ -314,11 +314,11 @@ export const Main = ({ onLoginAsGuest }: props) => {
     gameState?.players?.black,
     gameState?.players?.white,
     authContextData?.loggedInUser,
+    authContextData?.loggedInUser?._id,
     gameState?.isOnline,
     chatState?._id,
     chatState?.userId,
     chatState?.userId2,
-    authContextData?.loggedInUser?._id,
     isTwoPlayerInTheGame,
     chatState,
     joinPlayerToTheGame,
@@ -409,8 +409,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
     whitePlayer?._id,
   ])
 
-  // Handle time:
-  useEffect(() => {}, [gameState, gameState?.isGameStarted])
+  //  // Handle time:
+  // useEffect(() => {}, [gameState, gameState?.isGameStarted])
 
   // console.log('rebder Main.tsx')
   return (
@@ -435,7 +435,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
       )}
 
       {gameState && (
-        <MainBoard
+        <MainGame
           isTwoPlayerInTheGame={isTwoPlayerInTheGame}
           gameState={gameState}
           loggedInUser={authContextData?.loggedInUser || null}

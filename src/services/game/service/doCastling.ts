@@ -43,8 +43,8 @@ export function doCastling(state: GameState, elToCell: Element) {
 
     if (state.isWhiteKingThreatened) return
 
-    copiedState.board[fromCoord.i][fromCoord.j] = ''
-    copiedState.board[toCoord.i][toCoord.j] = ''
+    copiedState.board[fromCoord.i][fromCoord.j] = state.pieces.EMPTY
+    copiedState.board[toCoord.i][toCoord.j] = state.pieces.EMPTY
 
     if (fromCoord.j === 0 && toCoord.j === 4) {
       const isThreatened = isCastleThreatened(state, fromCoord, toCoord)
@@ -115,8 +115,8 @@ export function doCastling(state: GameState, elToCell: Element) {
 
     if (state.isBlackKingThreatened) return
 
-    copiedState.board[fromCoord.i][fromCoord.j] = ''
-    copiedState.board[toCoord.i][toCoord.j] = ''
+    copiedState.board[fromCoord.i][fromCoord.j] = state.pieces.EMPTY
+    copiedState.board[toCoord.i][toCoord.j] = state.pieces.EMPTY
 
     if (fromCoord.j === 0 && toCoord.j === 4) {
       const isThreatened = isCastleThreatened(state, fromCoord, toCoord)

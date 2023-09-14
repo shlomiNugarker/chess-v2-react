@@ -34,7 +34,7 @@ export function getAllPossibleCoordsKnight(
       nextCoord.j >= 0 &&
       nextCoord.j < 8
     ) {
-      if (isEmptyCell(board, nextCoord)) res.push(nextCoord)
+      if (isEmptyCell(board, nextCoord, state.pieces)) res.push(nextCoord)
       else {
         const piece = board[nextCoord.i][nextCoord.j]
         if (!isColorPieceWorthCurrPlayerColor(state, piece)) res.push(nextCoord) //-> eatable  coord

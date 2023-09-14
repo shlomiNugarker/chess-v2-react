@@ -14,13 +14,13 @@ export function getAllPossibleCoordsPawn(
   let diff = isWhite ? -1 : 1
   let nextCoord = { i: pieceCoord.i + diff, j: pieceCoord.j }
 
-  if (isEmptyCell(board, nextCoord)) {
+  if (isEmptyCell(board, nextCoord, state.pieces)) {
     res.push(nextCoord)
 
     if ((pieceCoord.i === 1 && !isWhite) || (pieceCoord.i === 6 && isWhite)) {
       diff *= 2
       nextCoord = { i: pieceCoord.i + diff, j: pieceCoord.j }
-      if (isEmptyCell(board, nextCoord)) res.push(nextCoord)
+      if (isEmptyCell(board, nextCoord, state.pieces)) res.push(nextCoord)
     }
   }
 

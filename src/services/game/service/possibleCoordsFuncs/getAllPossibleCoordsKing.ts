@@ -34,7 +34,7 @@ export function getAllPossibleCoordsKing(
       nextCoord.j >= 0 &&
       nextCoord.j < 8
     ) {
-      if (isEmptyCell(board, nextCoord)) {
+      if (isEmptyCell(board, nextCoord, state.pieces)) {
         possibleCoords.push(nextCoord)
       } else {
         const piece = board[nextCoord.i][nextCoord.j]
@@ -53,7 +53,13 @@ export function getAllPossibleCoordsKing(
   if (isCastlingLegal[isBlackTurn ? 'blackKing' : 'whiteKing']) {
     for (const direction of [1, -1]) {
       const targetColumn = direction === 1 ? 7 : 0
-      if (isEmptyCell(board, { i: castlingCoord.i, j: targetColumn })) {
+      if (
+        isEmptyCell(
+          board,
+          { i: castlingCoord.i, j: targetColumn },
+          state.pieces
+        )
+      ) {
         const rookColumn = direction === 1 ? 7 : 0
         const coordForCastle = { i: castlingCoord.i, j: rookColumn }
 
