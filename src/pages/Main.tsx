@@ -30,6 +30,7 @@ import { copyToClipBoard } from '../services/game/controller/copyToClipBoard'
 import { markCells } from '../services/game/controller/markCells'
 import { setSelectedCellCoord } from '../services/game/controller/setSelectedCellCoord'
 import { onShareGameUrl } from '../services/game/controller/onShareGameUrl'
+import { gPieces } from '../services/game/service/gPieces'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -80,8 +81,9 @@ export const Main = ({ onLoginAsGuest }: props) => {
         blackPlayerID: gameState.players?.black,
         whitePlayerID: gameState.players?.white,
       })
-    )
+    ) {
       return
+    }
 
     if (ev.target instanceof Element && gameState) {
       const cellCoord = { i, j }
@@ -92,42 +94,37 @@ export const Main = ({ onLoginAsGuest }: props) => {
       const isSquareCastling = ev.target.classList.contains('castle')
       const target = ev.target
 
+      // HANDLE EATAABLE MOVE:
       if (isSquareEatable && gameState.selectedCellCoord) {
         console.log('handleEatableMove()')
         const { isMoveLegal, state } = isNextStepLegal(gameState, target)
-
-        if (
+        const isPlayerThreatened =
           (state.isBlackTurn && state.isBlackKingThreatened) ||
-          (!state.isBlackTurn && state.isWhiteKingThreatened) ||
-          !isMoveLegal
-        ) {
-          return
-        }
+          (!state.isBlackTurn && state.isWhiteKingThreatened)
 
+        if (isPlayerThreatened || !isMoveLegal) return
         const newState = movePiece(gameState, cellCoord)
 
-        if (!newState) return
-
-        if (isPawnStepsEnd(state, cellCoord)) {
+        if (isPawnStepsEnd(newState, cellCoord)) {
           setIsPromotionChoice(true)
-          newState && (await updateGameState(newState))
+          await updateGameState(newState)
           setCellCoordsToAddInsteadPawn(cellCoord)
-          return
+        } else {
+          newState.isBlackTurn = !newState.isBlackTurn
+          await updateGameState(newState)
+          cleanBoard()
         }
-        newState.isBlackTurn = !newState.isBlackTurn
-        await updateGameState(newState)
-        cleanBoard()
-      } else if (isSquareCastling && gameState.selectedCellCoord) {
+      }
+      // HANDLE CASTLING MOVE:
+      else if (isSquareCastling && gameState.selectedCellCoord) {
         console.log('handleCastlingMove()')
         const { isMoveLegal } = isNextStepLegal(gameState, target)
         if (!isMoveLegal) return
-
         const isCastleLegals = doCastling(gameState, target)
         if (isCastleLegals?.newState) {
           isCastleLegals.newState.isBlackTurn =
             !isCastleLegals.newState.isBlackTurn
         }
-
         if (
           isCastleLegals &&
           isCastleLegals.newState &&
@@ -137,38 +134,41 @@ export const Main = ({ onLoginAsGuest }: props) => {
         }
         if (isCastleLegals && !isCastleLegals.isCastleLegal) return
         cleanBoard()
-      } else if (
+      }
+      // HANDLE PIECE COLOR:
+      else if (
         piece &&
-        piece !== '' &&
+        piece !== gPieces.EMPTY &&
         !isColorPieceWorthCurrPlayerColor(gameState, piece)
       ) {
         return
-      } else if (isSquareSelected) {
-        // unselect:
+      }
+      // UNSELECT:
+      else if (isSquareSelected) {
         ev.target.classList.remove('selected')
         cleanBoard()
-      } else if (isSquareMarked && gameState.selectedCellCoord) {
+      }
+      // HANDLE STEP MOVE:
+      else if (isSquareMarked && gameState.selectedCellCoord) {
         console.log('handleStepMove()')
         const { isMoveLegal, state } = isNextStepLegal(gameState, target)
         if (!isMoveLegal) return
-
         const newState = movePiece(gameState, cellCoord)
-
-        if (newState && !newState?.isGameStarted && !newState?.isGameStarted)
+        if (newState && !newState?.isGameStarted && !newState?.isGameStarted) {
           newState.isGameStarted = true
-
-        if (!newState) return
+        }
         if (isPawnStepsEnd(state, cellCoord)) {
           setIsPromotionChoice(true)
           newState && (await updateGameState(newState))
           setCellCoordsToAddInsteadPawn(cellCoord)
-          return
+        } else {
+          newState.isBlackTurn = !newState.isBlackTurn
+          await updateGameState(newState)
+          cleanBoard()
         }
-        newState.isBlackTurn = !newState.isBlackTurn
-        await updateGameState(newState)
-
-        cleanBoard()
-      } else {
+      }
+      // HANDLE PIECE SELECTION:
+      else {
         cleanBoard()
         console.log('handlePieceSelection()')
         if (gameState.board[cellCoord.i][cellCoord.j]) {
@@ -242,9 +242,10 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
         if (gameState.chatId && chatToUpdate && userId) {
           if (!chatToUpdate.userId2) chatToUpdate.userId2 = userId
-          else if (!chatToUpdate.userId) chatToUpdate.userId = userId
-
-          saveChat(chatToUpdate)
+          else if (!chatToUpdate.userId) {
+            chatToUpdate.userId = userId
+          }
+          chatToUpdate && saveChat(chatToUpdate)
         }
         stateToUpdate.players.black = userId
       }
