@@ -28,6 +28,7 @@ import { movePiece } from '../services/game/service/movePiece'
 import { doCastling } from '../services/game/service/doCastling'
 import { isValidPlayerTurn } from '../services/game/controller/isValidPlayerTurn'
 import { copyToClipBoard } from '../services/game/controller/copyToClipBoard'
+import { markCells } from '../services/game/controller/markCells'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -177,30 +178,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
           const possibleCoords = getPossibleCoords(gameState, piece, cellCoord)
           if (possibleCoords) markCells(gameState, possibleCoords)
         }
-      }
-    }
-  }
-
-  function markCells(state: GameState, coords: { i: number; j: number }[]) {
-    console.log('markCells()')
-    for (let i = 0; i < coords.length; i++) {
-      const coord = coords[i]
-      const elCell = document.querySelector(`#cell-${coord.i}-${coord.j}`)
-      if (!elCell) return
-
-      const piece = state.board[coord.i][coord.j]
-
-      if (isColorPieceWorthCurrPlayerColor(state, piece)) {
-        elCell.classList.add('castle')
-      }
-      //
-      else if (state.board[coord.i][coord.j]) {
-        elCell.classList.add('eatable')
-      }
-      //
-      else {
-        elCell.innerHTML = '<span class="span"></span>'
-        elCell.classList.add('mark')
       }
     }
   }
