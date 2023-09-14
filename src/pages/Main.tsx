@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as _ from 'lodash'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { MainBoard } from '../cmps/MainBoard'
 import { ValidAuthModal } from '../cmps/ValidAuthModal'
@@ -12,17 +12,14 @@ import { GameDetails } from '../cmps/GameDetails'
 import { socketService } from '../services/socketService'
 import { isPlayerWin } from '../services/game/service/isPlayerWin'
 import { checkIfKingThreatened } from '../services/game/service/checkIfKingThreatened'
-import { onShareGameUrl } from '../services/game/controller/onShareGameUrl'
-import { copyToClipBoard } from '../services/game/controller/copyToClipBoard'
-import { onChoosePieceToAdd } from '../services/game/controller/onChoosePieceToAdd'
-import { updateGameState } from '../services/game/controller/updateGameState'
-import { joinPlayerToTheGame } from '../services/game/controller/joinPlayerToTheGame'
-import { getState } from '../services/game/controller/getState'
 import { User } from '../models/User'
 import { userService } from '../services/userServise'
-import { setSelectedCellCoord } from '../services/game/controller/setSelectedCellCoord'
-import { saveChat } from '../services/game/controller/saveChat'
-import { getChatById } from '../services/game/controller/getChatById'
+import { storageService } from '../services/storageService'
+import { gameStateService } from '../services/gameStateService'
+import { cleanBoard } from '../services/game/controller/cleanBoard'
+import { addPieceInsteadPawn } from '../services/game/service/addPieceInsteadPawn'
+import { chatService } from '../services/chatService'
+import { SetSelectedCellCoordType } from '../models/SetSelectedCellCoord'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -31,9 +28,11 @@ export const Main = ({ onLoginAsGuest }: props) => {
   const navigate = useNavigate()
   const { id } = useParams()
 
+  const authContextData = useAuthContext()
+
   const [gameState, setGameState] = useState<GameState | null>(null)
   const [chatState, setChatState] = useState<ChatState | null>(null)
-  const authContextData = useAuthContext()
+
   const [isTwoPlayerInTheGame, setIsTwoPlayerInTheGame] = useState(false)
   const [isWin, setIsWin] = useState(false)
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
@@ -52,8 +51,150 @@ export const Main = ({ onLoginAsGuest }: props) => {
     true || !!gameState?.isGameStarted
   )
 
+  // function paintKingCellToRed(kingPos: { i: number; j: number }) {
+  //   console.log('paintKingCellToRed()')
+
+  //   document
+  //     .querySelector(`#cell-${kingPos.i}-${kingPos.j}`)
+  //     ?.classList.add('red')
+  // }
+
+  function copyToClipBoard(
+    id: string,
+    baseUrl: string = 'https://chess-v2-backend-production.up.railway.app/#/'
+  ) {
+    console.log('copyToClipBoard')
+    navigator.clipboard.writeText(`${baseUrl}${id}`)
+  }
+
+  const getChatById = async (chatId: string) => {
+    console.log('getChatById()')
+    const chat = await chatService.getById(chatId)
+    setChatState(chat)
+    return chat
+  }
+
+  const updateGameState = async (newState: GameState) => {
+    console.log('updateGameState()')
+    if (!newState.isOnline) {
+      storageService.put('chess-game', newState)
+      setGameState(newState)
+    } else {
+      const savedState = await gameStateService.saveState(newState)
+      socketService.emit('state-updated', savedState)
+      setGameState((prev) => ({
+        ...prev,
+        ...savedState,
+      }))
+    }
+  }
+
+  const setSelectedCellCoord: SetSelectedCellCoordType = ({ cellCoord }) => {
+    console.log('setSelectedCellCoord()')
+    if (!gameState) return
+    const game = { ...gameState }
+    game.selectedCellCoord = cellCoord
+    setGameState(game)
+    // updateGameState(game as GameState, setGameState)
+  }
+
+  const saveChat = async (chatToUpdate: ChatState) => {
+    console.log('saveChat()')
+
+    const savedChat = await chatService.save(chatToUpdate)
+    if (savedChat?._id && savedChat?.userId && savedChat?.userId2)
+      socketService.emit('chat-updated', savedChat)
+    setChatState(savedChat)
+    return savedChat
+  }
+
+  const onShareGameUrl = async (loggedInUser: User, id: string) => {
+    const shareData = {
+      title: 'Chess game',
+      text: `${loggedInUser?.fullname} invited you to play chess !`,
+      url: `https://chess-v2-backend-production.up.railway.app/#/${id}`,
+    }
+    try {
+      console.log('onShareGameUrl()')
+
+      await navigator.share(shareData)
+    } catch (err) {
+      console.log(`Error: ${err}`)
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onChoosePieceToAdd = async ({ piece }: any) => {
+    console.log('onChoosePieceToAdd()')
+    if (!cellCoordsToAddInsteadPawn || !gameState) return
+    const { newState } = addPieceInsteadPawn(
+      gameState,
+      cellCoordsToAddInsteadPawn,
+      piece
+    )
+    newState.isBlackTurn = !newState.isBlackTurn
+    await updateGameState(newState)
+    cleanBoard()
+    setIsPromotionChoice(false)
+  }
+
+  const joinPlayerToTheGame = useCallback(() => {
+    console.log('joinPlayerToTheGame()')
+
+    if (gameState?.players?.white && gameState?.players?.black === '') {
+      const stateToUpdate = _.cloneDeep(gameState)
+      const chatToUpdate = _.cloneDeep(chatState)
+
+      if (stateToUpdate.players) {
+        const userId = authContextData?.loggedInUser?._id
+        if (gameState.players.white === userId) return
+        if (!userId) return
+
+        if (gameState.chatId && chatToUpdate && userId) {
+          if (!chatToUpdate.userId2) chatToUpdate.userId2 = userId
+          else if (!chatToUpdate.userId) chatToUpdate.userId = userId
+
+          saveChat(chatToUpdate)
+        }
+        stateToUpdate.players.black = userId
+      }
+      updateGameState(stateToUpdate)
+      return stateToUpdate
+    } else if (gameState?.players?.black && gameState?.players?.white === '') {
+      const stateToUpdate = _.cloneDeep(gameState)
+      if (stateToUpdate.players) {
+        const userId = authContextData?.loggedInUser?._id
+
+        if (gameState.players.black === userId) return
+        if (!userId) return
+
+        stateToUpdate.players.white = userId
+      }
+      updateGameState(stateToUpdate)
+      return stateToUpdate
+    }
+  }, [authContextData?.loggedInUser?._id, chatState, gameState])
+
   useEffect(() => {
-    if (id) getState(id, setGameState)
+    // eslint-disable-next-line no-extra-semi
+    ;(async () => {
+      if (id) {
+        console.log('getState')
+        const gameId = id
+        if (gameId && gameId.length > 10) {
+          const state = await gameStateService.getById(gameId)
+          setGameState(state)
+          return state
+        }
+
+        if (gameId && gameId.length < 10) {
+          const stateFromStorage = storageService.get('chess-game', gameId)
+          if (stateFromStorage) {
+            setGameState(stateFromStorage)
+          }
+        }
+      }
+    })()
   }, [id])
 
   const moveInStateHistory = (num: 1 | -1) => {
@@ -71,16 +212,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
   // Handle cases when user enter the game:
   useEffect(() => {
     if (!gameState?.players?.black || !gameState?.players?.white) {
-      const stateToUpdate = joinPlayerToTheGame({
-        gameState,
-        chatState,
-        loggedInUser: authContextData?.loggedInUser,
-        updateGameState,
-        setGameState,
-        saveChat,
-        setChatState,
-      })
-      if (stateToUpdate) updateGameState(stateToUpdate, setGameState)
+      const stateToUpdate = joinPlayerToTheGame()
+      if (stateToUpdate) updateGameState(stateToUpdate)
     }
     if (gameState?.players?.black && gameState?.players?.white) {
       setIsTwoPlayerInTheGame(true)
@@ -97,6 +230,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     authContextData?.loggedInUser?._id,
     isTwoPlayerInTheGame,
     chatState,
+    joinPlayerToTheGame,
   ])
 
   // handle sockets:

@@ -17,14 +17,7 @@ interface props {
   setGameState: React.Dispatch<React.SetStateAction<GameState | null>>
 }
 
-export const PromotionChoice = ({
-  onChoosePieceToAdd,
-  gameState,
-  cellCoordsToAddInsteadPawn,
-  updateGameState,
-  setIsPromotionChoice,
-  setGameState,
-}: props) => {
+export const PromotionChoice = ({ onChoosePieceToAdd, gameState }: props) => {
   const blackPieces: string[] = [
     gameState?.pieces.QUEEN_BLACK,
     gameState?.pieces.KNIGHT_BLACK,
@@ -51,11 +44,6 @@ export const PromotionChoice = ({
             onClick={() =>
               onChoosePieceToAdd({
                 piece,
-                cellCoordsToAddInsteadPawn,
-                updateGameState,
-                gameState,
-                setIsPromotionChoice,
-                setGameState,
               })
             }
           >
