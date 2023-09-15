@@ -17,7 +17,7 @@ export const isValidPlayerTurn = ({
   blackPlayerID,
   whitePlayerID,
 }: Props) => {
-  console.log('isValidPlayerTurn()')
+  // console.log('isValidPlayerTurn()')
   if (!isOnlineGame) return true
   if (isOnlineGame && isTwoPlayerInTheGame) {
     if (isBlackTurn && loggedInUser?._id === blackPlayerID) {

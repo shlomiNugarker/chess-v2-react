@@ -7,8 +7,13 @@ export const userService = {
   setLocalUser,
 }
 
+const users: { [id: string]: User } = {}
+
 async function getUser(userId: string): Promise<User> {
+  if (users[userId]) return users[userId]
+
   const user = await httpService.get('user/' + userId)
+  users[userId] = user
   return user
 }
 

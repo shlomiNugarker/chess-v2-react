@@ -6,7 +6,7 @@ import { User } from '../models/User'
 import { GameState } from '../models/GameState'
 
 interface Props {
-  gameState: GameState
+  gameState: GameState | null
   loggedInUser: User | null
   chatState: ChatState | null
   saveChat: (chatToUpdate: ChatState) => Promise<ChatState>
@@ -66,7 +66,7 @@ export const Chat = ({
   }, [chatState, gameState, gameState?.players?.black, saveChat, setChatState])
 
   useEffect(() => {
-    if (gameState.chatId) {
+    if (gameState?.chatId) {
       getChatById(gameState.chatId, setChatState)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

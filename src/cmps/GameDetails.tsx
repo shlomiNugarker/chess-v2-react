@@ -6,7 +6,7 @@ import { AiFillCaretLeft, AiFillCaretRight } from 'react-icons/ai'
 import { utilService } from '../services/utilService'
 
 interface Props {
-  gameState: GameState
+  gameState: GameState | null
 
   loggedInUser: User | null
   moveInStateHistory: (num: 1 | -1) => void

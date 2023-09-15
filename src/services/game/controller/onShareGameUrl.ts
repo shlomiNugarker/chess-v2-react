@@ -7,7 +7,7 @@ export const onShareGameUrl = async (loggedInUser: User, gameId: string) => {
     url: `https://chess-v2-backend-production.up.railway.app/#/${gameId}`,
   }
   try {
-    console.log('onShareGameUrl()')
+    // console.log('onShareGameUrl()')
     await navigator.share(shareData)
   } catch (err) {
     console.log(`Error: ${err}`)

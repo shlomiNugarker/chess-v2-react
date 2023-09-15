@@ -13,6 +13,11 @@
         font-size: $td-font-size;
         transition: all 0.1s ease-in-out;
 
+        img {
+          max-height: 95%;
+          max-width: 95%;
+        }
+
         &.white {
           background-color: #f0d9b5;
         }

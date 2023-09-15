@@ -1,3 +1,5 @@
+// import { PieceImage } from './PieceImage'
+
 interface Props {
   board: string[][]
   handleBoardClick: (
@@ -35,6 +37,7 @@ export const ChessBoard = ({ board, handleBoardClick }: Props) => {
                 }}
               >
                 {piece}
+                {/* {<PieceImage piece={piece} />} */}
               </td>
             ))}
           </tr>

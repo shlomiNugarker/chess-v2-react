@@ -57,9 +57,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
     j: number
   } | null>(null)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [hasGameStarted, setHasGameStarted] = useState(
-    true || !!gameState?.isGameStarted
+    !!gameState?.isGameStarted
   )
 
   const handleBoardClick = async (
@@ -70,7 +69,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
     j: number
   ) => {
     if (!gameState) return
-    console.log('cellClicked()')
+    // console.log('handleBoardClick()')
+
     if (
       gameState &&
       !isValidPlayerTurn({
@@ -96,13 +96,14 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
       // HANDLE EATABLE MOVE:
       if (isSquareEatable && gameState.selectedCellCoord) {
-        console.log('handleEatableMove()')
+        // console.log('handleEatableMove()')
         const { isMoveLegal, state } = isNextStepLegal(gameState, target)
         const isPlayerThreatened =
           (state.isBlackTurn && state.isBlackKingThreatened) ||
           (!state.isBlackTurn && state.isWhiteKingThreatened)
 
         if (isPlayerThreatened || !isMoveLegal) return
+
         const newState = movePiece(gameState, cellCoord)
 
         if (isPawnStepsEnd(newState, cellCoord)) {
@@ -117,7 +118,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
       }
       // HANDLE CASTLING MOVE:
       else if (isSquareCastling && gameState.selectedCellCoord) {
-        console.log('handleCastlingMove()')
+        // console.log('handleCastlingMove()')
         const { isMoveLegal } = isNextStepLegal(gameState, target)
         if (!isMoveLegal) return
         const isCastleLegals = doCastling(gameState, target)
@@ -150,12 +151,13 @@ export const Main = ({ onLoginAsGuest }: props) => {
       }
       // HANDLE STEP MOVE:
       else if (isSquareMarked && gameState.selectedCellCoord) {
-        console.log('handleStepMove()')
+        // console.log('handleStepMove()')
         const { isMoveLegal, state } = isNextStepLegal(gameState, target)
         if (!isMoveLegal) return
         const newState = movePiece(gameState, cellCoord)
-        if (newState && !newState?.isGameStarted && !newState?.isGameStarted) {
+        if (newState && !newState.isGameStarted) {
           newState.isGameStarted = true
+          setHasGameStarted(true)
         }
         if (isPawnStepsEnd(state, cellCoord)) {
           setIsPromotionChoice(true)
@@ -170,7 +172,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
       // HANDLE PIECE SELECTION:
       else {
         cleanBoard()
-        console.log('handlePieceSelection()')
+        // console.log('handlePieceSelection()')
         if (gameState.board[cellCoord.i][cellCoord.j]) {
           target.classList.add('selected')
           const newState = setSelectedCellCoord(cellCoord, gameState)
@@ -183,14 +185,14 @@ export const Main = ({ onLoginAsGuest }: props) => {
   }
 
   const getChatById = async (chatId: string) => {
-    console.log('getChatById()')
+    // console.log('getChatById()')
     const chat = await chatService.getById(chatId)
     setChatState(chat)
     return chat
   }
 
   const updateGameState = async (newState: GameState) => {
-    console.log('updateGameState()')
+    // console.log('updateGameState()')
     if (!newState.isOnline) {
       storageService.put('chess-game', newState)
       setGameState(newState)
@@ -205,7 +207,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
   }
 
   const saveChat = async (chatToUpdate: ChatState) => {
-    console.log('saveChat()')
+    // console.log('saveChat()')
     const savedChat = await chatService.save(chatToUpdate)
     if (savedChat?._id && savedChat?.userId && savedChat?.userId2)
       socketService.emit('chat-updated', savedChat)
@@ -214,8 +216,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onChoosePieceToAdd = async ({ piece }: any) => {
-    console.log('onChoosePieceToAdd()')
+  const onChoosePieceToAdd = async ({ piece }: { piece: string }) => {
+    // console.log('onChoosePieceToAdd()')
     if (!cellCoordsToAddInsteadPawn || !gameState) return
     const { newState } = addPieceInsteadPawn(
       gameState,
@@ -229,7 +231,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
   }
 
   const joinPlayerToTheGame = useCallback(() => {
-    console.log('joinPlayerToTheGame()')
+    // console.log('joinPlayerToTheGame()')
 
     if (gameState?.players?.white && gameState?.players?.black === '') {
       const stateToUpdate = _.cloneDeep(gameState)
@@ -270,7 +272,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
     // eslint-disable-next-line no-extra-semi
     ;(async () => {
       if (id) {
-        console.log('getState')
+        // console.log('getState')
         const gameId = id
         if (gameId && gameId.length > 10) {
           const state = await gameStateService.getById(gameId)
@@ -434,45 +436,39 @@ export const Main = ({ onLoginAsGuest }: props) => {
         </div>
       )}
 
-      {gameState && (
-        <MainGame
-          isTwoPlayerInTheGame={isTwoPlayerInTheGame}
-          gameState={gameState}
-          loggedInUser={authContextData?.loggedInUser || null}
-          updateGameState={updateGameState}
-          setGameState={setGameState}
-          setChatState={setChatState}
-          isWin={isWin}
-          isPromotionChoice={isPromotionChoice}
-          setIsPromotionChoice={setIsPromotionChoice}
-          onChoosePieceToAdd={onChoosePieceToAdd}
-          cellCoordsToAddInsteadPawn={cellCoordsToAddInsteadPawn}
-          handleBoardClick={handleBoardClick}
-        />
-      )}
+      <MainGame
+        isTwoPlayerInTheGame={isTwoPlayerInTheGame}
+        gameState={gameState}
+        loggedInUser={authContextData?.loggedInUser || null}
+        updateGameState={updateGameState}
+        setGameState={setGameState}
+        setChatState={setChatState}
+        isWin={isWin}
+        isPromotionChoice={isPromotionChoice}
+        setIsPromotionChoice={setIsPromotionChoice}
+        onChoosePieceToAdd={onChoosePieceToAdd}
+        cellCoordsToAddInsteadPawn={cellCoordsToAddInsteadPawn}
+        handleBoardClick={handleBoardClick}
+      />
 
-      {gameState && (
-        <GameDetails
-          gameState={gameState}
-          loggedInUser={authContextData?.loggedInUser || null}
-          moveInStateHistory={moveInStateHistory}
-          whitePlayer={whitePlayer}
-          blackPlayer={blackPlayer}
-          isWhitePlayerConnected={isWhitePlayerConnected}
-          isBlackPlayerConnected={isBlackPlayerConnected}
-        />
-      )}
+      <GameDetails
+        gameState={gameState}
+        loggedInUser={authContextData?.loggedInUser || null}
+        moveInStateHistory={moveInStateHistory}
+        whitePlayer={whitePlayer}
+        blackPlayer={blackPlayer}
+        isWhitePlayerConnected={isWhitePlayerConnected}
+        isBlackPlayerConnected={isBlackPlayerConnected}
+      />
 
-      {gameState && (
-        <Chat
-          loggedInUser={authContextData?.loggedInUser || null}
-          chatState={chatState}
-          saveChat={saveChat}
-          getChatById={getChatById}
-          gameState={gameState}
-          setChatState={setChatState}
-        />
-      )}
+      <Chat
+        loggedInUser={authContextData?.loggedInUser || null}
+        chatState={chatState}
+        saveChat={saveChat}
+        getChatById={getChatById}
+        gameState={gameState}
+        setChatState={setChatState}
+      />
 
       {!gameState && (
         <div className="msg">

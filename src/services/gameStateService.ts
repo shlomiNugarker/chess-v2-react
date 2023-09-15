@@ -18,7 +18,7 @@ async function saveState(state: GameState) {
   }
   if (!state._id) {
     try {
-      const chatId = await chatService.createChat() // create new chat for tha game
+      const chatId = await chatService.createChat()
 
       state.chatId = chatId
       const newState = await httpService.post('game', state)
