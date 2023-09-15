@@ -1,8 +1,7 @@
 import { GameState } from '../models/GameState'
-import { OnChoosePieceToAdd } from '../models/OnChoosePieceToAdd'
 
 interface props {
-  onChoosePieceToAdd: OnChoosePieceToAdd
+  onChoosePieceToAdd: ({ piece }: { piece: string }) => Promise<void>
   updateGameState: (newState: GameState) => Promise<void>
   gameState: GameState
   cellCoordsToAddInsteadPawn: {
