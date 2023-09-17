@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface GameState {
   isOnline: boolean
+  isPlayWithComputer: boolean
   isGameStarted: boolean
   players: {
     black: string
