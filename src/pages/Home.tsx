@@ -10,9 +10,16 @@ export const Home = ({ onLoginAsGuest }: props) => {
   const navigate = useNavigate()
   const authContextData = useAuthContext()
 
-  const onStartNewGame = async (isOnline: boolean) => {
+  const onStartNewGame = async (
+    isOnline: boolean,
+    isPlayWithComputer: boolean = false
+  ) => {
     const userId = authContextData?.loggedInUser?._id || 'Guest'
-    const newGame = gameStateService.getNewGame(userId, isOnline)
+    const newGame = gameStateService.getNewGame(
+      userId,
+      isOnline,
+      isPlayWithComputer
+    )
     const stateId = await gameStateService.setNewState(newGame)
 
     if (stateId) navigate(`/${stateId}`)
@@ -27,6 +34,12 @@ export const Home = ({ onLoginAsGuest }: props) => {
         </button>
         <button className="blue-btn" onClick={() => onStartNewGame(false)}>
           Play with a friend offline
+        </button>
+        <button
+          className="blue-btn"
+          onClick={() => onStartNewGame(false, true)}
+        >
+          Play with the computer
         </button>
       </div>
       {!authContextData?.loggedInUser && (
