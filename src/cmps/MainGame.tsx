@@ -4,7 +4,6 @@ import { User } from '../models/User'
 import { ChatState } from '../models/ChatState'
 import { useNavigate } from 'react-router-dom'
 import { ChessBoard } from './ChessBoard'
-import { OnChoosePieceToAdd } from '../models/OnChoosePieceToAdd'
 
 interface Props {
   isTwoPlayerInTheGame: boolean
@@ -22,7 +21,7 @@ interface Props {
     j: number
   } | null
   //
-  onChoosePieceToAdd: OnChoosePieceToAdd
+  onChoosePieceToAdd: ({ piece }: { piece: string }) => Promise<void>
   handleBoardClick: (
     ev:
       | React.DragEvent<HTMLTableDataCellElement>
