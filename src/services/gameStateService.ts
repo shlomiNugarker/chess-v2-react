@@ -47,10 +47,15 @@ async function setNewState(state: GameState) {
   }
 }
 
-function getNewGame(firstPlayerId: string, isOnline: boolean): GameState {
+function getNewGame(
+  firstPlayerId: string,
+  isOnline: boolean,
+  isPlayWithComputer = false
+): GameState {
   const board = buildBoard(gPieces)
   return {
     isOnline,
+    isPlayWithComputer, // for now, computer will be always black
     isGameStarted: false,
     players: { white: firstPlayerId, black: '' },
     stateHistory: [],
