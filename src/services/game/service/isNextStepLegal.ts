@@ -2,16 +2,17 @@ import * as _ from 'lodash'
 import { GameState } from '../../../models/GameState'
 
 import { checkIfKingThreatened } from './checkIfKingThreatened'
-import { getCellCoord } from './getCellCoord'
 
 export function isNextStepLegal(
   state: GameState,
-  elToCell: HTMLElement | Element
+  toCoord: {
+    i: number
+    j: number
+  }
 ) {
   // console.log('isNextStepLegal()')
 
   const fromCoord = state.selectedCellCoord
-  const toCoord = getCellCoord(elToCell.id)
 
   if (!fromCoord) return { isMoveLegal: false, state }
 

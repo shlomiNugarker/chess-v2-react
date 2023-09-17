@@ -26,9 +26,8 @@ export function isPlayerWin(state: GameState) {
           const coord = possibleCoords[k]
           const copyState = _.cloneDeep(state)
           copyState.selectedCellCoord = { i, j }
-          const element = {} as Element
-          element.id = `cell-${coord.i}-${coord.j}`
-          const { isMoveLegal } = isNextStepLegal(copyState, element)
+
+          const { isMoveLegal } = isNextStepLegal(copyState, coord)
 
           if (isMoveLegal) {
             isWin = false

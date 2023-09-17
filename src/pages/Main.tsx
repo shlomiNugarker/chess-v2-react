@@ -31,6 +31,7 @@ import { markCells } from '../services/game/controller/markCells'
 import { setSelectedCellCoord } from '../services/game/controller/setSelectedCellCoord'
 import { onShareGameUrl } from '../services/game/controller/onShareGameUrl'
 import { gPieces } from '../services/game/service/gPieces'
+import { getCellCoord } from '../services/game/service/getCellCoord'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -42,6 +43,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
   const authContextData = useAuthContext()
 
   const [gameState, setGameState] = useState<GameState | null>(null)
+
   const [chatState, setChatState] = useState<ChatState | null>(null)
 
   const [isTwoPlayerInTheGame, setIsTwoPlayerInTheGame] = useState(false)
@@ -97,7 +99,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
       // HANDLE EATABLE MOVE:
       if (isSquareEatable && gameState.selectedCellCoord) {
         // console.log('handleEatableMove()')
-        const { isMoveLegal, state } = isNextStepLegal(gameState, target)
+        const toCoord = getCellCoord(target.id)
+        const { isMoveLegal, state } = isNextStepLegal(gameState, toCoord)
         const isPlayerThreatened =
           (state.isBlackTurn && state.isBlackKingThreatened) ||
           (!state.isBlackTurn && state.isWhiteKingThreatened)
@@ -119,7 +122,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
       // HANDLE CASTLING MOVE:
       else if (isSquareCastling && gameState.selectedCellCoord) {
         // console.log('handleCastlingMove()')
-        const { isMoveLegal } = isNextStepLegal(gameState, target)
+        const toCoord = getCellCoord(target.id)
+        const { isMoveLegal } = isNextStepLegal(gameState, toCoord)
         if (!isMoveLegal) return
         const isCastleLegals = doCastling(gameState, target)
         if (isCastleLegals?.newState) {
@@ -152,7 +156,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
       // HANDLE STEP MOVE:
       else if (isSquareMarked && gameState.selectedCellCoord) {
         // console.log('handleStepMove()')
-        const { isMoveLegal, state } = isNextStepLegal(gameState, target)
+        const toCoord = getCellCoord(target.id)
+        const { isMoveLegal, state } = isNextStepLegal(gameState, toCoord)
         if (!isMoveLegal) return
         const newState = movePiece(gameState, cellCoord)
         if (newState && !newState.isGameStarted) {
@@ -347,11 +352,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
       socketService.off('update-state')
       socketService.off('update-chat')
     }
-  }, [
-    authContextData,
-    authContextData?.loggedInUser,
-    authContextData?.setConnectedUsers,
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authContextData?.loggedInUser, authContextData?.setConnectedUsers])
 
   // Handle case if both kings are threatened one after one
   useEffect(() => {
