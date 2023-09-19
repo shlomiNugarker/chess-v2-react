@@ -65,9 +65,8 @@ describe('isNextStepLegal', () => {
         ],
       ],
     }
-    const elToCell = document.createElement('div')
-    elToCell.id = 'cell-0-3'
-    const { isMoveLegal } = isNextStepLegal(state as GameState, elToCell)
+
+    const { isMoveLegal } = isNextStepLegal(state as GameState, { i: 0, j: 3 })
 
     expect(isMoveLegal).toBe(false)
   })
@@ -133,10 +132,8 @@ describe('isNextStepLegal', () => {
         ],
       ],
     }
-    const elToCell = document.createElement('div')
-    elToCell.id = 'cell-0-1'
 
-    const { isMoveLegal } = isNextStepLegal(state as GameState, elToCell)
+    const { isMoveLegal } = isNextStepLegal(state as GameState, { i: 0, j: 1 })
 
     expect(isMoveLegal).toBe(true)
   })
