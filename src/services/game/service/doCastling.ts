@@ -1,13 +1,11 @@
-import * as _ from 'lodash'
 import { GameState } from '../../../models/GameState'
-import { getCellCoord } from './getCellCoord'
-import { isCastleThreatened } from './isCastleThreatened'
+import { chess } from '.'
 
 export function doCastling(state: GameState, elToCell: Element) {
   // console.log('doCastling()')
 
   const fromCoord = state.selectedCellCoord
-  const toCoord = getCellCoord(elToCell.id)
+  const toCoord = chess.getCellCoord(elToCell.id)
   if (!fromCoord) return
 
   let kingPiece: string = ''
@@ -16,7 +14,7 @@ export function doCastling(state: GameState, elToCell: Element) {
   let rookCoords: { i: number; j: number }
   let isCastleLegal: boolean = true
 
-  const copiedState = _.cloneDeep(state)
+  const copiedState = chess.cloneDeep(state)
 
   // WHITE KING:
   if (
@@ -47,7 +45,7 @@ export function doCastling(state: GameState, elToCell: Element) {
     copiedState.board[toCoord.i][toCoord.j] = state.pieces.EMPTY
 
     if (fromCoord.j === 0 && toCoord.j === 4) {
-      const isThreatened = isCastleThreatened(state, fromCoord, toCoord)
+      const isThreatened = chess.isCastleThreatened(state, fromCoord, toCoord)
       if (!isThreatened) {
         isCastleLegal = false
         return { newState: copiedState, isCastleLegal }
@@ -57,7 +55,7 @@ export function doCastling(state: GameState, elToCell: Element) {
       newKingCoords = { i: 7, j: 2 }
       copiedState.kingPos.white = newKingCoords
     } else if (fromCoord.j === 7 && toCoord.j === 4) {
-      const isThreatened = isCastleThreatened(state, fromCoord, toCoord)
+      const isThreatened = chess.isCastleThreatened(state, fromCoord, toCoord)
       if (!isThreatened) {
         isCastleLegal = false
         return { newState: copiedState, isCastleLegal }
@@ -67,7 +65,7 @@ export function doCastling(state: GameState, elToCell: Element) {
       newKingCoords = { i: 7, j: 6 }
       copiedState.kingPos.white = newKingCoords
     } else if (fromCoord.j === 4 && toCoord.j === 7) {
-      const isThreatened = isCastleThreatened(state, fromCoord, toCoord)
+      const isThreatened = chess.isCastleThreatened(state, fromCoord, toCoord)
       if (!isThreatened) {
         isCastleLegal = false
         return { newState: copiedState, isCastleLegal }
@@ -77,7 +75,7 @@ export function doCastling(state: GameState, elToCell: Element) {
       newKingCoords = { i: 7, j: 6 }
       copiedState.kingPos.white = newKingCoords
     } else if (fromCoord.j === 4 && toCoord.j === 0) {
-      const isThreatened = isCastleThreatened(state, fromCoord, toCoord)
+      const isThreatened = chess.isCastleThreatened(state, fromCoord, toCoord)
       if (!isThreatened) {
         isCastleLegal = false
         return { newState: copiedState, isCastleLegal }
@@ -119,7 +117,7 @@ export function doCastling(state: GameState, elToCell: Element) {
     copiedState.board[toCoord.i][toCoord.j] = state.pieces.EMPTY
 
     if (fromCoord.j === 0 && toCoord.j === 4) {
-      const isThreatened = isCastleThreatened(state, fromCoord, toCoord)
+      const isThreatened = chess.isCastleThreatened(state, fromCoord, toCoord)
       if (!isThreatened) {
         isCastleLegal = false
         return { newState: copiedState, isCastleLegal }
@@ -129,7 +127,7 @@ export function doCastling(state: GameState, elToCell: Element) {
       newKingCoords = { i: 0, j: 2 }
       copiedState.kingPos.black = newKingCoords
     } else if (fromCoord.j === 7 && toCoord.j === 4) {
-      const isThreatened = isCastleThreatened(state, fromCoord, toCoord)
+      const isThreatened = chess.isCastleThreatened(state, fromCoord, toCoord)
       if (!isThreatened) {
         isCastleLegal = false
         return { newState: copiedState, isCastleLegal }
@@ -139,7 +137,7 @@ export function doCastling(state: GameState, elToCell: Element) {
       newKingCoords = { i: 0, j: 6 }
       copiedState.kingPos.black = newKingCoords
     } else if (fromCoord.j === 4 && toCoord.j === 7) {
-      const isThreatened = isCastleThreatened(state, fromCoord, toCoord)
+      const isThreatened = chess.isCastleThreatened(state, fromCoord, toCoord)
       if (!isThreatened) {
         isCastleLegal = false
         return { newState: copiedState, isCastleLegal }
@@ -149,7 +147,7 @@ export function doCastling(state: GameState, elToCell: Element) {
       newKingCoords = { i: 0, j: 6 }
       copiedState.kingPos.black = newKingCoords
     } else if (fromCoord.j === 4 && toCoord.j === 0) {
-      const isThreatened = isCastleThreatened(state, fromCoord, toCoord)
+      const isThreatened = chess.isCastleThreatened(state, fromCoord, toCoord)
       if (!isThreatened) {
         isCastleLegal = false
         return { newState: copiedState, isCastleLegal }

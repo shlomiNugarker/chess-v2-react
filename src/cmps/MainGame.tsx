@@ -1,9 +1,9 @@
-import { PromotionChoice } from './PromotionChoice'
-import { GameState } from '../models/GameState'
-import { User } from '../models/User'
-import { ChatState } from '../models/ChatState'
 import { useNavigate } from 'react-router-dom'
 import { ChessBoard } from './ChessBoard'
+import { PromotionChoice } from './PromotionChoice'
+import { User } from '../models/User'
+import { ChatState } from '../models/ChatState'
+import { GameState } from '../models/GameState'
 
 interface Props {
   isTwoPlayerInTheGame: boolean

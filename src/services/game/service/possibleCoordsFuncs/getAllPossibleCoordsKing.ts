@@ -1,6 +1,5 @@
 import { GameState } from '../../../../models/GameState'
-import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
-import { isEmptyCell } from '../isEmptyCell'
+import { chess } from '..'
 
 export function getAllPossibleCoordsKing(
   state: GameState,
@@ -34,11 +33,11 @@ export function getAllPossibleCoordsKing(
       nextCoord.j >= 0 &&
       nextCoord.j < 8
     ) {
-      if (isEmptyCell(board, nextCoord, state.pieces)) {
+      if (chess.isEmptyCell(board, nextCoord, state.pieces)) {
         possibleCoords.push(nextCoord)
       } else {
         const piece = board[nextCoord.i][nextCoord.j]
-        if (!isColorPieceWorthCurrPlayerColor(state, piece)) {
+        if (!chess.isColorPieceWorthCurrPlayerColor(state, piece)) {
           possibleCoords.push(nextCoord) // push eatable coord
         }
       }
@@ -54,7 +53,7 @@ export function getAllPossibleCoordsKing(
     for (const direction of [1, -1]) {
       const targetColumn = direction === 1 ? 7 : 0
       if (
-        isEmptyCell(
+        chess.isEmptyCell(
           board,
           { i: castlingCoord.i, j: targetColumn },
           state.pieces
@@ -64,7 +63,7 @@ export function getAllPossibleCoordsKing(
         const coordForCastle = { i: castlingCoord.i, j: rookColumn }
 
         if (
-          isColorPieceWorthCurrPlayerColor(
+          chess.isColorPieceWorthCurrPlayerColor(
             state,
             board[coordForCastle.i][coordForCastle.j]
           )

@@ -1,10 +1,5 @@
 import { GameState } from '../../../models/GameState'
-import { getAllPossibleCoordsBishop } from './possibleCoordsFuncs/getAllPossibleCoordsBishop'
-import { getAllPossibleCoordsKing } from './possibleCoordsFuncs/getAllPossibleCoordsKing'
-import { getAllPossibleCoordsKnight } from './possibleCoordsFuncs/getAllPossibleCoordsKnight'
-import { getAllPossibleCoordsPawn } from './possibleCoordsFuncs/getAllPossibleCoordsPawn'
-import { getAllPossibleCoordsQueen } from './possibleCoordsFuncs/getAllPossibleCoordsQueen'
-import { getAllPossibleCoordsRook } from './possibleCoordsFuncs/getAllPossibleCoordsRook'
+import { chess } from '.'
 
 export function getPossibleCoords(
   state: GameState,
@@ -21,7 +16,7 @@ export function getPossibleCoords(
   switch (piece) {
     case state.pieces.PAWN_BLACK:
     case state.pieces.PAWN_WHITE:
-      possibleCoords = getAllPossibleCoordsPawn(
+      possibleCoords = chess.getAllPossibleCoordsPawn(
         state,
         cellCoord,
         piece === state.pieces.PAWN_WHITE
@@ -29,23 +24,23 @@ export function getPossibleCoords(
       break
     case state.pieces.BISHOP_BLACK:
     case state.pieces.BISHOP_WHITE:
-      possibleCoords = getAllPossibleCoordsBishop(state, cellCoord)
+      possibleCoords = chess.getAllPossibleCoordsBishop(state, cellCoord)
       break
     case state.pieces.KING_BLACK:
     case state.pieces.KING_WHITE:
-      possibleCoords = getAllPossibleCoordsKing(state, cellCoord)
+      possibleCoords = chess.getAllPossibleCoordsKing(state, cellCoord)
       break
     case state.pieces.KNIGHT_BLACK:
     case state.pieces.KNIGHT_WHITE:
-      possibleCoords = getAllPossibleCoordsKnight(state, cellCoord)
+      possibleCoords = chess.getAllPossibleCoordsKnight(state, cellCoord)
       break
     case state.pieces.QUEEN_BLACK:
     case state.pieces.QUEEN_WHITE:
-      possibleCoords = getAllPossibleCoordsQueen(state, cellCoord)
+      possibleCoords = chess.getAllPossibleCoordsQueen(state, cellCoord)
       break
     case state.pieces.ROOK_BLACK:
     case state.pieces.ROOK_WHITE:
-      possibleCoords = getAllPossibleCoordsRook(state, cellCoord)
+      possibleCoords = chess.getAllPossibleCoordsRook(state, cellCoord)
       break
   }
   return possibleCoords

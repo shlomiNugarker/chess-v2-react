@@ -1,10 +1,9 @@
-import { getAllPossibleCoordsRook } from '../../service/possibleCoordsFuncs/getAllPossibleCoordsRook'
-import { gPieces } from '../../service/gPieces'
 import { GameState } from '../../../../models/GameState'
+import { chess } from '../../service'
 
 describe('getAllPossibleCoordsRook', () => {
   test('returns possible coordinates for a rook with obstructions', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
 
     const state = {
       pieces,
@@ -59,7 +58,10 @@ describe('getAllPossibleCoordsRook', () => {
     }
 
     const pieceCoord = { i: 0, j: 0 }
-    const result = getAllPossibleCoordsRook(state as GameState, pieceCoord)
+    const result = chess.getAllPossibleCoordsRook(
+      state as GameState,
+      pieceCoord
+    )
     const expectedCoords: {
       i: number
       j: number
@@ -69,7 +71,7 @@ describe('getAllPossibleCoordsRook', () => {
   })
 
   test('returns possible coordinates for a rook with no obstructions', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
 
     const state = {
       pieces,
@@ -124,7 +126,10 @@ describe('getAllPossibleCoordsRook', () => {
     }
 
     const pieceCoord = { i: 4, j: 2 }
-    const result = getAllPossibleCoordsRook(state as GameState, pieceCoord)
+    const result = chess.getAllPossibleCoordsRook(
+      state as GameState,
+      pieceCoord
+    )
     const expectedCoords: {
       i: number
       j: number

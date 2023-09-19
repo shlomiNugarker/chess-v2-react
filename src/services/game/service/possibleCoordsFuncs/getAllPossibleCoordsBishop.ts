@@ -1,6 +1,5 @@
 import { GameState } from '../../../../models/GameState'
-import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
-import { isEmptyCell } from '../isEmptyCell'
+import { chess } from '..'
 
 export function getAllPossibleCoordsBishop(
   state: GameState,
@@ -37,11 +36,11 @@ export function getAllPossibleCoordsBishop(
         break
       }
 
-      if (isEmptyCell(board, nextCoord, state.pieces)) {
+      if (chess.isEmptyCell(board, nextCoord, state.pieces)) {
         possibleCoords.push(nextCoord)
       } else {
         const piece = board[nextCoord.i][nextCoord.j]
-        if (!isColorPieceWorthCurrPlayerColor(state, piece)) {
+        if (!chess.isColorPieceWorthCurrPlayerColor(state, piece)) {
           possibleCoords.push(nextCoord) // last coord -> eatable
         }
         break

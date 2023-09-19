@@ -1,10 +1,9 @@
-import { isNextStepLegal } from '../service/isNextStepLegal'
-import { gPieces } from '../service/gPieces'
 import { GameState } from '../../../models/GameState'
+import { chess } from '../service'
 
 describe('isNextStepLegal', () => {
   test('returns false if the next step is not legal', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       pieces,
       isBlackTurn: true,
@@ -66,12 +65,15 @@ describe('isNextStepLegal', () => {
       ],
     }
 
-    const { isMoveLegal } = isNextStepLegal(state as GameState, { i: 0, j: 3 })
+    const { isMoveLegal } = chess.isNextStepLegal(state as GameState, {
+      i: 0,
+      j: 3,
+    })
 
     expect(isMoveLegal).toBe(false)
   })
   test('returns true if the next step is legal', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       pieces,
       isBlackTurn: true,
@@ -133,7 +135,10 @@ describe('isNextStepLegal', () => {
       ],
     }
 
-    const { isMoveLegal } = isNextStepLegal(state as GameState, { i: 0, j: 1 })
+    const { isMoveLegal } = chess.isNextStepLegal(state as GameState, {
+      i: 0,
+      j: 1,
+    })
 
     expect(isMoveLegal).toBe(true)
   })

@@ -1,10 +1,9 @@
-import { checkIfKingThreatened } from '../service/checkIfKingThreatened'
-import { gPieces } from '../service/gPieces'
 import { GameState } from '../../../models/GameState'
+import { chess } from '../service'
 
 describe('checkIfKingThreatened', () => {
   test('detects a threat from a queen', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
 
     const state = {
       board: [
@@ -69,12 +68,12 @@ describe('checkIfKingThreatened', () => {
       },
     }
 
-    const result = checkIfKingThreatened(state as GameState)
+    const result = chess.checkIfKingThreatened(state as GameState)
     expect(result.isThreatened).toBe(true)
   })
 
   test('does not detect a threat when the king is not threatened', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
 
     const state = {
       board: [
@@ -139,7 +138,7 @@ describe('checkIfKingThreatened', () => {
       },
     }
 
-    const result = checkIfKingThreatened(state as GameState)
+    const result = chess.checkIfKingThreatened(state as GameState)
     expect(result.isThreatened).toBe(false)
   })
 })

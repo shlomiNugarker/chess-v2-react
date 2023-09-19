@@ -1,7 +1,5 @@
 import { GameState } from '../../../../models/GameState'
-import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
-import { isEmptyCell } from '../isEmptyCell'
-import { isOptionToCastling } from '../isOptionToCastling'
+import { chess } from '..'
 
 export function getAllPossibleCoordsRook(
   state: GameState,
@@ -37,16 +35,16 @@ export function getAllPossibleCoordsRook(
         break
       }
 
-      if (isEmptyCell(board, nextCoord, state.pieces)) {
+      if (chess.isEmptyCell(board, nextCoord, state.pieces)) {
         res.push(nextCoord)
       } else {
         const piece = board[nextCoord.i][nextCoord.j]
 
-        if (!isColorPieceWorthCurrPlayerColor(state, piece))
+        if (!chess.isColorPieceWorthCurrPlayerColor(state, piece))
           res.push(nextCoord) //last coord -> eatable
         else if (
-          isColorPieceWorthCurrPlayerColor(state, piece) &&
-          isOptionToCastling(state, piece, pieceCoord)
+          chess.isColorPieceWorthCurrPlayerColor(state, piece) &&
+          chess.isOptionToCastling(state, piece, pieceCoord)
         ) {
           let isCastlingLegal
 

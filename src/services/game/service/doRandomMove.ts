@@ -1,12 +1,8 @@
-import _ from 'lodash'
 import { GameState } from '../../../models/GameState'
-import { getPossibleCoords } from './getPossibleCoords'
-import { isBlackPiece } from './isBlackPiece'
-import { isNextStepLegal } from './isNextStepLegal'
-import { movePiece } from './movePiece'
+import { chess } from '.'
 
 export const doRandomMove = (state: GameState) => {
-  const copiedState: GameState = _.cloneDeep(state)
+  const copiedState: GameState = chess.cloneDeep(state)
   const possibleMoves = getAllPossiblePiecesMoves(copiedState)
 
   const randomMove =
@@ -14,7 +10,7 @@ export const doRandomMove = (state: GameState) => {
 
   const piece = copiedState.board[randomMove.i][randomMove.j]
 
-  const possibleCoords = getPossibleCoords(copiedState, piece, randomMove)
+  const possibleCoords = chess.getPossibleCoords(copiedState, piece, randomMove)
 
   const randomPossibleMove =
     possibleCoords[Math.floor(Math.random() * possibleCoords.length)]
@@ -22,11 +18,11 @@ export const doRandomMove = (state: GameState) => {
   // console.log({ randomMove, randomPossibleMove })
 
   copiedState.selectedCellCoord = randomMove
-  const { isMoveLegal } = isNextStepLegal(copiedState, randomPossibleMove)
+  const { isMoveLegal } = chess.isNextStepLegal(copiedState, randomPossibleMove)
   if (!isMoveLegal) {
     return
   }
-  const newState = movePiece(copiedState, randomPossibleMove)
+  const newState = chess.movePiece(copiedState, randomPossibleMove)
   return newState
 }
 
@@ -37,17 +33,17 @@ export const getAllPossiblePiecesMoves = (state: GameState) => {
     for (let j = 0; j < state.board[i].length; j++) {
       const piece = state.board[i][j]
       const cellCoord = { i, j }
-      const possibleCoords = getPossibleCoords(state, piece, cellCoord)
+      const possibleCoords = chess.getPossibleCoords(state, piece, cellCoord)
       if (
         possibleCoords?.length &&
         state.isBlackTurn &&
-        isBlackPiece(state, state.board[i][j])
+        chess.isBlackPiece(state, state.board[i][j])
       ) {
         possibleMoves.push(cellCoord)
       } else if (
         possibleCoords?.length &&
         !state.isBlackTurn &&
-        !isBlackPiece(state, state.board[i][j])
+        !chess.isBlackPiece(state, state.board[i][j])
       ) {
         possibleMoves.push(cellCoord)
       }

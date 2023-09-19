@@ -1,5 +1,5 @@
 import { GameState } from '../../../models/GameState'
-import { checkIfKingThreatened } from './checkIfKingThreatened'
+import { chess } from '.'
 
 export function isCastleThreatened(
   state: GameState,
@@ -52,7 +52,7 @@ export function isCastleThreatened(
   }
 
   coordsToCheck.forEach((coord) => {
-    const { isThreatened } = checkIfKingThreatened(state, true, coord)
+    const { isThreatened } = chess.checkIfKingThreatened(state, true, coord)
     if (isThreatened) {
       isCastleLegal = !isThreatened
     }

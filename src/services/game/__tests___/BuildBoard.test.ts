@@ -1,9 +1,8 @@
-import { buildBoard } from '../service/buildBoard'
-import { gPieces } from '../service/gPieces'
+import { chess } from '../service'
 
 describe('buildBoard', () => {
   test('builds the initial chess board correctly', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
 
     const expectedBoard: string[][] = [
       [
@@ -52,7 +51,7 @@ describe('buildBoard', () => {
       ],
     ]
 
-    const result = buildBoard(pieces)
+    const result = chess.buildBoard(pieces)
 
     expect(result).toEqual(expectedBoard)
   })

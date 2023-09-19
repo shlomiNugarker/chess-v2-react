@@ -7,7 +7,6 @@ import { utilService } from '../services/utilService'
 
 interface Props {
   gameState: GameState | null
-
   loggedInUser: User | null
   moveInStateHistory: (num: 1 | -1) => void
   whitePlayer: User | null

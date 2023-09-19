@@ -1,12 +1,6 @@
-import * as _ from 'lodash'
 import { GameState } from '../../../models/GameState'
 import { paintKingCellToRed } from '../controller/paintKingCellToRed'
-import { getAllPossibleCoordsBishop } from './possibleCoordsFuncs/getAllPossibleCoordsBishop'
-import { getAllPossibleCoordsKing } from './possibleCoordsFuncs/getAllPossibleCoordsKing'
-import { getAllPossibleCoordsKnight } from './possibleCoordsFuncs/getAllPossibleCoordsKnight'
-import { getAllPossibleCoordsQueen } from './possibleCoordsFuncs/getAllPossibleCoordsQueen'
-import { getAllPossibleCoordsRook } from './possibleCoordsFuncs/getAllPossibleCoordsRook'
-import { getAllPossibleKingCoordsToGetEatenPawn } from './possibleCoordsFuncs/getAllPossibleKingCoordsToGetEatenPawn'
+import { chess } from '.'
 
 export function checkIfKingThreatened(
   state: GameState,
@@ -22,12 +16,12 @@ export function checkIfKingThreatened(
   // this act is for check another piece as a king coords (for example when castling..)
   if (coordToCheck) kingPos = coordToCheck
 
-  const knightOpts = getAllPossibleCoordsKnight(state, kingPos)
-  const kingOpts = getAllPossibleCoordsKing(state, kingPos)
-  const queenOpts = getAllPossibleCoordsQueen(state, kingPos, true)
-  const pawnOpts = getAllPossibleKingCoordsToGetEatenPawn(state, kingPos)
-  const bishopOpts = getAllPossibleCoordsBishop(state, kingPos)
-  const rookOpts = getAllPossibleCoordsRook(state, kingPos)
+  const knightOpts = chess.getAllPossibleCoordsKnight(state, kingPos)
+  const kingOpts = chess.getAllPossibleCoordsKing(state, kingPos)
+  const queenOpts = chess.getAllPossibleCoordsQueen(state, kingPos, true)
+  const pawnOpts = chess.getAllPossibleKingCoordsToGetEatenPawn(state, kingPos)
+  const bishopOpts = chess.getAllPossibleCoordsBishop(state, kingPos)
+  const rookOpts = chess.getAllPossibleCoordsRook(state, kingPos)
 
   !isFoundThreatenPiece &&
     queenOpts.forEach((coord) => {
@@ -51,7 +45,7 @@ export function checkIfKingThreatened(
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
         isFoundThreatenPiece = true
-        !isFakeCheck && paintKingCellToRed(kingPos)
+        !isFakeCheck && paintKingCellToRed(kingPos) // !!
       }
     })
 
@@ -64,7 +58,7 @@ export function checkIfKingThreatened(
 
       if (pieceToCheck && pieceToCheck === threatenPiece) {
         isFoundThreatenPiece = true
-        !isFakeCheck && paintKingCellToRed(kingPos)
+        !isFakeCheck && paintKingCellToRed(kingPos) // !!
       }
     })
 
@@ -107,7 +101,7 @@ export function checkIfKingThreatened(
       }
     })
 
-  const copiedState: GameState = _.cloneDeep(state)
+  const copiedState: GameState = chess.cloneDeep(state)
 
   if (!isFoundThreatenPiece) {
     if (!isFakeCheck) {

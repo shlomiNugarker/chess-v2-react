@@ -1,8 +1,5 @@
-import * as _ from 'lodash'
 import { GameState } from '../../../models/GameState'
-import { isBlackPiece } from './isBlackPiece'
-import { updateKingPos } from './updateKingPos'
-import { gPieces } from './gPieces'
+import { chess } from '.'
 
 export function movePiece(
   state: GameState,
@@ -31,7 +28,7 @@ export function movePiece(
 
   if (!fromCoord) return state
 
-  let copiedState = _.cloneDeep(state)
+  let copiedState = chess.cloneDeep(state)
 
   if (
     !copiedState.isBlackTurn &&
@@ -65,13 +62,13 @@ export function movePiece(
   }
 
   if (
-    copiedState.board[fromCoord.i][fromCoord.j] === gPieces.PAWN_WHITE &&
+    copiedState.board[fromCoord.i][fromCoord.j] === chess.gPieces.PAWN_WHITE &&
     fromCoord.i === 6 &&
     toCoord.i === 4
   ) {
     copiedState.eatableCellAfterTwoStepsPawnWhite = toCoord
   } else if (
-    copiedState.board[fromCoord.i][fromCoord.j] === gPieces.PAWN_BLACK &&
+    copiedState.board[fromCoord.i][fromCoord.j] === chess.gPieces.PAWN_BLACK &&
     fromCoord.i === 1 &&
     toCoord.i === 3
   ) {
@@ -85,7 +82,7 @@ export function movePiece(
 
   if (isCellWithPiece) {
     const eatenPiece = copiedState.board[toCoord.i][toCoord.j]
-    const isEatenPieceBlack = isBlackPiece(copiedState, eatenPiece)
+    const isEatenPieceBlack = chess.isBlackPiece(copiedState, eatenPiece)
 
     if (isEatenPieceBlack === true) {
       copiedState.eatenPieces.white.push(eatenPiece)
@@ -99,7 +96,7 @@ export function movePiece(
   copiedState.board[toCoord.i][toCoord.j] = piece
 
   if (isKingMoved) {
-    copiedState = updateKingPos(copiedState, toCoord, piece)
+    copiedState = chess.updateKingPos(copiedState, toCoord, piece)
 
     if (copiedState.isBlackTurn) {
       copiedState.isCastlingLegal.blackKing = false

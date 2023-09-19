@@ -1,6 +1,5 @@
 import { GameState } from '../../../../models/GameState'
-import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
-import { isEmptyCell } from '../isEmptyCell'
+import { chess } from '..'
 
 export function getAllPossibleCoordsQueen(
   state: GameState,
@@ -44,13 +43,13 @@ export function getAllPossibleCoordsQueen(
       ) {
         break
       }
-      if (isEmptyCell(board, nextCoord, state.pieces)) {
+      if (chess.isEmptyCell(board, nextCoord, state.pieces)) {
         res.push(nextCoord)
       } else {
         const piece = board[nextCoord.i][nextCoord.j]
         if (
           !isAskForEatenCoords &&
-          !isColorPieceWorthCurrPlayerColor(state, piece)
+          !chess.isColorPieceWorthCurrPlayerColor(state, piece)
         ) {
           res.push(nextCoord)
         } else if (isAskForEatenCoords) {

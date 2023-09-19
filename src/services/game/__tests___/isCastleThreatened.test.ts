@@ -1,10 +1,9 @@
-import { isCastleThreatened } from '../service/isCastleThreatened' // Update this with the correct file path
-import { gPieces } from '../service/gPieces'
 import { GameState } from '../../../models/GameState'
+import { chess } from '../service'
 
 describe('isCastleThreatened', () => {
   test('returns true if castle is legal', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       pieces,
       isBlackTurn: true,
@@ -68,12 +67,16 @@ describe('isCastleThreatened', () => {
     const fromCoord = { i: 0, j: 4 }
     const toCoord = { i: 0, j: 0 }
 
-    const result = isCastleThreatened(state as GameState, fromCoord, toCoord)
+    const result = chess.isCastleThreatened(
+      state as GameState,
+      fromCoord,
+      toCoord
+    )
     expect(result).toBe(true)
   })
 
   test('returns false if castle is not threatened', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       pieces,
       isBlackTurn: true,
@@ -137,7 +140,11 @@ describe('isCastleThreatened', () => {
     const fromCoord = { i: 0, j: 0 }
     const toCoord = { i: 0, j: 4 }
 
-    const result = isCastleThreatened(state as GameState, fromCoord, toCoord)
+    const result = chess.isCastleThreatened(
+      state as GameState,
+      fromCoord,
+      toCoord
+    )
     expect(result).toBe(false)
   })
 })

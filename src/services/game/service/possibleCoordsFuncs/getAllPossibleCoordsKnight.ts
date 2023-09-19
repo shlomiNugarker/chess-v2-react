@@ -1,6 +1,5 @@
 import { GameState } from '../../../../models/GameState'
-import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
-import { isEmptyCell } from '../isEmptyCell'
+import { chess } from '..'
 
 export function getAllPossibleCoordsKnight(
   state: GameState,
@@ -34,10 +33,11 @@ export function getAllPossibleCoordsKnight(
       nextCoord.j >= 0 &&
       nextCoord.j < 8
     ) {
-      if (isEmptyCell(board, nextCoord, state.pieces)) res.push(nextCoord)
+      if (chess.isEmptyCell(board, nextCoord, state.pieces)) res.push(nextCoord)
       else {
         const piece = board[nextCoord.i][nextCoord.j]
-        if (!isColorPieceWorthCurrPlayerColor(state, piece)) res.push(nextCoord) //-> eatable  coord
+        if (!chess.isColorPieceWorthCurrPlayerColor(state, piece))
+          res.push(nextCoord) //-> eatable  coord
       }
     }
   }

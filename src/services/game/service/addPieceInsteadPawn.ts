@@ -1,5 +1,5 @@
-import * as _ from 'lodash'
 import { GameState } from '../../../models/GameState'
+import { chess } from '.'
 
 export function addPieceInsteadPawn(
   state: GameState,
@@ -10,7 +10,7 @@ export function addPieceInsteadPawn(
   pieceToAdd: string
 ) {
   // console.log('addPieceInsteadPawn()')
-  const copiedState = _.cloneDeep(state)
+  const copiedState = chess.cloneDeep(state)
   copiedState.board[coordsToFill.i][coordsToFill.j] = pieceToAdd
   return { newState: copiedState }
 }

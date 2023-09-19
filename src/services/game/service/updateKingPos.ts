@@ -1,5 +1,5 @@
 import { GameState } from '../../../models/GameState'
-import { gPieces } from './gPieces'
+import { chess } from '.'
 
 export function updateKingPos(
   state: GameState,
@@ -7,11 +7,10 @@ export function updateKingPos(
   piece: string
 ) {
   // console.log('updateKingPos()')
-
-  if (piece === gPieces.KING_WHITE) {
+  if (piece === chess.gPieces.KING_WHITE) {
     state.kingPos.white = { i: toCoord.i, j: toCoord.j }
   }
-  if (piece === gPieces.KING_BLACK) {
+  if (piece === chess.gPieces.KING_BLACK) {
     state.kingPos.black = { i: toCoord.i, j: toCoord.j }
   }
   return state

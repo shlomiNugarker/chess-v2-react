@@ -1,10 +1,9 @@
-import { getPossibleCoords } from '../service/getPossibleCoords'
-import { gPieces } from '../service/gPieces'
 import { GameState } from '../../../models/GameState'
+import { chess } from '../service'
 
 describe('getPossibleCoords', () => {
   test('returns possible coordinates for a pawn', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       pieces,
       isBlackTurn: true,
@@ -63,12 +62,12 @@ describe('getPossibleCoords', () => {
       { i: 3, j: 0 },
     ]
 
-    const result = getPossibleCoords(state as GameState, piece, cellCoord)
+    const result = chess.getPossibleCoords(state as GameState, piece, cellCoord)
 
     expect(result).toEqual(expectedCoords)
   })
   test('returns possible coordinates for a queen', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       pieces,
       isBlackTurn: true,
@@ -143,7 +142,7 @@ describe('getPossibleCoords', () => {
       { i: 3, j: 1 },
     ]
 
-    const result = getPossibleCoords(state as GameState, piece, cellCoord)
+    const result = chess.getPossibleCoords(state as GameState, piece, cellCoord)
 
     expect(result).toEqual(expectedCoords)
   })

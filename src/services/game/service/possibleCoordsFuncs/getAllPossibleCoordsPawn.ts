@@ -1,6 +1,5 @@
 import { GameState } from '../../../../models/GameState'
-import { isColorPieceWorthCurrPlayerColor } from '../isColorPieceWorthCurrPlayerColor'
-import { isEmptyCell } from '../isEmptyCell'
+import { chess } from '..'
 
 export function getAllPossibleCoordsPawn(
   state: GameState,
@@ -14,13 +13,13 @@ export function getAllPossibleCoordsPawn(
   let diff = isWhite ? -1 : 1
   let nextCoord = { i: pieceCoord.i + diff, j: pieceCoord.j }
 
-  if (isEmptyCell(board, nextCoord, state.pieces)) {
+  if (chess.isEmptyCell(board, nextCoord, state.pieces)) {
     res.push(nextCoord)
 
     if ((pieceCoord.i === 1 && !isWhite) || (pieceCoord.i === 6 && isWhite)) {
       diff *= 2
       nextCoord = { i: pieceCoord.i + diff, j: pieceCoord.j }
-      if (isEmptyCell(board, nextCoord, state.pieces)) res.push(nextCoord)
+      if (chess.isEmptyCell(board, nextCoord, state.pieces)) res.push(nextCoord)
     }
   }
 
@@ -31,7 +30,7 @@ export function getAllPossibleCoordsPawn(
 
     if (
       board[nextLeftCoord.i][nextLeftCoord.j] &&
-      !isColorPieceWorthCurrPlayerColor(
+      !chess.isColorPieceWorthCurrPlayerColor(
         state,
         board[nextLeftCoord.i][nextLeftCoord.j]
       )
@@ -40,7 +39,7 @@ export function getAllPossibleCoordsPawn(
     }
     if (
       board[nextRightCoord.i][nextRightCoord.j] &&
-      !isColorPieceWorthCurrPlayerColor(
+      !chess.isColorPieceWorthCurrPlayerColor(
         state,
         board[nextRightCoord.i][nextRightCoord.j]
       )
@@ -54,7 +53,7 @@ export function getAllPossibleCoordsPawn(
 
     if (
       board[nextLeftCoord.i][nextLeftCoord.j] &&
-      !isColorPieceWorthCurrPlayerColor(
+      !chess.isColorPieceWorthCurrPlayerColor(
         state,
         board[nextLeftCoord.i][nextLeftCoord.j]
       )
@@ -63,7 +62,7 @@ export function getAllPossibleCoordsPawn(
     }
     if (
       board[nextRightCoord.i][nextRightCoord.j] &&
-      !isColorPieceWorthCurrPlayerColor(
+      !chess.isColorPieceWorthCurrPlayerColor(
         state,
         board[nextRightCoord.i][nextRightCoord.j]
       )

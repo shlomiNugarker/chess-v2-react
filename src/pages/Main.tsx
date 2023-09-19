@@ -1,37 +1,34 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as _ from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { MainGame } from '../cmps/MainGame'
-import { ValidAuthModal } from '../cmps/ValidAuthModal'
-import { GameState } from '../models/GameState'
-import { ChatState } from '../models/ChatState'
+
 import { useAuthContext } from '../context/AuthContext'
-import { Chat } from '../cmps/Chat'
-import { GameDetails } from '../cmps/GameDetails'
+
+// SERVICES:
 import { socketService } from '../services/socketService'
-import { isPlayerWin } from '../services/game/service/isPlayerWin'
-import { checkIfKingThreatened } from '../services/game/service/checkIfKingThreatened'
-import { User } from '../models/User'
 import { userService } from '../services/userServise'
 import { storageService } from '../services/storageService'
 import { gameStateService } from '../services/gameStateService'
-import { addPieceInsteadPawn } from '../services/game/service/addPieceInsteadPawn'
 import { chatService } from '../services/chatService'
+import { chess } from '../services/game/service'
+
+// CONTROLLER:
 import { cleanBoard } from '../services/game/controller/cleanBoard'
-import { isColorPieceWorthCurrPlayerColor } from '../services/game/service/isColorPieceWorthCurrPlayerColor'
-import { getPossibleCoords } from '../services/game/service/getPossibleCoords'
-import { isNextStepLegal } from '../services/game/service/isNextStepLegal'
-import { isPawnStepsEnd } from '../services/game/service/isPawnStepsEnd'
-import { movePiece } from '../services/game/service/movePiece'
-import { doCastling } from '../services/game/service/doCastling'
-import { isValidPlayerTurn } from '../services/game/controller/isValidPlayerTurn'
 import { copyToClipBoard } from '../services/game/controller/copyToClipBoard'
-import { markCells } from '../services/game/controller/markCells'
 import { setSelectedCellCoord } from '../services/game/controller/setSelectedCellCoord'
 import { onShareGameUrl } from '../services/game/controller/onShareGameUrl'
-import { gPieces } from '../services/game/service/gPieces'
-import { getCellCoord } from '../services/game/service/getCellCoord'
+import { isValidPlayerTurn } from '../services/game/controller/isValidPlayerTurn'
+import { markCells } from '../services/game/controller/markCells'
+
+// CMPS:
+import { MainGame } from '../cmps/MainGame'
+import { ValidAuthModal } from '../cmps/ValidAuthModal'
+import { Chat } from '../cmps/Chat'
+import { GameDetails } from '../cmps/GameDetails'
+
+// MODELS:
+import { GameState } from '../models/GameState'
+import { ChatState } from '../models/ChatState'
+import { User } from '../models/User'
 
 interface props {
   onLoginAsGuest: (() => Promise<void>) | null
@@ -43,9 +40,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
   const authContextData = useAuthContext()
 
   const [gameState, setGameState] = useState<GameState | null>(null)
-
   const [chatState, setChatState] = useState<ChatState | null>(null)
-
   const [isTwoPlayerInTheGame, setIsTwoPlayerInTheGame] = useState(false)
   const [isWin, setIsWin] = useState(false)
   const [isPromotionChoice, setIsPromotionChoice] = useState(false)
@@ -53,7 +48,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
   const [blackPlayer, setBlackPlayer] = useState<User | null>(null)
   const [isWhitePlayerConnected, setIsWhitePlayerConnected] = useState(false)
   const [isBlackPlayerConnected, setIsBlackPlayerConnected] = useState(false)
-
   const [cellCoordsToAddInsteadPawn, setCellCoordsToAddInsteadPawn] = useState<{
     i: number
     j: number
@@ -72,7 +66,6 @@ export const Main = ({ onLoginAsGuest }: props) => {
   ) => {
     if (!gameState) return
     // console.log('handleBoardClick()')
-
     if (
       gameState &&
       !isValidPlayerTurn({
@@ -99,17 +92,17 @@ export const Main = ({ onLoginAsGuest }: props) => {
       // HANDLE EATABLE MOVE:
       if (isSquareEatable && gameState.selectedCellCoord) {
         // console.log('handleEatableMove()')
-        const toCoord = getCellCoord(target.id)
-        const { isMoveLegal, state } = isNextStepLegal(gameState, toCoord)
+        const toCoord = chess.getCellCoord(target.id)
+        const { isMoveLegal, state } = chess.isNextStepLegal(gameState, toCoord)
         const isPlayerThreatened =
           (state.isBlackTurn && state.isBlackKingThreatened) ||
           (!state.isBlackTurn && state.isWhiteKingThreatened)
 
         if (isPlayerThreatened || !isMoveLegal) return
 
-        const newState = movePiece(gameState, cellCoord)
+        const newState = chess.movePiece(gameState, cellCoord)
 
-        if (isPawnStepsEnd(newState, cellCoord)) {
+        if (chess.isPawnStepsEnd(newState, cellCoord)) {
           setIsPromotionChoice(true)
           await updateGameState(newState)
           setCellCoordsToAddInsteadPawn(cellCoord)
@@ -122,10 +115,10 @@ export const Main = ({ onLoginAsGuest }: props) => {
       // HANDLE CASTLING MOVE:
       else if (isSquareCastling && gameState.selectedCellCoord) {
         // console.log('handleCastlingMove()')
-        const toCoord = getCellCoord(target.id)
-        const { isMoveLegal } = isNextStepLegal(gameState, toCoord)
+        const toCoord = chess.getCellCoord(target.id)
+        const { isMoveLegal } = chess.isNextStepLegal(gameState, toCoord)
         if (!isMoveLegal) return
-        const isCastleLegals = doCastling(gameState, target)
+        const isCastleLegals = chess.doCastling(gameState, target)
         if (isCastleLegals?.newState) {
           isCastleLegals.newState.isBlackTurn =
             !isCastleLegals.newState.isBlackTurn
@@ -143,8 +136,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
       // HANDLE PIECE COLOR:
       else if (
         piece &&
-        piece !== gPieces.EMPTY &&
-        !isColorPieceWorthCurrPlayerColor(gameState, piece)
+        piece !== chess.gPieces.EMPTY &&
+        !chess.isColorPieceWorthCurrPlayerColor(gameState, piece)
       ) {
         return
       }
@@ -156,15 +149,15 @@ export const Main = ({ onLoginAsGuest }: props) => {
       // HANDLE STEP MOVE:
       else if (isSquareMarked && gameState.selectedCellCoord) {
         // console.log('handleStepMove()')
-        const toCoord = getCellCoord(target.id)
-        const { isMoveLegal, state } = isNextStepLegal(gameState, toCoord)
+        const toCoord = chess.getCellCoord(target.id)
+        const { isMoveLegal, state } = chess.isNextStepLegal(gameState, toCoord)
         if (!isMoveLegal) return
-        const newState = movePiece(gameState, cellCoord)
+        const newState = chess.movePiece(gameState, cellCoord)
         if (newState && !newState.isGameStarted) {
           newState.isGameStarted = true
           setHasGameStarted(true)
         }
-        if (isPawnStepsEnd(state, cellCoord)) {
+        if (chess.isPawnStepsEnd(state, cellCoord)) {
           setIsPromotionChoice(true)
           newState && (await updateGameState(newState))
           setCellCoordsToAddInsteadPawn(cellCoord)
@@ -182,7 +175,11 @@ export const Main = ({ onLoginAsGuest }: props) => {
           target.classList.add('selected')
           const newState = setSelectedCellCoord(cellCoord, gameState)
           setGameState(newState)
-          const possibleCoords = getPossibleCoords(gameState, piece, cellCoord)
+          const possibleCoords = chess.getPossibleCoords(
+            gameState,
+            piece,
+            cellCoord
+          )
           if (possibleCoords) markCells(gameState, possibleCoords)
         }
       }
@@ -220,11 +217,10 @@ export const Main = ({ onLoginAsGuest }: props) => {
     return savedChat
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onChoosePieceToAdd = async ({ piece }: { piece: string }) => {
     // console.log('onChoosePieceToAdd()')
     if (!cellCoordsToAddInsteadPawn || !gameState) return
-    const { newState } = addPieceInsteadPawn(
+    const { newState } = chess.addPieceInsteadPawn(
       gameState,
       cellCoordsToAddInsteadPawn,
       piece
@@ -237,10 +233,9 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
   const joinPlayerToTheGame = useCallback(() => {
     // console.log('joinPlayerToTheGame()')
-
     if (gameState?.players?.white && gameState?.players?.black === '') {
-      const stateToUpdate = _.cloneDeep(gameState)
-      const chatToUpdate = _.cloneDeep(chatState)
+      const stateToUpdate = chess.cloneDeep(gameState)
+      const chatToUpdate = chess.cloneDeep(chatState)
 
       if (stateToUpdate.players) {
         const userId = authContextData?.loggedInUser?._id
@@ -259,7 +254,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
       updateGameState(stateToUpdate)
       return stateToUpdate
     } else if (gameState?.players?.black && gameState?.players?.white === '') {
-      const stateToUpdate = _.cloneDeep(gameState)
+      const stateToUpdate = chess.cloneDeep(gameState)
       if (stateToUpdate.players) {
         const userId = authContextData?.loggedInUser?._id
 
@@ -301,7 +296,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
   // Check if player win:
   useEffect(() => {
-    if (hasGameStarted && gameState && !isWin && isPlayerWin(gameState)) {
+    if (hasGameStarted && gameState && !isWin && chess.isPlayerWin(gameState)) {
       setIsWin(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -358,7 +353,7 @@ export const Main = ({ onLoginAsGuest }: props) => {
   // Handle case if both kings are threatened one after one
   useEffect(() => {
     if (gameState && hasGameStarted) {
-      checkIfKingThreatened(gameState)
+      chess.checkIfKingThreatened(gameState)
 
       const lastKingThreatened = gameState.isBlackTurn
         ? gameState.kingPos.white

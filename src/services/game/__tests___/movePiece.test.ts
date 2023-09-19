@@ -1,10 +1,9 @@
-import { movePiece } from '../service/movePiece'
-import { gPieces } from '../service/gPieces'
 import { GameState } from '../../../models/GameState'
+import { chess } from '../service'
 
 describe('movePiece', () => {
   test('moves a piece to an empty cell', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       pieces,
       isBlackTurn: true,
@@ -119,13 +118,13 @@ describe('movePiece', () => {
 
     const toCellCoord = { i: 5, j: 6 }
 
-    const newState = movePiece(state as unknown as GameState, toCellCoord)
+    const newState = chess.movePiece(state as unknown as GameState, toCellCoord)
     expect(newState).toBeDefined()
     expect(newState.board).toEqual(expectedBoard)
   })
 
   test('moves a piece and eats an opponent piece', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       pieces,
       isBlackTurn: true,
@@ -240,7 +239,7 @@ describe('movePiece', () => {
 
     const toCellCoord = { i: 5, j: 6 }
 
-    const newState = movePiece(state as unknown as GameState, toCellCoord)
+    const newState = chess.movePiece(state as unknown as GameState, toCellCoord)
     expect(newState).toBeDefined()
     expect(newState.board).toEqual(expectedBoard)
   })

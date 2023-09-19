@@ -1,10 +1,9 @@
-import { getAllPossibleCoordsQueen } from '../../service/possibleCoordsFuncs/getAllPossibleCoordsQueen'
-import { gPieces } from '../../service/gPieces'
 import { GameState } from '../../../../models/GameState'
+import { chess } from '../../service'
 
 describe('getAllPossibleCoordsQueen', () => {
   test('returns possible coordinates for a queen with obstructions', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
 
     const state = {
       pieces,
@@ -59,7 +58,10 @@ describe('getAllPossibleCoordsQueen', () => {
     }
 
     const pieceCoord = { i: 0, j: 3 }
-    const result = getAllPossibleCoordsQueen(state as GameState, pieceCoord)
+    const result = chess.getAllPossibleCoordsQueen(
+      state as GameState,
+      pieceCoord
+    )
 
     const expectedCoords: {
       i: number
@@ -70,7 +72,7 @@ describe('getAllPossibleCoordsQueen', () => {
   })
 
   test('returns possible coordinates for a queen with no obstructions', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
 
     const state = {
       pieces,
@@ -125,7 +127,10 @@ describe('getAllPossibleCoordsQueen', () => {
     }
 
     const pieceCoord = { i: 4, j: 3 }
-    const result = getAllPossibleCoordsQueen(state as GameState, pieceCoord)
+    const result = chess.getAllPossibleCoordsQueen(
+      state as GameState,
+      pieceCoord
+    )
 
     const expectedCoords: {
       i: number

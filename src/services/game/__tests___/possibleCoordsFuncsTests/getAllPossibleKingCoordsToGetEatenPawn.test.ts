@@ -1,11 +1,9 @@
-import { gPieces } from '../../service/gPieces'
 import { GameState } from '../../../../models/GameState'
-
-import { getAllPossibleKingCoordsToGetEatenPawn } from '../../service/possibleCoordsFuncs/getAllPossibleKingCoordsToGetEatenPawn'
+import { chess } from '../../service'
 
 describe('getAllPossibleKingCoordsToGetEatenPawn', () => {
   test('returns possible coordinates for a black king to capture an advancing white pawn', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       pieces,
       isBlackTurn: true,
@@ -59,7 +57,7 @@ describe('getAllPossibleKingCoordsToGetEatenPawn', () => {
     }
     const kingCoord = { i: 0, j: 4 }
 
-    const result = getAllPossibleKingCoordsToGetEatenPawn(
+    const result = chess.getAllPossibleKingCoordsToGetEatenPawn(
       state as GameState,
       kingCoord
     )
@@ -73,7 +71,7 @@ describe('getAllPossibleKingCoordsToGetEatenPawn', () => {
   })
 
   test('returns possible coordinates for a white king to capture an advancing black pawn', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       pieces,
       isBlackTurn: false,
@@ -126,7 +124,7 @@ describe('getAllPossibleKingCoordsToGetEatenPawn', () => {
       ],
     }
     const kingCoord = { i: 7, j: 4 }
-    const result = getAllPossibleKingCoordsToGetEatenPawn(
+    const result = chess.getAllPossibleKingCoordsToGetEatenPawn(
       state as GameState,
       kingCoord
     )
@@ -139,7 +137,7 @@ describe('getAllPossibleKingCoordsToGetEatenPawn', () => {
   })
 
   test('returns possible coordinates for a white king to capture an advancing black pawn with no obstructions', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       pieces,
       isBlackTurn: false,
@@ -192,7 +190,7 @@ describe('getAllPossibleKingCoordsToGetEatenPawn', () => {
       ],
     }
     const kingCoord = { i: 4, j: 4 }
-    const result = getAllPossibleKingCoordsToGetEatenPawn(
+    const result = chess.getAllPossibleKingCoordsToGetEatenPawn(
       state as GameState,
       kingCoord
     )

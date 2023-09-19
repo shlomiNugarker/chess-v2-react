@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+import { cloneDeep } from 'lodash'
 import { useEffect, useState } from 'react'
 import { utilService } from '../services/utilService'
 import { ChatState } from '../models/ChatState'
@@ -42,7 +42,7 @@ export const Chat = ({
     if (!msg.trim().length) return
     if (ev.key === 'Enter' || ev.keyCode === 13) {
       const newMsg = createMsg(msg)
-      const chatToSave = _.cloneDeep(chatState)
+      const chatToSave = cloneDeep(chatState)
       chatToSave?.messages.push(newMsg)
       chatToSave && saveChat(chatToSave)
       setMsg('')
@@ -51,7 +51,7 @@ export const Chat = ({
 
   const sendAutoMsg = (msg: string) => {
     const newMsg = createMsg(msg)
-    const chatToSave = _.cloneDeep(chatState)
+    const chatToSave = cloneDeep(chatState)
     chatToSave?.messages.push(newMsg)
     chatToSave && saveChat(chatToSave)
   }
@@ -59,7 +59,7 @@ export const Chat = ({
   useEffect(() => {
     // saving the black user into the chat (because sometimes not recognize the user on first load)
     if (chatState && !chatState.userId2 && gameState?.players?.black) {
-      const chatToSave = _.cloneDeep(chatState)
+      const chatToSave = cloneDeep(chatState)
       chatToSave.userId2 = gameState.players.black
       chatToSave && saveChat(chatToSave)
     }

@@ -1,10 +1,9 @@
-import { doCastling } from '../service/doCastling'
-import { gPieces } from '../service/gPieces'
 import { GameState } from '../../../models/GameState'
+import { chess } from '../service'
 
 describe('doCastling', () => {
   test('performs castling for black king on the kingside', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       board: [
         [
@@ -72,14 +71,14 @@ describe('doCastling', () => {
       id: 'cell-0-7',
     }
 
-    const result = doCastling(state as GameState, elToCell as Element)
+    const result = chess.doCastling(state as GameState, elToCell as Element)
 
     expect(result?.newState).toBeDefined()
     expect(result?.isCastleLegal).toBe(true)
   })
 
   test('does not perform castling when not legal', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
     const state = {
       board: [
         [
@@ -155,7 +154,7 @@ describe('doCastling', () => {
     const elToCell = {
       id: 'cell-0-7',
     }
-    const result = doCastling(state as GameState, elToCell as Element)
+    const result = chess.doCastling(state as GameState, elToCell as Element)
 
     expect(result?.newState).toBeDefined()
     expect(result?.isCastleLegal).toBe(false)

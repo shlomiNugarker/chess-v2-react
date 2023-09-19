@@ -1,7 +1,5 @@
-import * as _ from 'lodash'
 import { GameState } from '../../../models/GameState'
-
-import { checkIfKingThreatened } from './checkIfKingThreatened'
+import { chess } from '.'
 
 export function isNextStepLegal(
   state: GameState,
@@ -16,7 +14,7 @@ export function isNextStepLegal(
 
   if (!fromCoord) return { isMoveLegal: false, state }
 
-  const copiedState: GameState = _.cloneDeep(state)
+  const copiedState: GameState = chess.cloneDeep(state)
 
   const isKingMoved =
     copiedState.board[fromCoord.i][fromCoord.j] === state.pieces.KING_WHITE ||
@@ -38,7 +36,7 @@ export function isNextStepLegal(
       copiedState.isCastlingLegal.blackRightSide = false
     }
   }
-  const { isThreatened, state: stateToReturn } = checkIfKingThreatened(
+  const { isThreatened, state: stateToReturn } = chess.checkIfKingThreatened(
     copiedState,
     true
   )

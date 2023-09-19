@@ -21,10 +21,8 @@ export const Home = ({ onLoginAsGuest }: props) => {
       isPlayWithComputer
     )
     const stateId = await gameStateService.setNewState(newGame)
-
     if (stateId) navigate(`/${stateId}`)
   }
-
   // console.log('render Home()')
   return (
     <div className="home-page">

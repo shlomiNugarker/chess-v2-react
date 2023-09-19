@@ -1,8 +1,5 @@
 import { GameState } from '../../../models/GameState'
-import { getPossibleCoords } from './getPossibleCoords'
-import { isBlackPiece } from './isBlackPiece'
-import { isNextStepLegal } from './isNextStepLegal'
-import * as _ from 'lodash'
+import { chess } from '.'
 
 export function isPlayerWin(state: GameState) {
   // console.log('isPlayerWin()')
@@ -15,19 +12,19 @@ export function isPlayerWin(state: GameState) {
       const piece = board[i][j]
       if (
         color === 'black'
-          ? isBlackPiece(state, piece)
-          : !isBlackPiece(state, piece) &&
-            typeof isBlackPiece(state, piece) === 'boolean'
+          ? chess.isBlackPiece(state, piece)
+          : !chess.isBlackPiece(state, piece) &&
+            typeof chess.isBlackPiece(state, piece) === 'boolean'
       ) {
-        const possibleCoords = getPossibleCoords(state, piece, { i, j })
+        const possibleCoords = chess.getPossibleCoords(state, piece, { i, j })
 
         if (!possibleCoords) return
         for (let k = 0; k < possibleCoords.length; k++) {
           const coord = possibleCoords[k]
-          const copyState = _.cloneDeep(state)
+          const copyState = chess.cloneDeep(state)
           copyState.selectedCellCoord = { i, j }
 
-          const { isMoveLegal } = isNextStepLegal(copyState, coord)
+          const { isMoveLegal } = chess.isNextStepLegal(copyState, coord)
 
           if (isMoveLegal) {
             isWin = false

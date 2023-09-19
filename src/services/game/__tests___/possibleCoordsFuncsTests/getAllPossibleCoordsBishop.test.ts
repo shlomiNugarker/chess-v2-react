@@ -1,10 +1,9 @@
-import { getAllPossibleCoordsBishop } from '../../service/possibleCoordsFuncs/getAllPossibleCoordsBishop'
-import { gPieces } from '../../service/gPieces'
 import { GameState } from '../../../../models/GameState'
+import { chess } from '../../service'
 
 describe('getAllPossibleCoordsBishop', () => {
   test('returns possible coordinates for a bishop with obstructions', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
 
     const state = {
       pieces,
@@ -57,7 +56,10 @@ describe('getAllPossibleCoordsBishop', () => {
     }
     const pieceCoord = { i: 0, j: 2 }
 
-    const result = getAllPossibleCoordsBishop(state as GameState, pieceCoord)
+    const result = chess.getAllPossibleCoordsBishop(
+      state as GameState,
+      pieceCoord
+    )
 
     const expectedCoords = [
       { i: 1, j: 3 },
@@ -68,7 +70,7 @@ describe('getAllPossibleCoordsBishop', () => {
   })
 
   test('returns possible coordinates for a bishop with no obstructions', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
 
     const state = {
       pieces,
@@ -121,7 +123,10 @@ describe('getAllPossibleCoordsBishop', () => {
     }
     const pieceCoord = { i: 3, j: 3 }
 
-    const result = getAllPossibleCoordsBishop(state as GameState, pieceCoord)
+    const result = chess.getAllPossibleCoordsBishop(
+      state as GameState,
+      pieceCoord
+    )
 
     const expectedCoords = [
       { i: 4, j: 4 },

@@ -1,10 +1,9 @@
-import { getAllPossibleCoordsPawn } from '../../service/possibleCoordsFuncs/getAllPossibleCoordsPawn'
-import { gPieces } from '../../service/gPieces'
 import { GameState } from '../../../../models/GameState'
+import { chess } from '../../service'
 
 describe('getAllPossibleCoordsPawn', () => {
   test('returns possible coordinates for a pawn with no obstructions', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
 
     const state = {
       pieces,
@@ -59,7 +58,7 @@ describe('getAllPossibleCoordsPawn', () => {
     }
 
     const pieceCoord = { i: 1, j: 0 }
-    const result = getAllPossibleCoordsPawn(
+    const result = chess.getAllPossibleCoordsPawn(
       state as GameState,
       pieceCoord,
       state.isBlackTurn
@@ -77,7 +76,7 @@ describe('getAllPossibleCoordsPawn', () => {
   })
 
   test('returns possible coordinates for a pawn with obstructions', () => {
-    const pieces = gPieces
+    const pieces = chess.gPieces
 
     const state = {
       pieces,
@@ -133,7 +132,7 @@ describe('getAllPossibleCoordsPawn', () => {
 
     const pieceCoord = { i: 7, j: 7 }
 
-    const result = getAllPossibleCoordsPawn(
+    const result = chess.getAllPossibleCoordsPawn(
       state as GameState,
       pieceCoord,
       state.isBlackTurn
