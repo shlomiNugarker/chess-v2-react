@@ -10,7 +10,6 @@ Welcome to the Chess V2 React application! This project is a chess game built wi
 - [Scripts](#scripts)
 - [Dependencies](#dependencies)
 - [Features](#features)
-- [License](#license)
 
 ## About the Project
 
