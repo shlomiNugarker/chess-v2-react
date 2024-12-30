@@ -1,20 +1,20 @@
-import { cloneDeep } from 'lodash'
-import { useEffect, useState } from 'react'
-import { utilService } from '../services/utilService'
-import { ChatState } from '../models/ChatState'
-import { User } from '../models/User'
-import { GameState } from '../models/GameState'
+import { cloneDeep } from "lodash";
+import { useEffect, useState } from "react";
+import { utilService } from "../services/utilService";
+import { ChatState } from "../models/ChatState";
+import { User } from "../models/User";
+import { GameState } from "../models/GameState";
 
 interface Props {
-  gameState: GameState | null
-  loggedInUser: User | null
-  chatState: ChatState | null
-  saveChat: (chatToUpdate: ChatState) => Promise<ChatState>
+  gameState: GameState | null;
+  loggedInUser: User | null;
+  chatState: ChatState | null;
+  saveChat: (chatToUpdate: ChatState) => Promise<ChatState>;
   getChatById: (
     chatId: string,
     setChatState: React.Dispatch<React.SetStateAction<ChatState | null>>
-  ) => Promise<ChatState>
-  setChatState: React.Dispatch<React.SetStateAction<ChatState | null>>
+  ) => Promise<ChatState>;
+  setChatState: React.Dispatch<React.SetStateAction<ChatState | null>>;
 }
 
 export const Chat = ({
@@ -25,55 +25,55 @@ export const Chat = ({
   gameState,
   setChatState,
 }: Props) => {
-  const [msg, setMsg] = useState('')
+  const [msg, setMsg] = useState("");
 
   const createMsg = (txt: string) => {
     return {
       _id: utilService.makeId(24),
-      userId: loggedInUser?._id || '',
+      userId: loggedInUser?._id || "",
       txt,
-      fullname: loggedInUser?.fullname || 'Guest',
-    }
-  }
+      fullname: loggedInUser?.fullname || "Guest",
+    };
+  };
 
-  const isBlackUser = (userId: string) => userId === gameState?.players?.black
+  const isBlackUser = (userId: string) => userId === gameState?.players?.black;
 
   const sendMsg = (ev: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!msg.trim().length) return
-    if (ev.key === 'Enter' || ev.keyCode === 13) {
-      const newMsg = createMsg(msg)
-      const chatToSave = cloneDeep(chatState)
-      chatToSave?.messages.push(newMsg)
-      chatToSave && saveChat(chatToSave)
-      setMsg('')
+    if (!msg.trim().length) return;
+    if (ev.key === "Enter" || ev.keyCode === 13) {
+      const newMsg = createMsg(msg);
+      const chatToSave = cloneDeep(chatState);
+      chatToSave?.messages.push(newMsg);
+      chatToSave && saveChat(chatToSave);
+      setMsg("");
     }
-  }
+  };
 
   const sendAutoMsg = (msg: string) => {
-    const newMsg = createMsg(msg)
-    const chatToSave = cloneDeep(chatState)
-    chatToSave?.messages.push(newMsg)
-    chatToSave && saveChat(chatToSave)
-  }
+    const newMsg = createMsg(msg);
+    const chatToSave = cloneDeep(chatState);
+    chatToSave?.messages.push(newMsg);
+    chatToSave && saveChat(chatToSave);
+  };
 
   useEffect(() => {
     // saving the black user into the chat (because sometimes not recognize the user on first load)
     if (chatState && !chatState.userId2 && gameState?.players?.black) {
-      const chatToSave = cloneDeep(chatState)
-      chatToSave.userId2 = gameState.players.black
-      chatToSave && saveChat(chatToSave)
+      const chatToSave = cloneDeep(chatState);
+      chatToSave.userId2 = gameState.players.black;
+      chatToSave && saveChat(chatToSave);
     }
-  }, [chatState, gameState, gameState?.players?.black, saveChat, setChatState])
+  }, [chatState, gameState, gameState?.players?.black, saveChat, setChatState]);
 
   useEffect(() => {
     if (gameState?.chatId) {
-      getChatById(gameState.chatId, setChatState)
+      getChatById(gameState.chatId, setChatState);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [gameState?.chatId]);
 
   if (!gameState?.isOnline)
-    return <div className="chat not-online">Have fun !</div>
+    return <div className="chat not-online">Have fun !</div>;
 
   // console.log('render Chat.tsx')
   return (
@@ -87,7 +87,7 @@ export const Chat = ({
             <div key={msg._id}>
               <span>
                 {`${msg.fullname} ${
-                  isBlackUser(msg.userId) ? '[black]' : '[white]'
+                  isBlackUser(msg.userId) ? "[black]" : "[white]"
                 }:  ${msg.txt}`}
               </span>
             </div>
@@ -105,7 +105,7 @@ export const Chat = ({
         <div className="auto-msg">
           <span
             onClick={() => {
-              sendAutoMsg('Hello')
+              sendAutoMsg("Hello");
             }}
             title="Hello"
           >
@@ -113,7 +113,7 @@ export const Chat = ({
           </span>
           <span
             onClick={() => {
-              sendAutoMsg('Good luck')
+              sendAutoMsg("Good luck");
             }}
             title="Good luck"
           >
@@ -121,7 +121,7 @@ export const Chat = ({
           </span>
           <span
             onClick={() => {
-              sendAutoMsg('Have fun!')
+              sendAutoMsg("Have fun!");
             }}
             title="Have fun!"
           >
@@ -129,7 +129,7 @@ export const Chat = ({
           </span>
           <span
             onClick={() => {
-              sendAutoMsg('Yoo too!')
+              sendAutoMsg("Yoo too!");
             }}
             title="Yoo too!"
           >
@@ -138,5 +138,5 @@ export const Chat = ({
         </div>
       </div>
     </>
-  )
-}
+  );
+};
