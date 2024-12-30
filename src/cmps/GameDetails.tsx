@@ -1,18 +1,18 @@
-import { User } from '../models/User'
+import { User } from "../models/User";
 
-import { GameState } from '../models/GameState'
+import { GameState } from "../models/GameState";
 
-import { AiFillCaretLeft, AiFillCaretRight } from 'react-icons/ai'
-import { utilService } from '../services/utilService'
+import { AiFillCaretLeft, AiFillCaretRight } from "react-icons/ai";
+import { utilService } from "../services/utilService";
 
 interface Props {
-  gameState: GameState | null
-  loggedInUser: User | null
-  moveInStateHistory: (num: 1 | -1) => void
-  whitePlayer: User | null
-  blackPlayer: User | null
-  isWhitePlayerConnected: boolean
-  isBlackPlayerConnected: boolean
+  gameState: GameState | null;
+  loggedInUser: User | null;
+  moveInStateHistory: (num: 1 | -1) => void;
+  whitePlayer: User | null;
+  blackPlayer: User | null;
+  isWhitePlayerConnected: boolean;
+  isBlackPlayerConnected: boolean;
 }
 
 export const GameDetails = ({
@@ -26,14 +26,14 @@ export const GameDetails = ({
 }: Props) => {
   const screenStyle =
     gameState?.players?.black === loggedInUser?._id
-      ? 'black-screen'
-      : 'white-screen'
+      ? "black-screen"
+      : "white-screen";
 
   // console.log('render GameDetails.tsx')
   return (
     <section className="game-details">
-      <div className={'container ' + screenStyle}>
-        <div className={'black-player ' + screenStyle}>
+      <div className={"container " + screenStyle}>
+        <div className={"black-player " + screenStyle}>
           <div className="eaten-pieces">
             {gameState?.eatenPieces.black.map((piece, idx) => (
               <span key={piece + idx}>{piece}</span>
@@ -41,7 +41,7 @@ export const GameDetails = ({
           </div>
           <div
             className={`timer ${screenStyle} ${
-              gameState?.isBlackTurn ? 'curr-turn-bg ' : ''
+              gameState?.isBlackTurn ? "curr-turn-bg " : ""
             }`}
           >
             {gameState?.remainingTime?.black &&
@@ -61,8 +61,8 @@ export const GameDetails = ({
             <span
               className={
                 isBlackPlayerConnected
-                  ? 'is-connected connected'
-                  : 'is-connected'
+                  ? "is-connected connected"
+                  : "is-connected"
               }
             ></span>
             <p>{blackPlayer?.fullname}</p>
@@ -79,13 +79,13 @@ export const GameDetails = ({
           </div>
         </div>
         {/* <div className="actions"></div> */}
-        <div className={'white-player ' + screenStyle}>
+        <div className={"white-player " + screenStyle}>
           <div className="player-name">
             <span
               className={
                 isWhitePlayerConnected
-                  ? 'is-connected connected'
-                  : 'is-connected '
+                  ? "is-connected connected"
+                  : "is-connected "
               }
             ></span>
             <p>{whitePlayer?.fullname}</p>
@@ -100,7 +100,7 @@ export const GameDetails = ({
           ></div>
           <div
             className={`timer ${
-              !gameState?.isBlackTurn ? 'curr-turn-bg ' : ''
+              !gameState?.isBlackTurn ? "curr-turn-bg " : ""
             }`}
           >
             {gameState?.remainingTime?.white &&
@@ -116,5 +116,5 @@ export const GameDetails = ({
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
