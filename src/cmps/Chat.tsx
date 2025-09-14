@@ -73,18 +73,18 @@ export const Chat = ({
   }, [gameState?.chatId]);
 
   if (!gameState?.isOnline)
-    return <div className="chat not-online">Have fun !</div>;
+    return <div className="bg-tertiary text-secondary h-[560px] flex justify-center items-center max-md:hidden">Have fun !</div>;
 
   // console.log('render Chat.tsx')
   return (
     <>
-      <div className="chat">
-        <header>
-          <h1>Chat room</h1>
+      <div className="bg-tertiary text-secondary h-[560px] max-md:hidden" style={{gridArea: 'chat'}}>
+        <header className="h-[10%]">
+          <h1 className="text-[25px] p-[3px_5px]">Chat room</h1>
         </header>
-        <div className="body">
+        <div className="h-[80%] overflow-y-auto overflow-x-hidden flex flex-col justify-end">
           {chatState?.messages.map((msg) => (
-            <div key={msg._id}>
+            <div key={msg._id} className="flex justify-start items-center p-[3px_5px]">
               <span>
                 {`${msg.fullname} ${
                   isBlackUser(msg.userId) ? "[black]" : "[white]"
@@ -93,21 +93,23 @@ export const Chat = ({
             </div>
           ))}
         </div>
-        <div className="input-container">
+        <div className="flex justify-center items-center h-[5%]">
           <input
             value={msg}
             type="text"
             onKeyUp={(ev) => sendMsg(ev)}
             onChange={(ev) => setMsg(ev.target.value)}
             placeholder="Please be nice in the chat!"
+            className="bg-[#24221e] text-secondary w-full border-0 border-t border-[#404040] rounded-none p-[3px_20px_3px_4px] text-sm focus:outline-none focus:ring-1 focus:ring-accent"
           />
         </div>
-        <div className="auto-msg">
+        <div className="flex h-[5%] border border-[#404040]">
           <span
             onClick={() => {
               sendAutoMsg("Hello");
             }}
             title="Hello"
+            className="w-1/4 flex justify-center items-center cursor-pointer break-words border-r border-[#404040] last:border-r-0"
           >
             HI
           </span>
@@ -116,6 +118,7 @@ export const Chat = ({
               sendAutoMsg("Good luck");
             }}
             title="Good luck"
+            className="w-1/4 flex justify-center items-center cursor-pointer break-words border-r border-[#404040] last:border-r-0"
           >
             GL
           </span>
@@ -124,6 +127,7 @@ export const Chat = ({
               sendAutoMsg("Have fun!");
             }}
             title="Have fun!"
+            className="w-1/4 flex justify-center items-center cursor-pointer break-words border-r border-[#404040] last:border-r-0"
           >
             HF
           </span>
@@ -132,6 +136,7 @@ export const Chat = ({
               sendAutoMsg("Yoo too!");
             }}
             title="Yoo too!"
+            className="w-1/4 flex justify-center items-center cursor-pointer break-words border-r border-[#404040] last:border-r-0"
           >
             U2
           </span>

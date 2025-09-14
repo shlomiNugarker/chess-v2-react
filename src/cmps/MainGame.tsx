@@ -53,11 +53,12 @@ export const MainGame = ({
 
   // console.log('rebder Board.tsx')
   return (
-    <section className={'board-cmp ' + screenStyle}>
+    <section className={screenStyle} style={{gridArea: 'board'}}>
       {isWin && (
         <>
-          <span style={{ color: 'white' }}>We have a winner here !'😁</span>
+          <span className="text-white">We have a winner here !'😁</span>
           <button
+            className="blue-btn"
             onClick={() => {
               setGameState(null)
               setChatState(null)
@@ -68,13 +69,17 @@ export const MainGame = ({
           </button>
         </>
       )}
-      <div>
+      <div className="flex justify-center">
         {gameState?.board && (
           <ChessBoard
             handleBoardClick={handleBoardClick}
             board={gameState.board}
           />
         )}
+      </div>
+
+      <div className={`w-[560px] flex justify-center items-center flex-wrap min-h-chess-cell ${screenStyle}`}>
+        <span className="text-chess-piece"></span>
       </div>
 
       {isPromotionChoice && gameState && (

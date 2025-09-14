@@ -31,7 +31,7 @@ export const SignIn = () => {
   // console.log('render SignIn()')
   return (
     <div className="sign-in-page">
-      <div className="container">
+      <div className="auth-container">
         <form onSubmit={submit} action="">
           <div>
             <h1>Sign in</h1>

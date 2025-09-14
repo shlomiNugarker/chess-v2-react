@@ -31,17 +31,17 @@ export const GameDetails = ({
 
   // console.log('render GameDetails.tsx')
   return (
-    <section className="game-details">
-      <div className={"container " + screenStyle}>
-        <div className={"black-player " + screenStyle}>
-          <div className="eaten-pieces">
+    <section className="text-secondary flex w-full max-md:hidden" style={{gridArea: 'game-details'}}>
+      <div className={`w-full flex justify-center flex-col ${screenStyle}`}>
+        <div className={`${screenStyle}`}>
+          <div className="flex items-center flex-wrap">
             {gameState?.eatenPieces.black.map((piece, idx) => (
-              <span key={piece + idx}>{piece}</span>
+              <span key={piece + idx} className="text-[30px]">{piece}</span>
             ))}
           </div>
           <div
-            className={`timer ${screenStyle} ${
-              gameState?.isBlackTurn ? "curr-turn-bg " : ""
+            className={`text-[40px] bg-tertiary inline ${screenStyle} ${
+              gameState?.isBlackTurn ? "curr-turn-bg" : ""
             }`}
           >
             {gameState?.remainingTime?.black &&
@@ -50,14 +50,14 @@ export const GameDetails = ({
               )}
           </div>
           <div
-            className="bar"
+            className="timer-bar"
             style={{
               width:
                 gameState?.remainingTime?.black &&
                 utilService.timeToPercents(gameState.remainingTime.black),
             }}
           ></div>
-          <div className="player-name">
+          <div className="bg-tertiary flex justify-start items-center">
             <span
               className={
                 isBlackPlayerConnected
@@ -68,30 +68,36 @@ export const GameDetails = ({
             <p>{blackPlayer?.fullname}</p>
           </div>
         </div>
-        <div className="moves">
-          <div>
-            <span onClick={() => moveInStateHistory(-1)}>
-              <AiFillCaretLeft />
+        <div className="min-h-[100px] flex items-center justify-center">
+          <div className="w-full flex items-center justify-around">
+            <span 
+              onClick={() => moveInStateHistory(-1)}
+              className="flex items-center justify-center hover:bg-[#384722] cursor-pointer"
+            >
+              <AiFillCaretLeft className="text-[50px]" />
             </span>
-            <span onClick={() => moveInStateHistory(1)}>
-              <AiFillCaretRight />
+            <span 
+              onClick={() => moveInStateHistory(1)}
+              className="flex items-center justify-center hover:bg-[#384722] cursor-pointer"
+            >
+              <AiFillCaretRight className="text-[50px]" />
             </span>
           </div>
         </div>
         {/* <div className="actions"></div> */}
-        <div className={"white-player " + screenStyle}>
-          <div className="player-name">
+        <div className={`${screenStyle}`}>
+          <div className="bg-tertiary flex justify-start items-center">
             <span
               className={
                 isWhitePlayerConnected
                   ? "is-connected connected"
-                  : "is-connected "
+                  : "is-connected"
               }
             ></span>
             <p>{whitePlayer?.fullname}</p>
           </div>
           <div
-            className="bar"
+            className="timer-bar"
             style={{
               width:
                 gameState?.remainingTime?.white &&
@@ -99,8 +105,8 @@ export const GameDetails = ({
             }}
           ></div>
           <div
-            className={`timer ${
-              !gameState?.isBlackTurn ? "curr-turn-bg " : ""
+            className={`text-[40px] bg-tertiary inline ${
+              !gameState?.isBlackTurn ? "curr-turn-bg" : ""
             }`}
           >
             {gameState?.remainingTime?.white &&
@@ -108,9 +114,9 @@ export const GameDetails = ({
                 gameState.remainingTime.white
               )}
           </div>
-          <div className="eaten-pieces">
+          <div className="flex items-center flex-wrap">
             {gameState?.eatenPieces.white.map((piece, idx) => (
-              <span key={piece + idx}>{piece}</span>
+              <span key={piece + idx} className="text-[30px]">{piece}</span>
             ))}
           </div>
         </div>

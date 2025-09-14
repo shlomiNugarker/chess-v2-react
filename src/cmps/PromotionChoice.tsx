@@ -30,13 +30,17 @@ export const PromotionChoice = ({ onChoosePieceToAdd, gameState }: props) => {
   const piecesToShow = gameState?.isBlackTurn ? blackPieces : whitePieces
   // console.log('render PromotionChoice.tsx')
   return (
-    <div className="promotion-choice">
-      <div className="bg"></div>
-      <div className={gameState?.isBlackTurn ? 'pieces black' : 'pieces white'}>
+    <div className="fixed">
+      <div className="bg-black bg-opacity-40 fixed inset-0 z-[5]"></div>
+      <div className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 translate-y-[30px] rounded-[10px] z-10 w-[270px] h-[85px] ${
+        gameState?.isBlackTurn 
+          ? 'bg-gray-600 bg-opacity-90' 
+          : 'bg-white bg-opacity-85'
+      }`}>
         {piecesToShow.map((piece) => (
           <span
             key={piece}
-            className="piece"
+            className="inline-block mx-[3px] rounded-[25px] transition-all duration-300 cursor-pointer text-center hover:bg-gray-500 hover:bg-opacity-25"
             onClick={() =>
               onChoosePieceToAdd({
                 piece,

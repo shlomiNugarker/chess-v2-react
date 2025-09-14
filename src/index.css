@@ -1,0 +1,308 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tailwind CSS v3 successfully configured */
+
+/* Custom utilities for chess game */
+@layer utilities {
+  .chess-cell-transition {
+    transition: all 0.1s ease-in-out;
+  }
+  
+  .chess-piece-size {
+    max-height: 95%;
+    max-width: 95%;
+  }
+  
+  .chess-mark-dot {
+    pointer-events: none;
+    background-color: theme('colors.chess-mark');
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    padding: 2px;
+  }
+}
+
+/* Dynamic chess game states - these classes are added via JavaScript */
+@layer utilities {
+  /* Selected cell */
+  .selected {
+    @apply bg-chess-selected;
+  }
+  
+  /* Mark possible moves */
+  .mark {
+    @apply cursor-pointer;
+  }
+  
+  .mark span {
+    @apply chess-mark-dot;
+  }
+  
+  /* Eatable pieces */
+  .eatable {
+    @apply rounded-full border border-solid;
+  }
+  
+  /* En passant eatable */
+  .eatable-cell-after-first-two-steps-pawn {
+    @apply rounded-full border border-solid;
+  }
+  
+  /* Castle move */
+  .castle {
+    @apply rounded-full;
+  }
+  
+  /* Threatened king */
+  .red {
+    @apply bg-chess-threatened;
+  }
+}
+
+/* Utility class for hiding menu - from header */
+@layer utilities {
+  .hide {
+    @apply hidden;
+  }
+  
+  .hide-menu {
+    /* Add specific hide-menu styles if needed */
+  }
+}
+
+/* Basic global styles */
+@layer base {
+  * {
+    @apply box-border;
+  }
+  
+  html {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply m-0 min-h-screen font-mono antialiased bg-primary overflow-x-hidden;
+  }
+  
+  img {
+    @apply max-w-full;
+  }
+  
+  h1, h2, h3, h4, h5, h6, p {
+    @apply m-0 p-0 font-normal;
+  }
+  
+  a {
+    @apply no-underline;
+    color: inherit;
+  }
+  
+  a:hover {
+    @apply underline;
+  }
+  
+  button {
+    font-family: inherit;
+    @apply cursor-pointer;
+  }
+  
+  button * {
+    pointer-events: none;
+  }
+  
+  input {
+    font-family: inherit;
+    text-align: inherit;
+  }
+  
+  .pre {
+    @apply text-white fixed left-0;
+  }
+}
+
+/* Custom scrollbar styles */
+@layer base {
+  ::-webkit-scrollbar {
+    width: 8px;
+    background-color: rgba(0, 0, 0, 0);
+    -webkit-border-radius: 100px;
+  }
+
+  ::-webkit-scrollbar:hover {
+    background-color: rgba(0, 0, 0, 0.09);
+  }
+
+  ::-webkit-scrollbar-thumb:vertical {
+    background: rgba(0, 0, 0, 0.5);
+    -webkit-border-radius: 100px;
+  }
+
+  ::-webkit-scrollbar-thumb:vertical:active {
+    -webkit-border-radius: 100px;
+  }
+}
+
+/* Button components */
+@layer components {
+  .blue-btn {
+    @apply bg-accent w-full px-4 py-3 text-white uppercase border-none cursor-pointer text-center select-none whitespace-nowrap inline-block transition-all duration-150 rounded font-semibold;
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 23%);
+  }
+}
+
+/* Game Details specific styles */
+@layer utilities {
+  .black-screen {
+    transform: rotate(180deg);
+  }
+  
+  .curr-turn-bg {
+    background-color: #384722 !important;
+  }
+  
+  .is-connected {
+    @apply flex w-[7px] h-[7px] mx-[5px] bg-[#bc3232] rounded-full;
+  }
+  
+  .is-connected.connected {
+    @apply bg-[#629924];
+  }
+  
+  .timer-bar {
+    @apply block w-full h-1 bg-[#629924];
+  }
+  
+  .blackScreen {
+    transform: rotate(180deg);
+  }
+  
+  .blackScreen .pieces {
+    transform: rotate(180deg);
+  }
+  
+  .blackScreen table tbody tr td {
+    transform: rotate(180deg);
+  }
+}
+
+/* Responsive chess board styles */
+@layer utilities {
+  @media (max-width: 660px) {
+    .chess-board tbody tr td {
+      @apply w-[45px] h-[45px] text-[35px];
+    }
+    .chess-board tbody tr td.mark span {
+      @apply w-[10px] h-[10px];
+    }
+  }
+  
+  @media (max-width: 370px) {
+    .chess-board tbody tr td {
+      @apply w-[30px] h-[30px] text-[25px];
+    }
+    .chess-board tbody tr td.mark span {
+      @apply w-[7px] h-[7px];
+    }
+  }
+  
+  @media (max-height: 370px) {
+    .chess-board tbody tr td {
+      @apply w-[30px] h-[30px] text-[25px];
+    }
+    .chess-board tbody tr td.mark span {
+      @apply w-[7px] h-[7px];
+    }
+  }
+}
+
+/* Page styles */
+@layer components {
+  .main-page {
+    @apply min-h-[calc(100vh-60px)] w-screen grid items-center gap-4 px-4;
+    grid-template-areas: 'chat board game-details';
+    grid-template-columns: 1fr 560px 1fr;
+  }
+  
+  @media (max-width: 660px) {
+    .main-page {
+      @apply flex justify-center items-center;
+    }
+  }
+  
+  .wait-container {
+    @apply bg-[rgb(107,105,102)] fixed flex justify-center items-center flex-col top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-[30%] min-h-[30%] z-20;
+  }
+  
+  .is-waiting {
+    @apply text-center text-secondary my-[10px];
+  }
+  
+  .is-waiting span {
+    @apply text-accent cursor-pointer;
+  }
+  
+  .msg {
+    @apply text-secondary text-xl fixed left-1/2 transform -translate-x-1/2 flex justify-center flex-col;
+    top: calc(50% - 60px);
+  }
+  
+  .msg button {
+    @apply blue-btn mt-8;
+  }
+  
+  .sign-in-page, .sign-up-page {
+    @apply min-h-[calc(100vh-60px)] w-screen bg-primary text-secondary flex justify-center items-center;
+  }
+  
+  .auth-container {
+    @apply bg-tertiary rounded p-[5vh_60px] min-h-[400px] w-[30em];
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  }
+  
+  .auth-container h1 {
+    @apply text-[40px] pb-[5vh];
+  }
+  
+  .auth-container label p {
+    @apply mb-2;
+  }
+  
+  .auth-container input {
+    @apply mb-8 rounded bg-[#24221e] block w-full h-[calc(2.7em+2px)] bg-clip-padding border border-[#404040] px-4 py-[0.6em];
+    -webkit-text-fill-color: #bababa;
+    -webkit-box-shadow: 0 0 0px 1000px #2b2e1e inset;
+  }
+  
+  .auth-container button {
+    @apply blue-btn;
+  }
+  
+  .bottom-btns {
+    @apply flex justify-between mt-8;
+  }
+  
+  .bottom-btns a {
+    @apply text-accent no-underline hover:text-[#57aeff];
+  }
+  
+  .home-page {
+    @apply min-h-[calc(100vh-60px)] w-screen bg-primary text-secondary flex justify-center items-center;
+  }
+  
+  .home-page .container {
+    @apply flex flex-col;
+  }
+  
+  .home-page .container button {
+    @apply my-[5px];
+  }
+  
+  .puzzles-page {
+    @apply min-h-[calc(100vh-60px)] w-screen flex justify-center items-center;
+  }
+}

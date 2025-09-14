@@ -38,7 +38,7 @@ export const SignUp = () => {
   // console.log('render SignUp()')
   return (
     <div className="sign-up-page">
-      <div className="container">
+      <div className="auth-container">
         <form onSubmit={submit} action="">
           <div>
             <h1>Sign up</h1>
