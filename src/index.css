@@ -7,14 +7,18 @@
 /* Custom utilities for chess game */
 @layer utilities {
   .chess-cell-transition {
-    transition: all 0.1s ease-in-out;
+    transition: all 0.15s ease-in-out;
   }
-  
+
   .chess-piece-size {
     max-height: 95%;
     max-width: 95%;
   }
-  
+
+  .chess-piece-container {
+    @apply flex items-center justify-center w-full h-full;
+  }
+
   .chess-mark-dot {
     pointer-events: none;
     background-color: theme('colors.chess-mark');
@@ -22,6 +26,11 @@
     width: 15px;
     height: 15px;
     padding: 2px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
   }
 }
 
@@ -30,35 +39,101 @@
   /* Selected cell */
   .selected {
     @apply bg-chess-selected;
+    box-shadow: inset 0 0 0 3px rgba(180, 200, 42, 0.8);
   }
-  
+
   /* Mark possible moves */
   .mark {
     @apply cursor-pointer;
+    position: relative;
   }
-  
-  .mark span {
-    @apply chess-mark-dot;
+
+  .mark::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 15px;
+    height: 15px;
+    background-color: theme('colors.chess-mark');
+    border-radius: 50%;
+    z-index: 2;
+    pointer-events: none;
   }
-  
-  /* Eatable pieces */
+
+  /* Eatable pieces - show capture ring */
   .eatable {
-    @apply rounded-full border border-solid;
+    position: relative;
   }
-  
+
+  .eatable::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 3px solid theme('colors.chess-mark');
+    border-radius: 50%;
+    z-index: 3;
+    pointer-events: none;
+  }
+
   /* En passant eatable */
   .eatable-cell-after-first-two-steps-pawn {
-    @apply rounded-full border border-solid;
+    position: relative;
   }
-  
+
+  .eatable-cell-after-first-two-steps-pawn::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 3px solid theme('colors.chess-mark');
+    border-radius: 50%;
+    z-index: 3;
+    pointer-events: none;
+  }
+
   /* Castle move */
   .castle {
-    @apply rounded-full;
+    @apply cursor-pointer;
+    position: relative;
   }
-  
+
+  .castle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background-color: theme('colors.chess-mark');
+    border-radius: 50%;
+    z-index: 2;
+    pointer-events: none;
+  }
+
   /* Threatened king */
   .red {
-    @apply bg-chess-threatened;
+    background-color: rgba(239, 68, 68, 0.4) !important;
+    box-shadow:
+      inset 0 0 0 3px rgba(239, 68, 68, 0.8),
+      0 0 15px rgba(239, 68, 68, 0.6) !important;
+    animation: king-threat-pulse 1.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes king-threat-pulse {
+    0% {
+      background-color: rgba(239, 68, 68, 0.3);
+      box-shadow:
+        inset 0 0 0 3px rgba(239, 68, 68, 0.8),
+        0 0 15px rgba(239, 68, 68, 0.5);
+    }
+    100% {
+      background-color: rgba(239, 68, 68, 0.5);
+      box-shadow:
+        inset 0 0 0 3px rgba(239, 68, 68, 1),
+        0 0 20px rgba(239, 68, 68, 0.8);
+    }
   }
 }
 
@@ -73,55 +148,80 @@
   }
 }
 
-/* Basic global styles */
+/* Enhanced global styles with modern improvements */
 @layer base {
   * {
     @apply box-border;
   }
-  
+
   html {
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 16px;
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  
+
   body {
-    @apply m-0 min-h-screen font-mono antialiased bg-primary overflow-x-hidden;
+    @apply m-0 min-h-screen antialiased bg-gradient-to-br from-background-primary via-background-secondary to-background-tertiary overflow-x-hidden;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
-  
+
   img {
-    @apply max-w-full;
+    @apply max-w-full h-auto;
   }
-  
-  h1, h2, h3, h4, h5, h6, p {
-    @apply m-0 p-0 font-normal;
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply m-0 p-0 font-semibold text-text-primary leading-tight;
   }
-  
+
+  p {
+    @apply m-0 p-0 font-normal text-text-secondary leading-relaxed;
+  }
+
   a {
-    @apply no-underline;
+    @apply no-underline text-text-accent transition-colors duration-200;
     color: inherit;
   }
-  
+
   a:hover {
-    @apply underline;
+    @apply text-accent-primary;
   }
-  
+
   button {
     font-family: inherit;
-    @apply cursor-pointer;
+    @apply cursor-pointer transition-all duration-200 select-none;
   }
-  
+
+  button:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+
   button * {
     pointer-events: none;
   }
-  
-  input {
+
+  input, textarea {
     font-family: inherit;
-    text-align: inherit;
+    @apply transition-all duration-200;
   }
-  
-  .pre {
-    @apply text-white fixed left-0;
+
+  input:focus, textarea:focus {
+    @apply outline-none;
+  }
+
+  /* Selection styles */
+  ::selection {
+    @apply bg-accent-primary text-white;
+  }
+
+  ::-moz-selection {
+    @apply bg-accent-primary text-white;
+  }
+
+  /* Focus styles for accessibility */
+  :focus-visible {
+    @apply outline-2 outline-accent-primary outline-offset-2;
   }
 }
 
@@ -147,11 +247,48 @@
   }
 }
 
-/* Button components */
+/* Enhanced Button Components */
 @layer components {
   .blue-btn {
-    @apply bg-accent w-full px-4 py-3 text-white uppercase border-none cursor-pointer text-center select-none whitespace-nowrap inline-block transition-all duration-150 rounded font-semibold;
-    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 23%);
+    @apply
+      bg-gradient-to-r from-accent-primary to-accent-secondary
+      hover:from-accent-primary/90 hover:to-accent-secondary/90
+      w-full px-6 py-3 text-white font-semibold
+      border-none cursor-pointer text-center select-none whitespace-nowrap inline-block
+      transition-all duration-300 rounded-xl
+      hover:scale-105 hover:shadow-glow
+      focus:outline-none focus:ring-2 focus:ring-accent-primary/50 focus:ring-offset-2
+      active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply
+      bg-surface-elevated hover:bg-surface-elevated/80
+      text-text-primary hover:text-accent-primary
+      border border-glass-border hover:border-accent-primary/50
+      px-6 py-3 rounded-xl font-medium
+      transition-all duration-200
+      hover:scale-105 hover:shadow-elevated
+      focus:outline-none focus:ring-2 focus:ring-accent-primary/50 focus:ring-offset-2;
+  }
+
+  .btn-ghost {
+    @apply
+      bg-transparent hover:bg-surface-glass
+      text-text-secondary hover:text-text-primary
+      border border-transparent hover:border-glass-border
+      px-4 py-2 rounded-lg
+      transition-all duration-200
+      hover:scale-105;
+  }
+
+  .btn-icon {
+    @apply
+      bg-surface-elevated hover:bg-accent-primary/20
+      text-text-secondary hover:text-accent-primary
+      border border-glass-border
+      w-10 h-10 rounded-xl flex items-center justify-center
+      transition-all duration-200 hover:scale-105 hover:shadow-glow;
   }
 }
 
@@ -178,59 +315,90 @@
   }
   
   .blackScreen {
-    transform: rotate(180deg);
-  }
-  
-  .blackScreen .pieces {
-    transform: rotate(180deg);
-  }
-  
-  .blackScreen table tbody tr td {
-    transform: rotate(180deg);
+    /* Removed CSS transforms - board orientation handled in React component */
   }
 }
 
-/* Responsive chess board styles */
+/* Enhanced responsive chess board styles */
 @layer utilities {
-  @media (max-width: 660px) {
-    .chess-board tbody tr td {
-      @apply w-[45px] h-[45px] text-[35px];
+  /* Tablet and small desktop */
+  @media (max-width: 960px) and (min-width: 661px) {
+    .chess-board-container .relative {
+      @apply p-3;
     }
+
+    .chess-board tbody tr td {
+      @apply w-chess-cell-sm h-chess-cell-sm text-chess-piece-sm;
+    }
+
+    .chess-board tbody tr td.mark span {
+      @apply w-[12px] h-[12px];
+    }
+  }
+
+  /* Mobile landscape and small tablets */
+  @media (max-width: 660px) {
+    .chess-board-container .relative {
+      @apply p-2 rounded-xl;
+    }
+
+    .chess-board tbody tr td {
+      @apply w-chess-cell-sm h-chess-cell-sm text-chess-piece-sm;
+    }
+
     .chess-board tbody tr td.mark span {
       @apply w-[10px] h-[10px];
     }
+
+    /* Hide coordinates on mobile */
+    .chess-board-container .absolute {
+      @apply hidden;
+    }
   }
-  
+
+  /* Small mobile */
   @media (max-width: 370px) {
     .chess-board tbody tr td {
-      @apply w-[30px] h-[30px] text-[25px];
+      @apply w-chess-cell-xs h-chess-cell-xs text-chess-piece-xs;
     }
+
     .chess-board tbody tr td.mark span {
       @apply w-[7px] h-[7px];
     }
   }
-  
-  @media (max-height: 370px) {
+
+  /* Mobile landscape mode */
+  @media (max-height: 500px) and (orientation: landscape) {
     .chess-board tbody tr td {
-      @apply w-[30px] h-[30px] text-[25px];
+      @apply w-chess-cell-xs h-chess-cell-xs text-chess-piece-xs;
     }
+
     .chess-board tbody tr td.mark span {
       @apply w-[7px] h-[7px];
     }
   }
 }
 
-/* Page styles */
+/* Enhanced Page styles */
 @layer components {
   .main-page {
-    @apply min-h-[calc(100vh-60px)] w-screen grid items-center gap-4 px-4;
+    @apply min-h-[calc(100vh-64px)] w-screen grid items-start gap-6 px-6 py-6;
     grid-template-areas: 'chat board game-details';
-    grid-template-columns: 1fr 560px 1fr;
+    grid-template-columns: 350px 1fr 350px;
+    max-width: 1600px;
+    margin: 0 auto;
   }
-  
-  @media (max-width: 660px) {
+
+  @media (max-width: 1200px) {
     .main-page {
-      @apply flex justify-center items-center;
+      grid-template-columns: 300px 1fr 300px;
+      @apply gap-4 px-4;
+    }
+  }
+
+  @media (max-width: 960px) {
+    .main-page {
+      @apply flex flex-col justify-center items-center gap-4;
     }
   }
   

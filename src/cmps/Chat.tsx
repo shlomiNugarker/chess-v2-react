@@ -73,75 +73,186 @@ export const Chat = ({
   }, [gameState?.chatId]);
 
   if (!gameState?.isOnline)
-    return <div className="bg-tertiary text-secondary h-[560px] flex justify-center items-center max-md:hidden">Have fun !</div>;
+    return (
+      <div
+        className="backdrop-blur-md bg-surface-glass border border-glass-border rounded-xl h-[560px] flex flex-col justify-center items-center max-md:hidden p-8"
+        style={{ gridArea: "chat" }}
+      >
+        <div className="text-6xl mb-4">🎯</div>
+        <h3 className="text-text-primary font-semibold text-lg mb-2">
+          Offline Mode
+        </h3>
+        <p className="text-text-secondary text-center text-sm">
+          Enjoy your local chess game!
+          <br />
+          Chat is available in online games.
+        </p>
+      </div>
+    );
 
-  // console.log('render Chat.tsx')
+  const quickMessages = [
+    { key: "HI", message: "Hello", emoji: "👋" },
+    { key: "GL", message: "Good luck", emoji: "🍀" },
+    { key: "HF", message: "Have fun!", emoji: "😊" },
+    { key: "GG", message: "Good game!", emoji: "🤝" },
+  ];
+
   return (
-    <>
-      <div className="bg-tertiary text-secondary h-[560px] max-md:hidden" style={{gridArea: 'chat'}}>
-        <header className="h-[10%]">
-          <h1 className="text-[25px] p-[3px_5px]">Chat room</h1>
-        </header>
-        <div className="h-[80%] overflow-y-auto overflow-x-hidden flex flex-col justify-end">
-          {chatState?.messages.map((msg) => (
-            <div key={msg._id} className="flex justify-start items-center p-[3px_5px]">
-              <span>
-                {`${msg.fullname} ${
-                  isBlackUser(msg.userId) ? "[black]" : "[white]"
-                }:  ${msg.txt}`}
-              </span>
+    <div
+      className="backdrop-blur-md bg-surface-glass border border-glass-border rounded-xl h-[560px] max-md:hidden flex flex-col"
+      style={{ gridArea: "chat" }}
+    >
+      {/* Chat Header */}
+      <div className="p-4 border-b border-glass-border">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-full flex items-center justify-center">
+            <span className="text-white text-sm">💬</span>
+          </div>
+          <div>
+            <h2 className="text-text-primary font-semibold">Chat</h2>
+            <div className="flex items-center space-x-1">
+              <div className="w-2 h-2 bg-accent-success rounded-full animate-pulse"></div>
+              <span className="text-xs text-text-muted">Live chat</span>
             </div>
-          ))}
+          </div>
         </div>
-        <div className="flex justify-center items-center h-[5%]">
+      </div>
+
+      {/* Messages Container */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        {chatState?.messages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-center">
+            <div className="text-4xl mb-2">🤝</div>
+            <p className="text-text-muted text-sm">No messages yet</p>
+            <p className="text-text-muted text-xs">Start the conversation!</p>
+          </div>
+        ) : (
+          <>
+            {chatState?.messages.map((message, index) => {
+              const isCurrentUser = message.userId === loggedInUser?._id;
+              const isBlackPlayerMessage = isBlackUser(message.userId);
+
+              return (
+                <div
+                  key={message._id}
+                  className={`flex ${
+                    isCurrentUser ? "justify-end" : "justify-start"
+                  } animate-slide-up`}
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <div
+                    className={`max-w-[80%] ${
+                      isCurrentUser ? "order-2" : "order-1"
+                    }`}
+                  >
+                    {/* Message Bubble */}
+                    <div
+                      className={`
+                        rounded-2xl px-4 py-2 shadow-sm
+                        ${
+                          isCurrentUser
+                            ? "bg-gradient-to-r from-accent-primary to-accent-secondary text-white rounded-br-sm"
+                            : "bg-surface-elevated text-text-primary rounded-bl-sm border border-glass-border"
+                        }
+                      `}
+                    >
+                      {/* Player info for other users */}
+                      {!isCurrentUser && (
+                        <div className="flex items-center space-x-2 mb-1">
+                          <div
+                            className={`
+                            w-4 h-4 rounded-full flex items-center justify-center text-xs
+                            ${
+                              isBlackPlayerMessage
+                                ? "bg-gray-800 text-white"
+                                : "bg-yellow-400 text-gray-800"
+                            }
+                          `}
+                          >
+                            {isBlackPlayerMessage ? "♛" : "♕"}
+                          </div>
+                          <span className="text-xs font-medium opacity-80">
+                            {message.fullname}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Message text */}
+                      <p className="text-sm leading-relaxed break-words">
+                        {message.txt}
+                      </p>
+                    </div>
+
+                    {/* Timestamp */}
+                    <p
+                      className={`
+                      text-xs text-text-muted mt-1 px-1
+                      ${isCurrentUser ? "text-right" : "text-left"}
+                    `}
+                    >
+                      {new Date().toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        )}
+      </div>
+
+      {/* Input Area */}
+      <div className="p-4 border-t border-glass-border">
+        {/* Text Input */}
+        <div className="relative mb-3">
           <input
             value={msg}
             type="text"
-            onKeyUp={(ev) => sendMsg(ev)}
+            onKeyUp={sendMsg}
             onChange={(ev) => setMsg(ev.target.value)}
-            placeholder="Please be nice in the chat!"
-            className="bg-[#24221e] text-secondary w-full border-0 border-t border-[#404040] rounded-none p-[3px_20px_3px_4px] text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+            placeholder="Type a message..."
+            className="
+              w-full px-4 py-3 rounded-xl
+              bg-surface-elevated border border-glass-border
+              text-text-primary placeholder-text-muted
+              focus:outline-none focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary
+              transition-all duration-200
+            "
           />
+
+          {/* Send indicator */}
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <span className="text-text-muted text-xs">
+              {msg.trim() ? "Press Enter" : "💬"}
+            </span>
+          </div>
         </div>
-        <div className="flex h-[5%] border border-[#404040]">
-          <span
-            onClick={() => {
-              sendAutoMsg("Hello");
-            }}
-            title="Hello"
-            className="w-1/4 flex justify-center items-center cursor-pointer break-words border-r border-[#404040] last:border-r-0"
-          >
-            HI
-          </span>
-          <span
-            onClick={() => {
-              sendAutoMsg("Good luck");
-            }}
-            title="Good luck"
-            className="w-1/4 flex justify-center items-center cursor-pointer break-words border-r border-[#404040] last:border-r-0"
-          >
-            GL
-          </span>
-          <span
-            onClick={() => {
-              sendAutoMsg("Have fun!");
-            }}
-            title="Have fun!"
-            className="w-1/4 flex justify-center items-center cursor-pointer break-words border-r border-[#404040] last:border-r-0"
-          >
-            HF
-          </span>
-          <span
-            onClick={() => {
-              sendAutoMsg("Yoo too!");
-            }}
-            title="Yoo too!"
-            className="w-1/4 flex justify-center items-center cursor-pointer break-words border-r border-[#404040] last:border-r-0"
-          >
-            U2
-          </span>
+
+        {/* Quick Messages */}
+        <div className="grid grid-cols-4 gap-2">
+          {quickMessages.map((quick) => (
+            <button
+              key={quick.key}
+              onClick={() => sendAutoMsg(quick.message)}
+              title={quick.message}
+              className="
+                flex flex-col items-center justify-center p-2 rounded-lg
+                bg-surface-elevated hover:bg-accent-primary/20 border border-glass-border
+                text-text-secondary hover:text-accent-primary
+                transition-all duration-200 hover:scale-105
+                group
+              "
+            >
+              <span className="text-lg mb-1 group-hover:scale-110 transition-transform duration-200">
+                {quick.emoji}
+              </span>
+              <span className="text-xs font-medium">{quick.key}</span>
+            </button>
+          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };

@@ -24,8 +24,8 @@ interface Props {
   onChoosePieceToAdd: ({ piece }: { piece: string }) => Promise<void>
   handleBoardClick: (
     ev:
-      | React.DragEvent<HTMLTableDataCellElement>
-      | React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
+      | React.DragEvent<HTMLDivElement>
+      | React.MouseEvent<HTMLDivElement, MouseEvent>,
     i: number,
     j: number
   ) => Promise<void>
@@ -74,6 +74,7 @@ export const MainGame = ({
           <ChessBoard
             handleBoardClick={handleBoardClick}
             board={gameState.board}
+            isBlackPlayer={gameState?.players?.black === loggedInUser?._id}
           />
         )}
       </div>

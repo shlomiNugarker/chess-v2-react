@@ -59,8 +59,8 @@ export const Main = ({ onLoginAsGuest }: props) => {
 
   const handleBoardClick = async (
     ev:
-      | React.DragEvent<HTMLTableDataCellElement>
-      | React.MouseEvent<HTMLTableDataCellElement, MouseEvent>,
+      | React.DragEvent<HTMLDivElement>
+      | React.MouseEvent<HTMLDivElement, MouseEvent>,
     i: number,
     j: number
   ) => {
@@ -83,11 +83,13 @@ export const Main = ({ onLoginAsGuest }: props) => {
     if (ev.target instanceof Element && gameState) {
       const cellCoord = { i, j };
       const piece = gameState.board[i][j];
-      const isSquareSelected = ev.target.classList.contains("selected");
-      const isSquareMarked = ev.target.classList.contains("mark");
-      const isSquareEatable = ev.target.classList.contains("eatable");
-      const isSquareCastling = ev.target.classList.contains("castle");
-      const target = ev.target;
+      // Find the actual cell element - it might be the target or a parent
+      const cellElement = ev.target.closest(`[id^="cell-"]`) || ev.target;
+      const isSquareSelected = cellElement.classList.contains("selected");
+      const isSquareMarked = cellElement.classList.contains("mark");
+      const isSquareEatable = cellElement.classList.contains("eatable");
+      const isSquareCastling = cellElement.classList.contains("castle");
+      const target = cellElement;
 
       // HANDLE EATABLE MOVE:
       if (isSquareEatable && gameState.selectedCellCoord) {
